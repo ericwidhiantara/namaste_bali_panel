@@ -1,6 +1,26 @@
 <script>
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
+	import { jwtDecode } from 'jwt-decode';
+	import Swal from 'sweetalert2';
+
+
+
+	class UserModel {
+		constructor(data) {
+			this.id = data.id;
+			this.first_name = data.first_name;
+			this.last_name = data.last_name;
+			this.email = data.email;
+			this.phone = data.phone;
+			this.picture = data.picture;
+			this.is_active = data.is_active;
+
+		}
+
+	}
+
+	let user = UserModel;
 
 	function loadScript(src) {
 		return new Promise((resolve, reject) => {
@@ -10,6 +30,41 @@
 			script.onerror = () => reject(new Error(`Script load error for ${src}`));
 			document.body.appendChild(script);
 		});
+	}
+
+	function getUserLogin() {
+
+		const access_token = localStorage.getItem('access_token');
+		if (!access_token) {
+			// Token is not available
+			return false;
+		}
+		// Decode JWT to get expiry time
+		const decoded = jwtDecode(access_token);
+
+		user = new UserModel(decoded.user);
+
+
+	}
+
+	function logout() {
+
+		Swal.fire({
+			title: 'Are you sure?',
+			text: "You want to logout from the system!",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yes, logout!'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				localStorage.removeItem('access_token');
+				localStorage.removeItem('refresh_token');
+				window.location.href = '/auth/login';
+			}
+		})
+
 	}
 
 	// Function to load your specific scripts
@@ -23,9 +78,12 @@
 		}
 	}
 
-	onMount(() => {
-		loadMyScripts();
+	onMount(async () => {
+		getUserLogin();
+		await loadMyScripts();
 	});
+
+
 </script>
 
 {#if $page.url.pathname.startsWith('/auth')}
@@ -56,7 +114,7 @@
 						</svg>
 					</button>
 					<!--[ Start:: Brand Logo icon ]-->
-					<a href="index.html" class="brand-icon text-decoration-none d-flex align-items-center" title="BVITE Admin Template">
+					<a href="/" class="brand-icon text-decoration-none d-flex align-items-center" title="BVITE Admin Template">
 						<svg height="26" viewBox="0 0 40 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path fill="var(--primary-color)" fill-rule="evenodd" clip-rule="evenodd" d="M8.30814 0C6.02576 0 4.33695 1.99763 4.41254 4.16407C4.48508 6.24542 4.39085 8.94102 3.7122 11.1393C3.03153 13.3441 1.88034 14.7407 0 14.92V16.9444C1.88034 17.1237 3.03153 18.5203 3.7122 20.7251C4.39085 22.9234 4.48508 25.619 4.41254 27.7003C4.33695 29.8664 6.02576 31.8644 8.30847 31.8644H31.6949C33.9773 31.8644 35.6658 29.8668 35.5902 27.7003C35.5176 25.619 35.6119 22.9234 36.2905 20.7251C36.9715 18.5203 38.1197 17.1237 40 16.9444V14.92C38.1197 14.7407 36.9715 13.3441 36.2905 11.1393C35.6119 8.94136 35.5176 6.24542 35.5902 4.16407C35.6658 1.99797 33.9773 0 31.6949 0H8.30814Z"/>
 							<path fill="white" d="M30.0474 8.81267L20.0721 26.7214C19.8661 27.0911 19.337 27.0933 19.128 26.7253L8.95492 8.81436C8.72711 8.41342 9.06866 7.92768 9.52124 8.009L19.5072 9.80102C19.5709 9.81245 19.6361 9.81234 19.6998 9.80069L29.4769 8.01156C29.928 7.92899 30.2711 8.41086 30.0474 8.81267Z"/>
@@ -69,12 +127,12 @@
 			<div class="d-none layout-a-action">
 				<div class="mb-2">
 					<a class="d-flex align-items-center lh-sm p-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="User">
-						<img class="avatar rounded-circle border border-3 shadow" src="assets/images/profile_av.png" alt="avatar">
+						<img class="avatar rounded-circle border border-3 shadow" src="{user.picture}" alt="avatar">
 					</a>
 					<div class="dropdown-menu dropdown-menu-end shadow p-2 p-xl-3 rounded-4">
 						<div class="bg-body p-3 rounded-3">
-							<h4 class="mb-1 title-font text-gradient">Michelle Glover</h4>
-							<p class="small text-muted">michelle.glover@gmail.com</p>
+							<h4 class="mb-1 title-font text-gradient">{user.first_name}</h4>
+							<p class="small text-muted">{user.email}</p>
 							<input type="text" class="form-control form-control-sm" placeholder="Update my status">
 						</div>
 						<ul class="list-unstyled mt-3">
@@ -84,15 +142,9 @@
 								</a>
 							</li>
 							<li><a class="dropdown-item rounded-pill" aria-label="my profile" href="my-profile.html">My Profile</a></li>
-							<li><a class="dropdown-item rounded-pill" aria-label="my task" href="my-task.html">My Taskboard</a></li>
-							<li><a class="dropdown-item rounded-pill" aria-label="account settings" href="account-settings.html">Settings</a></li>
-							<li class="dropdown-divider"></li>
-							<li><a class="dropdown-item rounded-pill" aria-label="Add another account" href="#">Add another account</a></li>
 						</ul>
-						<a class="btn py-2 btn-primary w-100 mt-3 rounded-pill" href="signin.html" role="button">Logout</a>
-						<div class="mt-3 text-center small">
-							<a class="text-muted me-1" href="#!">Privacy policy</a>•<a class="text-muted mx-1" href="#!">Terms</a>•<a class="text-muted ms-1" href="#!">Cookies</a>
-						</div>
+						<a class="btn py-2 btn-primary w-100 mt-3 rounded-pill" href="#" on:click={logout} role="button">Logout</a>
+
 					</div>
 				</div>
 				<a href="#" class="btn p-1" title="Sign out">
@@ -246,20 +298,21 @@
 					<!--[ Start:: user detail ]-->
 					<li class="nav-item user ms-3">
 						<a class="dropdown-toggle gray-6 d-flex text-decoration-none align-items-center lh-sm p-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="User" data-bs-auto-close="outside">
-							<img class="avatar rounded-circle border border-3" src="assets/images/profile_av.png" alt="avatar">
-							<span class="ms-2 fs-6 d-none d-sm-inline-flex">Michelle</span>
+							<img class="avatar rounded-circle border border-3" src="{user.picture}" alt="avatar">
+							<span class="ms-2 fs-6 d-none d-sm-inline-flex">{user.first_name}</span>
 						</a>
 						<div class="dropdown-menu dropdown-menu-end shadow p-2 p-xl-3 rounded-4">
 							<div class="bg-body p-3 rounded-3">
-								<h4 class="mb-1 title-font text-gradient">Michelle Glover</h4>
-								<p class="small text-muted">michelle.glover@gmail.com</p>
+								<h4 class="mb-1 title-font text-gradient">{user.first_name} {user.last_name}</h4>
+								<p class="small text-muted">{user.email}</p>
 							</div>
 							<ul class="list-unstyled mt-3">
 
 								<li><a class="dropdown-item rounded-pill" aria-label="my profile" href="my-profile.html">My Profile</a></li>
 
 							</ul>
-							<a class="btn py-2 btn-primary w-100 mt-3 rounded-pill" href="signin.html" role="button">Logout</a>
+							<a class="btn py-2 btn-primary w-100 mt-3 rounded-pill" href="#" on:click={logout} role="button">Logout</a>
+
 
 						</div>
 					</li>
@@ -273,7 +326,7 @@
 				<div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvas_Navbar">
 					<div class="offcanvas-header">
 						<div class="d-flex">
-							<a href="index.html" class="brand-icon me-2">
+							<a href="/" class="brand-icon me-2">
 								<svg height="26" viewBox="0 0 40 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<path fill="var(--primary-color)" fill-rule="evenodd" clip-rule="evenodd" d="M8.30814 0C6.02576 0 4.33695 1.99763 4.41254 4.16407C4.48508 6.24542 4.39085 8.94102 3.7122 11.1393C3.03153 13.3441 1.88034 14.7407 0 14.92V16.9444C1.88034 17.1237 3.03153 18.5203 3.7122 20.7251C4.39085 22.9234 4.48508 25.619 4.41254 27.7003C4.33695 29.8664 6.02576 31.8644 8.30847 31.8644H31.6949C33.9773 31.8644 35.6658 29.8668 35.5902 27.7003C35.5176 25.619 35.6119 22.9234 36.2905 20.7251C36.9715 18.5203 38.1197 17.1237 40 16.9444V14.92C38.1197 14.7407 36.9715 13.3441 36.2905 11.1393C35.6119 8.94136 35.5176 6.24542 35.5902 4.16407C35.6658 1.99797 33.9773 0 31.6949 0H8.30814Z"/>
 									<path fill="white" d="M30.0474 8.81267L20.0721 26.7214C19.8661 27.0911 19.337 27.0933 19.128 26.7253L8.95492 8.81436C8.72711 8.41342 9.06866 7.92768 9.52124 8.009L19.5072 9.80102C19.5709 9.81245 19.6361 9.81234 19.6998 9.80069L29.4769 8.01156C29.928 7.92899 30.2711 8.41086 30.0474 8.81267Z"/>
@@ -289,7 +342,7 @@
 						<h6 class="fl-title title-font ps-2 small text-uppercase text-muted" style="--text-color: var(--theme-color1)">Workspace</h6>
 						<ul class="list-unstyled mb-4 menu-list">
 							<li>
-								<a href="index.html" aria-label="My Dashboard">
+								<a href="/" aria-label="My Dashboard">
 									<svg class="svg-stroke" xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
 										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
 										<path d="M5 12l-2 0l9 -9l9 9l-2 0"></path>
@@ -343,7 +396,7 @@
 					</svg>
 				</button>
 				<ol class="breadcrumb mb-0 bg-transparent">
-					<li class="breadcrumb-item"><a href="index.html" title="home">Home</a></li>
+					<li class="breadcrumb-item"><a href="/" title="home">Home</a></li>
 					<li class="breadcrumb-item"><a href="#" title="App">Pages</a></li>
 					<li class="breadcrumb-item active" aria-current="page" title="Search page">Search page</li>
 				</ol>
@@ -352,431 +405,8 @@
 		</div>
 
 		<!-- start: page body area -->
-		<div class="ps-md-4 pe-md-3 px-2 py-3 page-body">
-			<div class="card mb-3">
-				<div class="card-body">
-					<div class="row g-4 li_animate">
-						<div class="col-xl-4 col-lg-4">
-							<span class="small">Welcome back!</span>
-							<h2 class="fw-bold mb-xl-5 mb-4">My Dashboard</h2>
-							<div class="d-flex align-items-start">
-								<img class="avatar lg rounded-circle border border-3" src="assets/images/profile_av.png" alt="avatar">
-								<div class="ms-3">
-									<h4 class="mb-0 text-gradient title-font">Hello, Michelle!</h4>
-									<span class="text-muted small">michelle.glover@bvite.com</span>
-									<p class="mb-0 mt-xl-4 mt-3 text-muted small">"Power up your web app with our sleek (Bvite) Bootstrap admin dashboard template.</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-xl-3 col-lg-3 col-md-4 col-sm-4">
-							<h2>Halo</h2>
-						</div>
-						<div class="col-xl-5 col-lg-5 col-md-8 col-sm-8">
-							<h2>Hello</h2>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row g-3">
-				<div class="col-lg-3 col-md-6 col-sm-6">
-					<div class="card p-3 px-4">
-						<div>Total Income</div>
-						<div class="py-4 m-0 text-center h2"><span data-purecounter-start="0" data-purecounter-separator="," data-purecounter-currency="$" data-purecounter-end="6245" class="purecounter">0</span></div>
-						<div class="d-flex">
-							<small class="text-muted">This year</small>
-							<div class="ms-auto">22%</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3 col-md-6 col-sm-6">
-					<div class="card p-3 px-4">
-						<div>Total Expense</div>
-						<div class="py-4 m-0 text-center h2"><span data-purecounter-start="0" data-purecounter-separator="," data-purecounter-currency="$" data-purecounter-end="2145" class="purecounter">0</span></div>
-						<div class="d-flex">
-							<small class="text-muted">This year</small>
-							<div class="ms-auto">17%</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3 col-md-6 col-sm-6">
-					<div class="card p-3 px-4">
-						<div>Meetings</div>
-						<div class="py-4 m-0 text-center h2"><span data-purecounter-start="0" data-purecounter-separator="," data-purecounter-end="58" class="purecounter">0</span>
-						</div>
-						<div class="d-flex">
-							<small class="text-muted">This year</small>
-							<div class="ms-auto">34%</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3 col-md-6 col-sm-6">
-					<div class="card p-3 px-4">
-						<div>Number of Events</div>
-						<div class="py-4 m-0 text-center h2"><span data-purecounter-start="0" data-purecounter-separator="," data-purecounter-end="267" class="purecounter">0</span>
-						</div>
-						<div class="d-flex">
-							<small class="text-muted">This year</small>
-							<div class="ms-auto">19%</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-xxl-8 col-xl-7 col-lg-12">
-					<div class="card">
-						<div class="card-header">
-							<h6 class="card-title">Sales Analytics</h6>
-						</div>
-						<div class="card-body">
-							<h2>Blabla</h2>
-						</div>
-					</div>
-				</div>
-				<div class="col-xxl-4 col-xl-5 col-lg-6 col-md-6">
-					<div class="card">
-						<div class="card-header">
-							<h6 class="card-title mb-0">Sales Revenue</h6>
-							<div class="dropdown card-action">
-								<a href="#" class="card-fullscreen" data-bs-toggle="tooltip" title="Card Full Screen">
-									<svg class="svg-stroke" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-										<path d="M3 16m0 1a1 1 0 0 1 1 -1h3a1 1 0 0 1 1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1z"></path>
-										<path d="M4 12v-6a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-6"></path>
-										<path d="M12 8h4v4"></path>
-										<path d="M16 8l-5 5"></path>
-									</svg>
-								</a>
-								<a href="#" class="dropdown-toggle after-none" data-bs-toggle="dropdown" aria-expanded="false" title="More Action">
-									<svg class="svg-stroke" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-										<path stroke="none" d="M0 0h24v24H0z" fill="none"> </path>
-										<path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
-										<path d="M8 12l0 .01"></path>
-										<path d="M12 12l0 .01"></path>
-										<path d="M16 12l0 .01"></path>
-									</svg>
-								</a>
-								<div class="dropdown-menu dropdown-menu-end shadow rounded-4 p-2">
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill"><i class="me-2 fa fa-share"></i>Share</a>
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill"><i class="me-2 fa fa-pencil"></i>Rename</a>
-									<div class="dropdown-divider"></div>
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill"><i class="me-2 fa fa-link"></i>Copy Link Address</a>
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill"><i class="me-2 fa fa-folder"></i>Move to</a>
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill"><i class="me-2 fa fa-copy"></i>Copy to</a>
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill"><i class="me-2 fa fa-edit"></i>Make Private</a>
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill"><i class="me-2 fa fa-download"></i>Download</a>
-									<div class="dropdown-divider"></div>
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill card-options-remove" data-toggle="card-remove"><i class="me-2 fa fa-trash"></i>Delete</a>
-								</div>
-							</div>
-						</div>
-						<div class="card-body custom_scroll" style="height: 320px;">
-							<table class="table table-hover mb-0">
-								<tbody>
-								<tr>
-									<td>
-										USA
-										<div class="progress mt-1" style="height: 2px;">
-											<div class="progress-bar bg-primary" style="width: 78%"></div>
-										</div>
-									</td>
-									<td class="text-end"><span class="text-muted">$6425</span></td>
-								</tr>
-								<tr>
-									<td>
-										Poland
-										<div class="progress mt-1" style="height: 2px;">
-											<div class="progress-bar bg-primary" style="width: 62%"></div>
-										</div>
-									</td>
-									<td class="text-end"><span class="text-muted">$5582</span></td>
-								</tr>
-								<tr>
-									<td>
-										Germany
-										<div class="progress mt-1" style="height: 2px;">
-											<div class="progress-bar bg-primary" style="width: 48%"></div>
-										</div>
-									</td>
-									<td class="text-end"><span class="text-muted">$4587</span></td>
-								</tr>
-								<tr>
-									<td>
-										Russia
-										<div class="progress mt-1" style="height: 2px;">
-											<div class="progress-bar bg-primary" style="width: 35%"></div>
-										</div>
-									</td>
-									<td class="text-end"><span class="text-muted">$2520</span></td>
-								</tr>
-								<tr>
-									<td>
-										Australia
-										<div class="progress mt-1" style="height: 2px;">
-											<div class="progress-bar bg-primary" style="width: 30%"></div>
-										</div>
-									</td>
-									<td class="text-end"><span class="text-muted">$1899</span></td>
-								</tr>
-								<tr>
-									<td>
-										Great Britain
-										<div class="progress mt-1" style="height: 2px;">
-											<div class="progress-bar bg-primary" style="width: 22%"></div>
-										</div>
-									</td>
-									<td class="text-end"><span class="text-muted">$1056</span></td>
-								</tr>
-								<tr>
-									<td>
-										Poland
-										<div class="progress mt-1" style="height: 2px;">
-											<div class="progress-bar bg-primary" style="width: 62%"></div>
-										</div>
-									</td>
-									<td class="text-end"><span class="text-muted">$5582</span></td>
-								</tr>
-								<tr>
-									<td>
-										Germany
-										<div class="progress mt-1" style="height: 2px;">
-											<div class="progress-bar bg-primary" style="width: 48%"></div>
-										</div>
-									</td>
-									<td class="text-end"><span class="text-muted">$4587</span></td>
-								</tr>
-								<tr>
-									<td>
-										Russia
-										<div class="progress mt-1" style="height: 2px;">
-											<div class="progress-bar bg-primary" style="width: 35%"></div>
-										</div>
-									</td>
-									<td class="text-end"><span class="text-muted">$2520</span></td>
-								</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-				<div class="col-xxl-4 col-xl-4 col-lg-6 col-md-6">
-					<div class="card">
-						<div class="card-header">
-							<h6 class="card-title mb-0">Customer rating</h6>
-							<div class="dropdown card-action">
-								<a href="#" class="card-fullscreen" data-bs-toggle="tooltip" title="Card Full Screen">
-									<svg class="svg-stroke" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-										<path d="M3 16m0 1a1 1 0 0 1 1 -1h3a1 1 0 0 1 1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1z"></path>
-										<path d="M4 12v-6a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-6"></path>
-										<path d="M12 8h4v4"></path>
-										<path d="M16 8l-5 5"></path>
-									</svg>
-								</a>
-								<a href="#" class="dropdown-toggle after-none" data-bs-toggle="dropdown" aria-expanded="false" title="More Action">
-									<svg class="svg-stroke" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-										<path stroke="none" d="M0 0h24v24H0z" fill="none"> </path>
-										<path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
-										<path d="M8 12l0 .01"></path>
-										<path d="M12 12l0 .01"></path>
-										<path d="M16 12l0 .01"></path>
-									</svg>
-								</a>
-								<div class="dropdown-menu dropdown-menu-end shadow rounded-4 p-2">
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill"><i class="me-2 fa fa-share"></i>Share</a>
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill"><i class="me-2 fa fa-pencil"></i>Rename</a>
-									<div class="dropdown-divider"></div>
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill"><i class="me-2 fa fa-link"></i>Copy Link Address</a>
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill"><i class="me-2 fa fa-folder"></i>Move to</a>
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill"><i class="me-2 fa fa-copy"></i>Copy to</a>
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill"><i class="me-2 fa fa-edit"></i>Make Private</a>
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill"><i class="me-2 fa fa-download"></i>Download</a>
-									<div class="dropdown-divider"></div>
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill card-options-remove" data-toggle="card-remove"><i class="me-2 fa fa-trash"></i>Delete</a>
-								</div>
-							</div>
-						</div>
-						<div class="card-body custom_scroll" style="height: 280px;">
-							<div class="d-flex align-items-center">
-								<div class="avatar rounded-circle no-thumbnail theme-color4 text-white"><i class="fa fa-star fa-lg"></i></div>
-								<h6 class="ms-3 mb-0">4.9 Rating </h6>
-							</div>
-							<div class="avatar-list avatar-list-stacked my-4 px-3">
-								<img class="avatar rounded-circle" src="assets/images/xs/avatar5.jpg" data-toggle="tooltip" title="Avatar" alt="avatar">
-								<img class="avatar rounded-circle" src="assets/images/xs/avatar6.jpg" data-toggle="tooltip" title="Avatar" alt="avatar">
-								<img class="avatar rounded-circle" src="assets/images/xs/avatar1.jpg" data-toggle="tooltip" title="Avatar" alt="avatar">
-								<img class="avatar rounded-circle" src="assets/images/xs/avatar4.jpg" data-toggle="tooltip" title="Avatar" alt="avatar">
-								<span>+195K raters</span>
-							</div>
-							<p class="text-muted small mb-0">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
-						</div>
-						<div class="card-footer py-2">
-							<a href="#" title="Rate Out Application">Rate Out Application<i class="fa fa-long-arrow-right ms-2"></i></a>
-						</div>
-					</div>
-				</div>
-				<div class="col-xxl-4 col-xl-4 col-lg-6 col-md-6">
-					<div class="card">
-						<div class="card-header">
-							<h6 class="card-title mb-0">Employee Salary</h6>
-						</div>
-						<div class="card-body py-1">
-						</div>
-						<div class="card-footer py-2">
-							<a href="#" title="my task">View report<i class="fa fa-long-arrow-right ms-2"></i></a>
-						</div>
-					</div>
-				</div>
-				<div class="col-xxl-4 col-xl-4 col-lg-6 col-md-6">
-					<div class="card">
-						<div class="card-header">
-							<h6 class="card-title mb-0">Recent Sellers</h6>
-							<div class="dropdown card-action">
-								<a href="#" class="card-fullscreen" data-bs-toggle="tooltip" title="Card Full Screen">
-									<svg class="svg-stroke" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-										<path d="M3 16m0 1a1 1 0 0 1 1 -1h3a1 1 0 0 1 1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1z"></path>
-										<path d="M4 12v-6a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-6"></path>
-										<path d="M12 8h4v4"></path>
-										<path d="M16 8l-5 5"></path>
-									</svg>
-								</a>
-								<a href="#" class="dropdown-toggle after-none" data-bs-toggle="dropdown" aria-expanded="false" title="More Action">
-									<svg class="svg-stroke" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-										<path stroke="none" d="M0 0h24v24H0z" fill="none"> </path>
-										<path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
-										<path d="M8 12l0 .01"></path>
-										<path d="M12 12l0 .01"></path>
-										<path d="M16 12l0 .01"></path>
-									</svg>
-								</a>
-								<div class="dropdown-menu dropdown-menu-end shadow rounded-4 p-2">
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill"><i class="me-2 fa fa-share"></i>Share</a>
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill"><i class="me-2 fa fa-pencil"></i>Rename</a>
-									<div class="dropdown-divider"></div>
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill"><i class="me-2 fa fa-link"></i>Copy Link Address</a>
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill"><i class="me-2 fa fa-folder"></i>Move to</a>
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill"><i class="me-2 fa fa-copy"></i>Copy to</a>
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill"><i class="me-2 fa fa-edit"></i>Make Private</a>
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill"><i class="me-2 fa fa-download"></i>Download</a>
-									<div class="dropdown-divider"></div>
-									<a href="javascript:void(0)" class="dropdown-item rounded-pill card-options-remove" data-toggle="card-remove"><i class="me-2 fa fa-trash"></i>Delete</a>
-								</div>
-							</div>
-						</div>
-						<div class="card-body custom_scroll" style="height: 320px;">
-							<ul class="list-group list-group-flush user-list mb-0" role="tablist">
-								<li class="list-group-item b-dashed">
-									<a href="javascript:void(0);" class="d-flex">
-										<img class="avatar rounded-circle" src="assets/images/xs/avatar1.jpg" alt="">
-										<div class="flex-fill ms-3">
-											<h6 class="d-flex justify-content-between mb-0"><span>Stephen McLean</span></h6>
-											<span class="text-muted small">Customer ID#00222</span>
-										</div>
-									</a>
-								</li>
-								<li class="list-group-item b-dashed">
-									<a href="javascript:void(0);" class="d-flex">
-										<div class="avatar rounded-circle no-thumbnail">FG</div>
-										<div class="flex-fill ms-3">
-											<h6 class="d-flex justify-content-between mb-0"><span>Friends Group</span></h6>
-											<span class="text-muted small">Customer ID#00222</span>
-										</div>
-									</a>
-								</li>
-								<li class="list-group-item b-dashed">
-									<a href="javascript:void(0);" class="d-flex">
-										<img class="avatar rounded-circle" src="assets/images/xs/avatar3.jpg" alt="">
-										<div class="flex-fill ms-3">
-											<h6 class="d-flex justify-content-between mb-0"><span>Gordon Butler</span></h6>
-											<span class="text-muted small">Customer ID#00222</span>
-										</div>
-									</a>
-								</li>
-								<li class="list-group-item b-dashed">
-									<a href="javascript:void(0);" class="d-flex active">
-										<img class="avatar rounded-circle" src="assets/images/xs/avatar4.jpg" alt="">
-										<div class="flex-fill ms-3">
-											<h6 class="d-flex justify-content-between mb-0"><span>Barbara Kelly</span></h6>
-											<span class="text-muted small">Customer ID#00222</span>
-										</div>
-									</a>
-								</li>
-								<li class="list-group-item b-dashed">
-									<a href="javascript:void(0);" class="d-flex">
-										<img class="avatar rounded-circle" src="assets/images/xs/avatar5.jpg" alt="">
-										<div class="flex-fill ms-3">
-											<h6 class="d-flex justify-content-between mb-0"><span>Robert Hammer</span></h6>
-											<span class="text-muted small">Customer ID#00222</span>
-										</div>
-									</a>
-								</li>
-								<li class="list-group-item b-dashed">
-									<a href="javascript:void(0);" class="d-flex">
-										<img class="avatar rounded-circle" src="assets/images/xs/avatar6.jpg" alt="">
-										<div class="flex-fill ms-3">
-											<h6 class="d-flex justify-content-between mb-0"><span>Gordon Butler</span></h6>
-											<span class="text-muted small">Customer ID#00222</span>
-										</div>
-									</a>
-								</li>
-								<li class="list-group-item b-dashed">
-									<a href="javascript:void(0);" class="d-flex">
-										<img class="avatar rounded-circle" src="assets/images/xs/avatar7.jpg" alt="">
-										<div class="flex-fill ms-3">
-											<h6 class="d-flex justify-content-between mb-0"><span>Rose Rivera</span></h6>
-											<span class="text-muted small">Customer ID#00222</span>
-										</div>
-									</a>
-								</li>
-								<li class="list-group-item b-dashed">
-									<a href="javascript:void(0);" class="d-flex">
-										<img class="avatar rounded-circle" src="assets/images/xs/avatar1.jpg" alt="">
-										<div class="flex-fill ms-3">
-											<h6 class="d-flex justify-content-between mb-0"><span>Stephen McLean</span></h6>
-											<span class="text-muted small">Customer ID#00222</span>
-										</div>
-									</a>
-								</li>
-								<li class="list-group-item b-dashed">
-									<a href="javascript:void(0);" class="d-flex">
-										<div class="avatar rounded-circle no-thumbnail">RH</div>
-										<div class="flex-fill ms-3">
-											<h6 class="d-flex justify-content-between mb-0"><span>Robert Hammer</span></h6>
-											<span class="text-muted small">Customer ID#00222</span>
-										</div>
-									</a>
-								</li>
-								<li class="list-group-item b-dashed">
-									<a href="javascript:void(0);" class="d-flex">
-										<img class="avatar rounded-circle" src="assets/images/xs/avatar3.jpg" alt="">
-										<div class="flex-fill ms-3">
-											<h6 class="d-flex justify-content-between mb-0"><span>Gordon Butler</span></h6>
-											<span class="text-muted small">Customer ID#00222</span>
-										</div>
-									</a>
-								</li>
-								<li class="list-group-item b-dashed">
-									<a href="javascript:void(0);" class="d-flex">
-										<img class="avatar rounded-circle" src="assets/images/xs/avatar4.jpg" alt="">
-										<div class="flex-fill ms-3">
-											<h6 class="d-flex justify-content-between mb-0"><span>Barbara Kelly</span></h6>
-											<span class="text-muted small">Customer ID#00222</span>
-										</div>
-									</a>
-								</li>
-								<li class="list-group-item b-dashed">
-									<a href="javascript:void(0);" class="d-flex">
-										<img class="avatar rounded-circle" src="assets/images/xs/avatar5.jpg" alt="">
-										<div class="flex-fill ms-3">
-											<h6 class="d-flex justify-content-between mb-0"><span>Robert Hammer</span></h6>
-											<span class="text-muted small">Customer ID#00222</span>
-										</div>
-									</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+		<slot />
+
 
 		<!-- start: page footer -->
 		<footer class="px-md-4 px-2">

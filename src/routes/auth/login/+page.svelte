@@ -5,6 +5,7 @@
 	import axios from 'axios';
 	import { jwtDecode } from "jwt-decode";
 	import { toasts, ToastContainer, FlatToast }  from "svelte-toasts";
+	import { goto } from '$app/navigation';
 
 	let error_msg;
 	let success_msg;
@@ -14,6 +15,14 @@
 
 	let username = '';
 	let password = '';
+
+
+	class LoginResponseModel {
+		constructor(response) {
+			this.access_token = response.data.data.access_token;
+			this.refresh_token = response.data.data.refresh_token;
+		}
+	}
 
 	async function login() {
 		try {
@@ -27,12 +36,16 @@
 
 			if (response.status === 200) {
 				isLoading = false;
-				console.log("ini response",response.data.data.access_token);
-				const  access_token  = response.data.data.access_token;
-				console.log("ini access token",access_token);
+
+				const loginResponse = new LoginResponseModel(response);
 
 				// Save access token and expiry time to local storage
-				localStorage.setItem('access_token', access_token);
+				localStorage.setItem('access_token', loginResponse.access_token);
+				localStorage.setItem('refresh_token', loginResponse.refresh_token);
+
+				// Redirect to dashboard
+				window.location.href = '/';
+
 
 				// Login successful, redirect or show success message
 				await Swal.fire({
@@ -60,7 +73,9 @@
 	}
 
 	function checkTokenExpiry() {
+
 		const access_token = localStorage.getItem('access_token');
+		console.log("access_token", access_token);
 		if (!access_token) {
 			// Token is not available
 			return false;
@@ -69,7 +84,7 @@
 		const decoded = jwtDecode(access_token);
 		const expiry_time = decoded.exp * 1000;
 
-		if (expiry_time && parseInt(expiry_time) > Date.now()) {
+		if (expiry_time && expiry_time > Date.now()) {
 			// Token is still valid
 			return true;
 		} else {
@@ -78,13 +93,16 @@
 			return false;
 		}
 	}
+
 	// Example of redirect after successful login
-	onMount(() => {
+	onMount(async () => {
 		// Check if access token exists and if it's expired
 		const isValidToken = checkTokenExpiry();
 		if (isValidToken) {
+
 			// Token is valid, redirect to dashboard or do something else
-			// window.location.href = '/dashboard';
+			window.location.href = '/';
+
 		}
 	});
 </script>
