@@ -1,36 +1,53 @@
 <!doctype html>
 <html lang="en" data-bs-theme="light">
-<head>
-	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<meta name="description" content="KARTIKAMAS Web Panel." />
-	<meta name="keyword" content="admin" />
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content="KARTIKAMAS Web Panel." />
+		<meta name="keyword" content="admin" />
 
-	<!--[ Favicon]-->
-	<link rel="icon" type="image/x-icon" href="%sveltekit.assets%/assets/images/favicon.ico" />
-	<link
-		rel="icon"
-		type="image/png"
-		sizes="16x16"
-		href="%sveltekit.assets%/assets/images/favicon-16x16.png"
-	/>
-	<link
-		rel="icon"
-		type="image/png"
-		sizes="32x32"
-		href="%sveltekit.assets%/assets/images/favicon-32x32.png"
-	/>
-	<link
-		rel="apple-touch-icon"
-		sizes="180x180"
-		href="%sveltekit.assets%/assets/images/apple-touch-icon.png"
-	/>
+		<!--[ Favicon]-->
+		<link rel="icon" type="image/x-icon" href="%sveltekit.assets%/assets/images/favicon.ico" />
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="16x16"
+			href="%sveltekit.assets%/assets/images/favicon-16x16.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="32x32"
+			href="%sveltekit.assets%/assets/images/favicon-32x32.png"
+		/>
+		<link
+			rel="apple-touch-icon"
+			sizes="180x180"
+			href="%sveltekit.assets%/assets/images/apple-touch-icon.png"
+		/>
 
-	<!--[ Template main css file ]-->
-	<link rel="stylesheet" href="%sveltekit.assets%/assets/css/style.min.css" />
-	%sveltekit.head%
-</head>
+		<!--[ Template main css file ]-->
+		<link rel="stylesheet" href="%sveltekit.assets%/assets/css/style.min.css" />
+		%sveltekit.head%
+		<style>
+			.input-with-icon {
+				position: relative;
+			}
 
-<div style="display: contents">%sveltekit.body%</div>
+			.input-with-icon input {
+				padding-right: 2.5rem; /* Adjust padding to accommodate the icon */
+			}
+
+			.input-with-icon .icon {
+				position: absolute;
+				top: 50%;
+				right: 0.5rem; /* Adjust the distance of the icon from the right */
+				transform: translateY(-50%);
+				cursor: pointer;
+			}
+		</style>
+	</head>
+
+	<div style="display: contents">%sveltekit.body%</div>
 </html>

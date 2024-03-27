@@ -1,5 +1,5 @@
-.todo-list{
-	li{
+.todo-list {
+	li {
 		border: 1px solid var(--accent-color);
 		display: flex;
 		justify-content: space-between;
@@ -8,17 +8,17 @@
 		border-radius: 5px;
 		font-size: 1rem;
 		margin-bottom: 5px;
-		
-		.fa-check{
+
+		.fa-check {
 			color: var(--color-400);
 		}
-		
-		&.active{
-			>span{
+
+		&.active {
+			> span {
 				color: Red;
 				text-decoration: line-through;
 			}
-			.fa-check{
+			.fa-check {
 				color: Red;
 			}
 		}

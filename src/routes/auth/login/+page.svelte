@@ -3,9 +3,8 @@
 	import { onMount } from 'svelte';
 	import Swal from 'sweetalert2';
 	import axios from 'axios';
-	import { jwtDecode } from "jwt-decode";
-	import { toasts, ToastContainer, FlatToast }  from "svelte-toasts";
-	import { goto } from '$app/navigation';
+	import { jwtDecode } from 'jwt-decode';
+	import { toasts, ToastContainer, FlatToast } from 'svelte-toasts';
 
 	let error_msg;
 	let success_msg;
@@ -16,6 +15,11 @@
 	let username = '';
 	let password = '';
 
+	let showPassword = false;
+
+	function togglePasswordVisibility() {
+		showPassword = !showPassword;
+	}
 
 	class LoginResponseModel {
 		constructor(response) {
@@ -46,7 +50,6 @@
 				// Redirect to dashboard
 				window.location.href = '/';
 
-
 				// Login successful, redirect or show success message
 				await Swal.fire({
 					icon: 'success',
@@ -58,24 +61,22 @@
 		} catch (error) {
 			isLoading = false;
 			// Handle error, show error message
-			error_msg = error.response.data.meta.message ?? "An error occurred, please try again later";
+			error_msg = error.response.data.meta.message ?? 'An error occurred, please try again later';
 			toasts.error({
-				title: "Oops!",
-				description: error.response.data.meta.message ?? "An error occurred, please try again later",
+				title: 'Oops!',
+				description:
+					error.response.data.meta.message ?? 'An error occurred, please try again later',
 				uid: 1615153277482,
-				placement: "bottom-right",
-				theme: "dark",
-				duration: 0,
+				placement: 'bottom-right',
+				theme: 'dark',
+				duration: 0
 			});
-
-
 		}
 	}
 
 	function checkTokenExpiry() {
-
 		const access_token = localStorage.getItem('access_token');
-		console.log("access_token", access_token);
+		console.log('access_token', access_token);
 		if (!access_token) {
 			// Token is not available
 			return false;
@@ -99,10 +100,8 @@
 		// Check if access token exists and if it's expired
 		const isValidToken = checkTokenExpiry();
 		if (isValidToken) {
-
 			// Token is valid, redirect to dashboard or do something else
 			window.location.href = '/';
-
 		}
 	});
 </script>
@@ -110,8 +109,9 @@
 <svelte:head>
 	<title>Login - {clientTitle} Panel</title>
 </svelte:head>
-<ToastContainer placement="bottom-right" let:data={data}>
-	<FlatToast {data} /> <!-- Provider template for your toasts -->
+<ToastContainer placement="bottom-right" let:data>
+	<FlatToast {data} />
+	<!-- Provider template for your toasts -->
 </ToastContainer>
 <!-- start: main grid layout -->
 <main class="container-fluid px-0">
@@ -123,7 +123,6 @@
 			title="BVITE Admin Template"
 		>
 			<img class="" src={env.PUBLIC_CLIENT_LOGO} height="60" alt="logo" style="width:100%;" />
-
 		</a>
 	</div>
 
@@ -134,7 +133,7 @@
 
 	<!-- start: page body area -->
 	<div class="px-xl-5 px-4 auth-body">
-		<form on:submit|preventDefault={login} >
+		<form on:submit|preventDefault={login}>
 			<ul class="row g-3 list-unstyled li_animate">
 				<li class="col-12">
 					<h1 class="h2 title-font">Welcome to {clientTitle}</h1>
@@ -163,13 +162,34 @@
 							<a class="text-primary" href="password-reset.html">Forgot Password?</a>
 						</span>
 					</div>
-					<input
-						type="password"
-						class="form-control form-control-lg"
-						placeholder="Enter your password"
-						name="password"
-						bind:value={password}
-					/>
+					<div class="input-with-icon">
+						{#if !showPassword}
+							<input
+								type="password"
+								class="form-control form-control-lg"
+								placeholder="Enter your password"
+								name="password"
+								bind:value={password}
+							/>
+						{:else}
+							<input
+								type="text"
+								class="form-control form-control-lg"
+								placeholder="Enter your password"
+								name="password"
+								bind:value={password}
+							/>
+						{/if}
+
+						<!-- Icon to toggle password vi	sibility -->
+						<span class="icon" style="padding-right: 10px" on:click={togglePasswordVisibility}>
+							{#if showPassword}
+								<i class="bi bi-eye-slash-fill"></i>
+							{:else}
+								<i class="bi bi-eye-fill"></i>
+							{/if}
+						</span>
+					</div>
 				</li>
 
 				<li class="col-12 my-lg-4">
@@ -186,11 +206,10 @@
 							SIGN IN
 						{/if}
 					</button>
-
 				</li>
 				<li class="col-12">
 					<span class="text-muted d-flex d-sm-inline-flex"
-					>New to {clientTitle} <a class="ms-2" href="signup.html" title="">Sign up here</a></span
+						>New to {clientTitle} <a class="ms-2" href="signup.html" title="">Sign up here</a></span
 					>
 				</li>
 			</ul>
@@ -201,8 +220,8 @@
 	<!-- start: page footer -->
 	<footer class="px-xl-5 px-4">
 		<p class="mb-0 text-muted">
-			© 2023 <a href="https://Pixelwibes.com/" target="_blank" title="pixelwibes">{clientTitle}</a
-		>, All Rights Reserved.
+			© 2023 <a href="https://richh.my.id/" target="_blank" title="richh">{clientTitle}</a>, All
+			Rights Reserved.
 		</p>
 	</footer>
 </main>
