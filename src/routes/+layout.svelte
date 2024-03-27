@@ -568,34 +568,23 @@
 							<ul class="list-unstyled mb-4 menu-list">
 								<li>
 									<a
-										href="#UsersMenu"
+										href="#FeaturesMenu"
 										data-bs-toggle="collapse"
 										aria-expanded="false"
 										class="dropdown-toggle"
-										aria-label="Users"
+										aria-label="Features"
 									>
-										<svg
-											class="svg-stroke"
-											xmlns="http://www.w3.org/2000/svg"
-											width="20"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
-											fill="none"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-										>
-											<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-											<path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
-											<path d="M12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
-											<path d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855"></path>
+										<svg fill="none" height="18" width="18" viewBox="0 0 30 30" class="svg-stroke" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+											<path d="M22.005 0c-.194-.002-.372.105-.458.276l-2.197 4.38-4.92.7c-.413.06-.578.56-.278.846l3.805 3.407-.953 4.81c-.07.406.363.715.733.523L22 12.67l4.286 2.273c.37.19.8-.118.732-.522l-.942-4.81 3.77-3.408c.3-.286.136-.787-.278-.846l-4.916-.7-2.2-4.38C22.368.11 22.195.002 22.005 0zM22 1.615l1.863 3.71c.073.148.216.25.38.273l4.168.595-3.227 2.89c-.12.112-.173.276-.145.436l.813 4.08-3.616-1.927c-.147-.076-.322-.076-.47 0l-3.59 1.926.823-4.08c.028-.16-.027-.325-.145-.438l-3.262-2.89 4.166-.594c.165-.023.307-.125.38-.272zM16.5 18c-.822 0-1.5.678-1.5 1.5v9c0 .822.678 1.5 1.5 1.5h9c.822 0 1.5-.678 1.5-1.5v-9c0-.822-.678-1.5-1.5-1.5zm0 1h9c.286 0 .5.214.5.5v9c0 .286-.214.5-.5.5h-9c-.286 0-.5-.214-.5-.5v-9c0-.286.214-.5.5-.5zM1.5 3C.678 3 0 3.678 0 4.5v9c0 .822.678 1.5 1.5 1.5h9c.822 0 1.5-.678 1.5-1.5v-9c0-.822-.678-1.5-1.5-1.5zm0 1h9c.286 0 .5.214.5.5v9c0 .286-.214.5-.5.5h-9c-.286 0-.5-.214-.5-.5v-9c0-.286.214-.5.5-.5zm0 14c-.822 0-1.5.678-1.5 1.5v9c0 .822.678 1.5 1.5 1.5h9c.822 0 1.5-.678 1.5-1.5v-9c0-.822-.678-1.5-1.5-1.5zm0 1h9c.286 0 .5.214.5.5v9c0 .286-.214.5-.5.5h-9c-.286 0-.5-.214-.5-.5v-9c0-.286.214-.5.5-.5z"/>
 										</svg>
-										<span class="mx-2">Users</span>
+
+										<span class="mx-2">Features</span>
 									</a>
-									<ul class="collapse list-unstyled" id="UsersMenu">
-										<li><a href="my-profile.html" aria-label="My Profile">My Profile</a></li>
+									<ul class="collapse list-unstyled" id="FeaturesMenu">
+										<li><a href="features/projects" aria-label="Projects">Projects</a></li>
 										<li>
-											<a href="account-settings.html" aria-label="Account Setting"
-												>Account Setting</a
+											<a href="features/users" aria-label="Users"
+												>Users</a
 											>
 										</li>
 									</ul>
