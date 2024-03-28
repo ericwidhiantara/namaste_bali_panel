@@ -1,10 +1,9 @@
-<script>
+<script lang="ts">
 	import { jwtDecode } from 'jwt-decode';
 	import { onMount } from 'svelte';
 
 	function checkTokenExpiry() {
 		const access_token = localStorage.getItem('access_token');
-		console.log('access_token', access_token);
 		if (!access_token) {
 			// Token is not available
 			return false;
