@@ -26,6 +26,7 @@
 			sizes="180x180"
 			href="%sveltekit.assets%/assets/images/apple-touch-icon.png"
 		/>
+		<link rel="stylesheet" href="%sveltekit.assets%/assets/css/dataTables.min.css">
 
 		<!--[ Template main css file ]-->
 		<link rel="stylesheet" href="%sveltekit.assets%/assets/css/style.min.css" />
@@ -49,5 +50,9 @@
 		</style>
 	</head>
 
-	<div style="display: contents">%sveltekit.body%</div>
+	<body data-bvite="theme-CeruleanBlue"
+				class="layout-border svgstroke-a layout-default rightbar-hide">
+	<div>%sveltekit.body%</div>
+
+	</body>
 </html>

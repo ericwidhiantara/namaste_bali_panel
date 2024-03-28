@@ -158,54 +158,31 @@
 					<h6 class="card-title">List Project</h6>
 				</div>
 				<div class="card-body">
-					{#await fetchData()}
-						READING DATA...
-					{:then result}
-						<div>
-							<div class="dt-container dt-bootstrap5">
-								<div class="row mt-2 justify-content-between">
-									<div class="col-md-auto me-auto">
-										<div class="dt-length">
-											<label for="dt-length-0">Show entries per page:</label>
-											<select
-												name="example_length"
-												aria-controls="example"
-												class="form-select form-select-sm"
-												id="dt-length-0"
-												bind:value={pageSize}
-												on:change={handleChange}
-											>
-												<option value="10">10</option>
-												<option value="25">25</option>
-												<option value="50">50</option>
-												<option value="100">100</option>
-											</select>
-										</div>
-									</div>
-									<div class="col-md-auto ms-auto">
-										<div class="dt-search">
-											<label for="dt-search-0">Search:</label>
-											<input
-												type="search"
-												class="form-control form-control-sm"
-												id="dt-search-0"
-												placeholder=""
-												aria-controls="example"
-												on:input={handleSearch}
-											/>
-										</div>
-									</div>
+					<div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+						<div class="row">
+							<div class="col-sm-12 col-md-6">
+								<div class="dataTables_length" id="DataTables_Table_0_length">
+									<label>
+										Show
+										<select name="DataTables_Table_0_length" aria-controls="DataTables_Table_0" class="form-select form-select-sm" bind:value={pageSize}
+														on:change={handleChange}>
+											<option value="10">10</option>
+											<option value="25">25</option>
+											<option value="50">50</option>
+											<option value="100">100</option>
+										</select>
+										entries
+									</label>
 								</div>
 							</div>
-
-							<table class="table">
-								<caption
-									>Showing {(pageNumber - 1) * pageSize + 1} to {Math.min(
-										pageNumber * pageSize,
-										projectInfo.total
-									)} of {projectInfo.total} items</caption
-								>
-								<thead>
+							<div class="col-sm-12 col-md-6">
+								<div id="DataTables_Table_0_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control form-control-sm" placeholder="" aria-controls="DataTables_Table_0" on:input={handleSearch}></label></div>
+							</div>
+						</div>
+						<div class="row dt-row">
+							<div class="col-sm-12">
+								<table class="table table-hover custom-table mb-0 dataTable nowrap no-footer dtr-inline collapsed" style="width: 100%;" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+									<thead>
 									<tr>
 										<th scope="col">#</th>
 										<th scope="col">Judul</th>
@@ -213,34 +190,50 @@
 										<th scope="col">Tanggal</th>
 										<th scope="col">Dibuat Pada</th>
 									</tr>
-								</thead>
-								<tbody>
-									{#each projects as project, index}
+									</thead>
+									<tbody>
+									{#await fetchData()}
 										<tr>
-											<!-- Calculate the correct row number based on the current page number and page size -->
-											<th scope="row">{(pageNumber - 1) * pageSize + index + 1}</th>
-											<td>{project.title}</td>
-											<td>{project.description}</td>
-											<td>
-												{formatDate(project.date_started)} - {formatDate(project.date_finished)}
-											</td>
+											<td colspan="5" class="text-center">Loading...</td>
 
-											<td>{formatHumanDate(project.created_at)}</td>
 										</tr>
-									{/each}
-								</tbody>
-							</table>
-							<!-- Pagination -->
-							<div class="card-footer">
-								<nav aria-label="Page navigation">
-									<ul class="pagination justify-content-end">
-										<li class="page-item {pageNumber === 1 ? 'disabled' : 'none'}">
-											<a class="page-link" on:click={handlePrev}>Previous</a>
-										</li>
+
+									{:then result}
+										{#each projects as project, index}
+											<tr>
+												<!-- Calculate the correct row number based on the current page number and page size -->
+												<th scope="row">{(pageNumber - 1) * pageSize + index + 1}</th>
+												<td>{project.title}</td>
+												<td>{project.description}</td>
+												<td>
+													{formatDate(project.date_started)} - {formatDate(project.date_finished)}
+												</td>
+
+												<td>{formatHumanDate(project.created_at)}</td>
+											</tr>
+										{/each}
+									{/await}
+
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 col-md-5">
+								<div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">Showing {(pageNumber - 1) * pageSize + 1} to {Math.min(
+									pageNumber * pageSize,
+									projectInfo.total
+								)} of {projectInfo.total} items</div>
+							</div>
+							<div class="col-sm-12 col-md-7">
+								<div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
+									<ul class="pagination">
+										<li class="paginate_button previous page-item {pageNumber === 1 ? 'disabled' : 'none'}" id="DataTables_Table_0_previous"><a aria-controls="DataTables_Table_0" aria-disabled="true" role="link" data-dt-idx="previous" tabindex="0" class="page-link"  on:click={handlePrev}>Previous</a></li>
 										{#each Array.from({ length: projectInfo.total_pages }, (_, i) => i + 1) as page}
-											<li class="page-item {pageNumber === page ? 'active' : 'none'}">
+											<li class="paginate_button page-item {pageNumber === page ? 'active' : 'none'}">
 												<a
-													class="page-link"
+													href="#" aria-controls="DataTables_Table_0" role="link" aria-current="page" data-dt-idx="0" tabindex="0" class="page-link"
 													on:click={() => {
 														pageNumber = page;
 														fetchData();
@@ -248,18 +241,14 @@
 												>
 											</li>
 										{/each}
-										<li
-											class="page-item {pageNumber === projectInfo.total_pages
+										<li class="paginate_button next page-item {pageNumber === projectInfo.total_pages
 												? 'disabled'
-												: 'none'} "
-										>
-											<a class="page-link" on:click={handleNext}>Next</a>
-										</li>
+												: 'none'} " id="DataTables_Table_0_next"><a aria-controls="DataTables_Table_0" aria-disabled="true" role="link" data-dt-idx="next" tabindex="0" class="page-link" on:click={handleNext}>Next</a></li>
 									</ul>
-								</nav>
+								</div>
 							</div>
 						</div>
-					{/await}
+					</div>
 				</div>
 			</div>
 		</div>

@@ -111,6 +111,8 @@
 		try {
 			await loadScript('/assets/bundles/libscripts.bundle.js');
 			await loadScript('/assets/js/main.js');
+			await loadScript('/assets/bundles/dataTables.bundle.js');
+
 		} catch (error) {
 			console.error('Error loading scripts:', error);
 		}
@@ -132,10 +134,7 @@
 		<slot />
 	</body>
 {:else}
-	<body
-		data-bvite="theme-CeruleanBlue"
-		class="layout-border svgstroke-a layout-default rightbar-hide"
-	>
+
 		<!-- start: main grid layout -->
 		<main class="container-fluid px-0">
 			<!-- start: project logo -->
@@ -697,5 +696,5 @@
 				</p>
 			</footer>
 		</main>
-	</body>
+
 {/if}
