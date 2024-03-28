@@ -8,11 +8,13 @@
 	let pageSize = 10; // Define page size
 	let search = '';
 	let token;
+	let searchTimeout;
+
 
 
 	function getToken() {
 		token = localStorage.getItem("access_token")
-
+	console.log("token", token)
 		if (!token) {
 			window.location.href = '/auth/login';
 		}
@@ -49,6 +51,8 @@
 		fetchData(); // Fetch data with the updated page size
 	}
 
+
+
 	function handlePrev() {
 		if (pageNumber > 1) {
 			pageNumber--;
@@ -61,6 +65,18 @@
 			pageNumber++;
 			fetchData();
 		}
+	}
+
+	function handleSearch(event) {
+		// Clear previous timeout to debounce the input
+		clearTimeout(searchTimeout);
+
+		// Set new timeout to trigger the search after a delay
+		searchTimeout = setTimeout(() => {
+			search = event.target.value;
+			pageNumber = 1; // Reset page number when performing a new search
+			fetchData(); // Fetch data with the updated search query
+		}, 500); // Delay in milliseconds (adjust as needed)
 	}
 
 	// Call fetchData function on component mount
@@ -105,7 +121,7 @@
 									<div class="col-md-auto ms-auto">
 										<div class="dt-search">
 											<label for="dt-search-0">Search:</label>
-											<input type="search" class="form-control form-control-sm" id="dt-search-0" placeholder="" aria-controls="example">
+											<input type="search" class="form-control form-control-sm" id="dt-search-0" placeholder="" aria-controls="example" on:input={handleSearch}>
 										</div>
 									</div>
 								</div>
