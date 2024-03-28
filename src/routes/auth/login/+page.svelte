@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { env } from '$env/dynamic/public';
 	import { onMount } from 'svelte';
 	import Swal from 'sweetalert2';
@@ -22,6 +22,8 @@
 	}
 
 	class LoginResponseModel {
+		access_token: string;
+		refresh_token: string;
 		constructor(response) {
 			this.access_token = response.data.data.access_token;
 			this.refresh_token = response.data.data.refresh_token;
@@ -47,9 +49,6 @@
 				localStorage.setItem('access_token', loginResponse.access_token);
 				localStorage.setItem('refresh_token', loginResponse.refresh_token);
 
-				// Redirect to dashboard
-				window.location.href = '/';
-
 				// Login successful, redirect or show success message
 				await Swal.fire({
 					icon: 'success',
@@ -57,6 +56,9 @@
 					showConfirmButton: false,
 					timer: 1500
 				});
+
+				// Redirect to dashboard
+				window.location.href = '/';
 			}
 		} catch (error) {
 			isLoading = false;
@@ -76,7 +78,6 @@
 
 	function checkTokenExpiry() {
 		const access_token = localStorage.getItem('access_token');
-		console.log('access_token', access_token);
 		if (!access_token) {
 			// Token is not available
 			return false;
