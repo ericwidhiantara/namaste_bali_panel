@@ -161,101 +161,103 @@
 					{#await fetchData()}
 						READING DATA...
 					{:then result}
-						<div class="dt-container dt-bootstrap5">
-							<div class="row mt-2 justify-content-between">
-								<div class="col-md-auto me-auto">
-									<div class="dt-length">
-										<label for="dt-length-0">Show entries per page:</label>
-										<select
-											name="example_length"
-											aria-controls="example"
-											class="form-select form-select-sm"
-											id="dt-length-0"
-											bind:value={pageSize}
-											on:change={handleChange}
-										>
-											<option value="10">10</option>
-											<option value="25">25</option>
-											<option value="50">50</option>
-											<option value="100">100</option>
-										</select>
+						<div>
+							<div class="dt-container dt-bootstrap5">
+								<div class="row mt-2 justify-content-between">
+									<div class="col-md-auto me-auto">
+										<div class="dt-length">
+											<label for="dt-length-0">Show entries per page:</label>
+											<select
+												name="example_length"
+												aria-controls="example"
+												class="form-select form-select-sm"
+												id="dt-length-0"
+												bind:value={pageSize}
+												on:change={handleChange}
+											>
+												<option value="10">10</option>
+												<option value="25">25</option>
+												<option value="50">50</option>
+												<option value="100">100</option>
+											</select>
+										</div>
 									</div>
-								</div>
-								<div class="col-md-auto ms-auto">
-									<div class="dt-search">
-										<label for="dt-search-0">Search:</label>
-										<input
-											type="search"
-											class="form-control form-control-sm"
-											id="dt-search-0"
-											placeholder=""
-											aria-controls="example"
-											on:input={handleSearch}
-										/>
+									<div class="col-md-auto ms-auto">
+										<div class="dt-search">
+											<label for="dt-search-0">Search:</label>
+											<input
+												type="search"
+												class="form-control form-control-sm"
+												id="dt-search-0"
+												placeholder=""
+												aria-controls="example"
+												on:input={handleSearch}
+											/>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
 
-						<table class="table">
-							<caption
-								>Showing {(pageNumber - 1) * pageSize + 1} to {Math.min(
-									pageNumber * pageSize,
-									projectInfo.total
-								)} of {projectInfo.total} items</caption
-							>
-							<thead>
-								<tr>
-									<th scope="col">#</th>
-									<th scope="col">Judul</th>
-									<th scope="col">Deskripsi</th>
-									<th scope="col">Tanggal</th>
-									<th scope="col">Dibuat Pada</th>
-								</tr>
-							</thead>
-							<tbody>
-								{#each projects as project, index}
+							<table class="table">
+								<caption
+									>Showing {(pageNumber - 1) * pageSize + 1} to {Math.min(
+										pageNumber * pageSize,
+										projectInfo.total
+									)} of {projectInfo.total} items</caption
+								>
+								<thead>
 									<tr>
-										<!-- Calculate the correct row number based on the current page number and page size -->
-										<th scope="row">{(pageNumber - 1) * pageSize + index + 1}</th>
-										<td>{project.title}</td>
-										<td>{project.description}</td>
-										<td>
-											{formatDate(project.date_started)} - {formatDate(project.date_finished)}
-										</td>
-
-										<td>{formatHumanDate(project.created_at)}</td>
+										<th scope="col">#</th>
+										<th scope="col">Judul</th>
+										<th scope="col">Deskripsi</th>
+										<th scope="col">Tanggal</th>
+										<th scope="col">Dibuat Pada</th>
 									</tr>
-								{/each}
-							</tbody>
-						</table>
-						<!-- Pagination -->
-						<div class="card-footer">
-							<nav aria-label="Page navigation">
-								<ul class="pagination justify-content-end">
-									<li class="page-item {pageNumber === 1 ? 'disabled' : 'none'}">
-										<a class="page-link" on:click={handlePrev}>Previous</a>
-									</li>
-									{#each Array.from({ length: projectInfo.total_pages }, (_, i) => i + 1) as page}
-										<li class="page-item {pageNumber === page ? 'active' : 'none'}">
-											<a
-												class="page-link"
-												on:click={() => {
-													pageNumber = page;
-													fetchData();
-												}}>{page}</a
-											>
-										</li>
+								</thead>
+								<tbody>
+									{#each projects as project, index}
+										<tr>
+											<!-- Calculate the correct row number based on the current page number and page size -->
+											<th scope="row">{(pageNumber - 1) * pageSize + index + 1}</th>
+											<td>{project.title}</td>
+											<td>{project.description}</td>
+											<td>
+												{formatDate(project.date_started)} - {formatDate(project.date_finished)}
+											</td>
+
+											<td>{formatHumanDate(project.created_at)}</td>
+										</tr>
 									{/each}
-									<li
-										class="page-item {pageNumber === projectInfo.total_pages
-											? 'disabled'
-											: 'none'} "
-									>
-										<a class="page-link" on:click={handleNext}>Next</a>
-									</li>
-								</ul>
-							</nav>
+								</tbody>
+							</table>
+							<!-- Pagination -->
+							<div class="card-footer">
+								<nav aria-label="Page navigation">
+									<ul class="pagination justify-content-end">
+										<li class="page-item {pageNumber === 1 ? 'disabled' : 'none'}">
+											<a class="page-link" on:click={handlePrev}>Previous</a>
+										</li>
+										{#each Array.from({ length: projectInfo.total_pages }, (_, i) => i + 1) as page}
+											<li class="page-item {pageNumber === page ? 'active' : 'none'}">
+												<a
+													class="page-link"
+													on:click={() => {
+														pageNumber = page;
+														fetchData();
+													}}>{page}</a
+												>
+											</li>
+										{/each}
+										<li
+											class="page-item {pageNumber === projectInfo.total_pages
+												? 'disabled'
+												: 'none'} "
+										>
+											<a class="page-link" on:click={handleNext}>Next</a>
+										</li>
+									</ul>
+								</nav>
+							</div>
 						</div>
 					{/await}
 				</div>
