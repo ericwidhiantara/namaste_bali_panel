@@ -1,10 +1,18 @@
-<script>
+<script lang="ts">
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import { jwtDecode } from 'jwt-decode';
 	import Swal from 'sweetalert2';
+	import axios, { type AxiosRequestConfig, type RawAxiosRequestHeaders } from 'axios';
 
 	class UserModel {
+		id: String;
+		first_name: String;
+		last_name: String;
+		email: String;
+		phone: String;
+		picture: String;
+		is_active: Boolean;
 		constructor(data) {
 			this.id = data.id;
 			this.first_name = data.first_name;
@@ -16,7 +24,18 @@
 		}
 	}
 
-	let user = UserModel;
+	class JWTModel {
+		exp: Number;
+		sub: Number;
+		user: UserModel;
+		constructor(data) {
+			this.exp = data.exp;
+			this.sub = data.sub;
+			this.user = new UserModel(data.user);
+		}
+	}
+
+	let user = new UserModel({});
 
 	function loadScript(src) {
 		return new Promise((resolve, reject) => {
@@ -37,7 +56,36 @@
 		// Decode JWT to get expiry time
 		const decoded = jwtDecode(access_token);
 
-		user = new UserModel(decoded.user);
+		const jwtData = new JWTModel(decoded);
+
+		user = jwtData.user;
+		getUserPicture();
+	}
+
+	async function getUserPicture() {
+		const access_token = localStorage.getItem('access_token');
+		if (!access_token) {
+			// Token is not available
+			return false;
+		}
+		try {
+			const config: AxiosRequestConfig = {
+				headers: {
+					Accept: 'application/json',
+					Authorization: `Bearer ${access_token}`
+				} as RawAxiosRequestHeaders
+			};
+			const response = await axios.get('http://localhost:8000/get-picture', config);
+
+			if (response.status === 200) {
+				// Assuming user is defined elsewhere
+				user.picture = response.data;
+				return response.data;
+			}
+			return 'https://via.placeholder.com/150x150';
+		} catch (error) {
+			console.error('Error fetching data:', error);
+		}
 	}
 
 	function logout() {
@@ -63,7 +111,6 @@
 		try {
 			await loadScript('/assets/bundles/libscripts.bundle.js');
 			await loadScript('/assets/js/main.js');
-			console.log('Scripts loaded successfully');
 		} catch (error) {
 			console.error('Error loading scripts:', error);
 		}
@@ -71,6 +118,7 @@
 
 	onMount(async () => {
 		getUserLogin();
+
 		await loadMyScripts();
 	});
 </script>
@@ -574,8 +622,20 @@
 										class="dropdown-toggle"
 										aria-label="Features"
 									>
-										<svg fill="none" height="18" width="18" viewBox="0 0 30 30" class="svg-stroke" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-											<path d="M22.005 0c-.194-.002-.372.105-.458.276l-2.197 4.38-4.92.7c-.413.06-.578.56-.278.846l3.805 3.407-.953 4.81c-.07.406.363.715.733.523L22 12.67l4.286 2.273c.37.19.8-.118.732-.522l-.942-4.81 3.77-3.408c.3-.286.136-.787-.278-.846l-4.916-.7-2.2-4.38C22.368.11 22.195.002 22.005 0zM22 1.615l1.863 3.71c.073.148.216.25.38.273l4.168.595-3.227 2.89c-.12.112-.173.276-.145.436l.813 4.08-3.616-1.927c-.147-.076-.322-.076-.47 0l-3.59 1.926.823-4.08c.028-.16-.027-.325-.145-.438l-3.262-2.89 4.166-.594c.165-.023.307-.125.38-.272zM16.5 18c-.822 0-1.5.678-1.5 1.5v9c0 .822.678 1.5 1.5 1.5h9c.822 0 1.5-.678 1.5-1.5v-9c0-.822-.678-1.5-1.5-1.5zm0 1h9c.286 0 .5.214.5.5v9c0 .286-.214.5-.5.5h-9c-.286 0-.5-.214-.5-.5v-9c0-.286.214-.5.5-.5zM1.5 3C.678 3 0 3.678 0 4.5v9c0 .822.678 1.5 1.5 1.5h9c.822 0 1.5-.678 1.5-1.5v-9c0-.822-.678-1.5-1.5-1.5zm0 1h9c.286 0 .5.214.5.5v9c0 .286-.214.5-.5.5h-9c-.286 0-.5-.214-.5-.5v-9c0-.286.214-.5.5-.5zm0 14c-.822 0-1.5.678-1.5 1.5v9c0 .822.678 1.5 1.5 1.5h9c.822 0 1.5-.678 1.5-1.5v-9c0-.822-.678-1.5-1.5-1.5zm0 1h9c.286 0 .5.214.5.5v9c0 .286-.214.5-.5.5h-9c-.286 0-.5-.214-.5-.5v-9c0-.286.214-.5.5-.5z"/>
+										<svg
+											fill="none"
+											height="18"
+											width="18"
+											viewBox="0 0 30 30"
+											class="svg-stroke"
+											xmlns="http://www.w3.org/2000/svg"
+											stroke="currentColor"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+										>
+											<path
+												d="M22.005 0c-.194-.002-.372.105-.458.276l-2.197 4.38-4.92.7c-.413.06-.578.56-.278.846l3.805 3.407-.953 4.81c-.07.406.363.715.733.523L22 12.67l4.286 2.273c.37.19.8-.118.732-.522l-.942-4.81 3.77-3.408c.3-.286.136-.787-.278-.846l-4.916-.7-2.2-4.38C22.368.11 22.195.002 22.005 0zM22 1.615l1.863 3.71c.073.148.216.25.38.273l4.168.595-3.227 2.89c-.12.112-.173.276-.145.436l.813 4.08-3.616-1.927c-.147-.076-.322-.076-.47 0l-3.59 1.926.823-4.08c.028-.16-.027-.325-.145-.438l-3.262-2.89 4.166-.594c.165-.023.307-.125.38-.272zM16.5 18c-.822 0-1.5.678-1.5 1.5v9c0 .822.678 1.5 1.5 1.5h9c.822 0 1.5-.678 1.5-1.5v-9c0-.822-.678-1.5-1.5-1.5zm0 1h9c.286 0 .5.214.5.5v9c0 .286-.214.5-.5.5h-9c-.286 0-.5-.214-.5-.5v-9c0-.286.214-.5.5-.5zM1.5 3C.678 3 0 3.678 0 4.5v9c0 .822.678 1.5 1.5 1.5h9c.822 0 1.5-.678 1.5-1.5v-9c0-.822-.678-1.5-1.5-1.5zm0 1h9c.286 0 .5.214.5.5v9c0 .286-.214.5-.5.5h-9c-.286 0-.5-.214-.5-.5v-9c0-.286.214-.5.5-.5zm0 14c-.822 0-1.5.678-1.5 1.5v9c0 .822.678 1.5 1.5 1.5h9c.822 0 1.5-.678 1.5-1.5v-9c0-.822-.678-1.5-1.5-1.5zm0 1h9c.286 0 .5.214.5.5v9c0 .286-.214.5-.5.5h-9c-.286 0-.5-.214-.5-.5v-9c0-.286.214-.5.5-.5z"
+											/>
 										</svg>
 
 										<span class="mx-2">Features</span>
@@ -583,9 +643,7 @@
 									<ul class="collapse list-unstyled" id="FeaturesMenu">
 										<li><a href="features/projects" aria-label="Projects">Projects</a></li>
 										<li>
-											<a href="features/users" aria-label="Users"
-												>Users</a
-											>
+											<a href="features/users" aria-label="Users">Users</a>
 										</li>
 									</ul>
 								</li>
