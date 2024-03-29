@@ -1,11 +1,16 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, setContext } from 'svelte';
 	import axios, { type AxiosRequestConfig, type RawAxiosRequestHeaders } from 'axios';
+	import AddModal from './add.svelte';
+	import EditModal from './edit.svelte';
+
+	setContext('fetchData', { fetchData });
 
 	class ImageModel {
 		id: string;
 		project_id: string;
 		image_path: string;
+
 		constructor(data) {
 			this.id = data.id;
 			this.project_id = data.project_id;
@@ -23,6 +28,7 @@
 		images: ImageModel[];
 		created_at: number;
 		updated_at: number;
+
 		constructor(data) {
 			this.id = data.id;
 			this.title = data.title;
@@ -42,6 +48,7 @@
 		total: number;
 		total_pages: number;
 		projects: ProjectModel[];
+
 		constructor(data) {
 			this.page_number = data.page_number;
 			this.page_size = data.page_size;
@@ -58,6 +65,18 @@
 	let search = '';
 	let token;
 	let searchTimeout;
+
+	let customModal;
+	let isEditModal = true;
+
+	function openModal(isEdit: boolean) {
+		// Trigger Bootstrap modal using JavaScript
+		isEditModal = isEdit;
+		console.log('isEdit', isEdit);
+		console.log('isEditModal', isEditModal);
+		const myModal = new bootstrap.Modal(customModal);
+		myModal.show();
+	}
 
 	function getToken() {
 		token = localStorage.getItem('access_token');
@@ -155,85 +174,163 @@
 		<div class="col-xxl-12 col-xl-7 col-lg-12">
 			<div class="card">
 				<div class="card-header">
-					<h6 class="card-title">List Project</h6>
+					<h4 class="card-title">List Project</h4>
+					<a class="btn btn-primary" href="#" on:click={() => openModal(false)} role="button">
+						<i class="fa fa-plus-circle me-1"></i>Tambah Project
+					</a>
 				</div>
 				<div class="card-body">
-					<div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+					<div class="dataTables_wrapper dt-bootstrap5 no-footer" id="DataTables_Table_0_wrapper">
 						<div class="row">
 							<div class="col-sm-12 col-md-6">
 								<div class="dataTables_length" id="DataTables_Table_0_length">
 									<label>
-										Show
-										<select name="DataTables_Table_0_length" aria-controls="DataTables_Table_0" class="form-select form-select-sm" bind:value={pageSize}
-														on:change={handleChange}>
+										Tampilkan
+										<select
+											aria-controls="DataTables_Table_0"
+											bind:value={pageSize}
+											class="form-select form-select-sm"
+											name="DataTables_Table_0_length"
+											on:change={handleChange}
+										>
 											<option value="10">10</option>
 											<option value="25">25</option>
 											<option value="50">50</option>
 											<option value="100">100</option>
 										</select>
-										entries
+										data
 									</label>
 								</div>
 							</div>
 							<div class="col-sm-12 col-md-6">
-								<div id="DataTables_Table_0_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control form-control-sm" placeholder="" aria-controls="DataTables_Table_0" on:input={handleSearch}></label></div>
+								<div class="dataTables_filter" id="DataTables_Table_0_filter">
+									<label
+										>Pencarian:<input
+											aria-controls="DataTables_Table_0"
+											class="form-control form-control-sm"
+											on:input={handleSearch}
+											placeholder=""
+											type="search"
+										/></label
+									>
+								</div>
 							</div>
 						</div>
 						<div class="row dt-row">
 							<div class="col-sm-12">
-								<table class="table table-hover custom-table mb-0 dataTable nowrap no-footer dtr-inline collapsed" style="width: 100%;" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+								<table
+									aria-describedby="DataTables_Table_0_info"
+									class="table table-hover custom-table mb-0 dataTable nowrap no-footer dtr-inline collapsed"
+									id="DataTables_Table_0"
+									style="width: 100%;"
+								>
 									<thead>
-									<tr>
-										<th scope="col">#</th>
-										<th scope="col">Judul</th>
-										<th scope="col">Deskripsi</th>
-										<th scope="col">Tanggal</th>
-										<th scope="col">Dibuat Pada</th>
-									</tr>
+										<tr>
+											<th scope="col">#</th>
+											<th scope="col">Judul</th>
+											<th scope="col">Deskripsi</th>
+											<th scope="col">Tanggal</th>
+											<th scope="col">Dibuat Pada</th>
+											<th scope="col">Aksi</th>
+										</tr>
 									</thead>
 									<tbody>
-									{#await fetchData()}
-										<tr>
-											<td colspan="5" class="text-center">Loading...</td>
-
-										</tr>
-
-									{:then result}
-										{#each projects as project, index}
+										{#await fetchData()}
 											<tr>
-												<!-- Calculate the correct row number based on the current page number and page size -->
-												<th scope="row">{(pageNumber - 1) * pageSize + index + 1}</th>
-												<td>{project.title}</td>
-												<td>{project.description}</td>
-												<td>
-													{formatDate(project.date_started)} - {formatDate(project.date_finished)}
-												</td>
-
-												<td>{formatHumanDate(project.created_at)}</td>
+												<td colspan="6" class="text-center">Loading...</td>
 											</tr>
-										{/each}
-									{/await}
+										{:then result}
+											{#if projects.length <= 0}
+												<tr>
+													<td colspan="6" class="text-center">Loading...</td>
+												</tr>
+											{:else}
+												{#each projects as project, index}
+													<tr>
+														<!-- Calculate the correct row number based on the current page number and page size -->
+														<th scope="row">{(pageNumber - 1) * pageSize + index + 1}</th>
+														<td>{project.title}</td>
+														<td>{project.description}</td>
+														<td>
+															{formatDate(project.date_started)} - {formatDate(
+																project.date_finished
+															)}
+														</td>
 
-
+														<td>{formatHumanDate(project.created_at)}</td>
+														<td style="position: sticky; right: 0">
+															<form method="post" action="" style="display: inline-block;">
+																<input
+																	type="text"
+																	name="uuid"
+																	value={project.id}
+																	style="display: none;"
+																/>
+																<button
+																	type="submit"
+																	class="btn btn-danger btn-sm"
+																	style="color: white;"
+																>
+																	<i class="bi bi-trash"></i>
+																</button>
+															</form>
+														</td>
+													</tr>
+												{/each}
+											{/if}
+										{/await}
 									</tbody>
 								</table>
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-sm-12 col-md-5">
-								<div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">Showing {(pageNumber - 1) * pageSize + 1} to {Math.min(
-									pageNumber * pageSize,
-									projectInfo.total
-								)} of {projectInfo.total} items</div>
+								<div
+									aria-live="polite"
+									class="dataTables_info"
+									id="DataTables_Table_0_info"
+									role="status"
+								>
+									Menampilkan {(pageNumber - 1) * pageSize + 1} sampai {Math.min(
+										pageNumber * pageSize,
+										projectInfo.total
+									)} dari {projectInfo.total} data
+								</div>
 							</div>
 							<div class="col-sm-12 col-md-7">
-								<div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
+								<div
+									class="dataTables_paginate paging_simple_numbers"
+									id="DataTables_Table_0_paginate"
+								>
 									<ul class="pagination">
-										<li class="paginate_button previous page-item {pageNumber === 1 ? 'disabled' : 'none'}" id="DataTables_Table_0_previous"><a aria-controls="DataTables_Table_0" aria-disabled="true" role="link" data-dt-idx="previous" tabindex="0" class="page-link"  on:click={handlePrev}>Previous</a></li>
+										<li
+											class="paginate_button previous page-item {pageNumber === 1
+												? 'disabled'
+												: 'none'}"
+											id="DataTables_Table_0_previous"
+										>
+											<a
+												aria-controls="DataTables_Table_0"
+												aria-disabled="true"
+												class="page-link"
+												data-dt-idx="previous"
+												on:click={handlePrev}
+												role="link"
+												tabindex="0"><span aria-hidden="true">«</span></a
+											>
+										</li>
 										{#each Array.from({ length: projectInfo.total_pages }, (_, i) => i + 1) as page}
-											<li class="paginate_button page-item {pageNumber === page ? 'active' : 'none'}">
+											<li
+												class="paginate_button page-item {pageNumber === page ? 'active' : 'none'}"
+											>
 												<a
-													href="#" aria-controls="DataTables_Table_0" role="link" aria-current="page" data-dt-idx="0" tabindex="0" class="page-link"
+													href="#"
+													aria-controls="DataTables_Table_0"
+													role="link"
+													aria-current="page"
+													data-dt-idx="0"
+													tabindex="0"
+													class="page-link"
 													on:click={() => {
 														pageNumber = page;
 														fetchData();
@@ -241,9 +338,22 @@
 												>
 											</li>
 										{/each}
-										<li class="paginate_button next page-item {pageNumber === projectInfo.total_pages
+										<li
+											class="paginate_button next page-item {pageNumber === projectInfo.total_pages
 												? 'disabled'
-												: 'none'} " id="DataTables_Table_0_next"><a aria-controls="DataTables_Table_0" aria-disabled="true" role="link" data-dt-idx="next" tabindex="0" class="page-link" on:click={handleNext}>Next</a></li>
+												: 'none'} "
+											id="DataTables_Table_0_next"
+										>
+											<a
+												aria-controls="DataTables_Table_0"
+												aria-disabled="true"
+												class="page-link"
+												data-dt-idx="next"
+												on:click={handleNext}
+												role="link"
+												tabindex="0"><span aria-hidden="true">»</span></a
+											>
+										</li>
 									</ul>
 								</div>
 							</div>
@@ -255,3 +365,19 @@
 	</div>
 </div>
 <!-- end: page body area -->
+
+<!-- Render the modal but keep it hidden -->
+<div
+	aria-hidden="true"
+	aria-labelledby="exampleModalXlLabel"
+	bind:this={customModal}
+	class="modal fade"
+	id="exampleModalXl"
+	tabindex="-1"
+>
+	{#if isEditModal}
+		<EditModal />
+	{:else}
+		<AddModal />
+	{/if}
+</div>
