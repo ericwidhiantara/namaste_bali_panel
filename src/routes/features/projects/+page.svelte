@@ -64,7 +64,8 @@
 	let projects = [] as ProjectModel[];
 	let projectInfo = {} as ProjectDataModel;
 	let pageNumber = 1; // Define page number
-	let pageSize = 10; // Define page size
+	let pageSize = '10'; // Define page size
+	let pageSizes = ['10', '25', '50', '100'];
 	let search = '';
 	let token;
 	let searchTimeout;
@@ -230,7 +231,10 @@
 	}
 
 	// Call fetchData function on component mount
-	onMount(fetchData);
+	onMount(() => {
+		fetchData();
+	});
+
 </script>
 
 <svelte:head>
@@ -259,17 +263,15 @@
 								<div class="dataTables_length" id="DataTables_Table_0_length">
 									<label>
 										Tampilkan
+										
 										<select
-											aria-controls="DataTables_Table_0"
 											bind:value={pageSize}
 											class="form-select form-select-sm"
-											name="DataTables_Table_0_length"
 											on:change={handleChange}
 										>
-											<option value="10">10</option>
-											<option value="25">25</option>
-											<option value="50">50</option>
-											<option value="100">100</option>
+											{#each pageSizes as value}
+												<option value={value}>{value}</option>
+											{/each}
 										</select>
 										data
 									</label>
