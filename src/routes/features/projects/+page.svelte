@@ -3,6 +3,7 @@
 	import axios, { type AxiosRequestConfig, type RawAxiosRequestHeaders } from 'axios';
 	import AddModal from './add.svelte';
 	import EditModal from './edit.svelte';
+	import { FlatToast, ToastContainer } from 'svelte-toasts';
 
 	setContext('fetchData', { fetchData });
 
@@ -155,6 +156,12 @@
 		}, 500); // Delay in milliseconds (adjust as needed)
 	}
 
+	// function to update the projectdata images when user delete a single image
+	const updateProjectDataImages = (newData) => {
+		console.log('parent updated', newData.detail);
+		projectData.images = newData.detail;
+	};
+
 	function formatDate(date: string): string {
 		const options: Intl.DateTimeFormatOptions = {
 			day: 'numeric',
@@ -181,6 +188,10 @@
 	<title>Projects</title>
 </svelte:head>
 
+<ToastContainer let:data placement="bottom-right">
+	<FlatToast {data} />
+	<!-- Provider template for your toasts -->
+</ToastContainer>
 <!-- start: page body area -->
 <div class="ps-md-4 pe-md-3 px-2 py-3 page-body">
 	<div class="row g-12">
@@ -397,7 +408,7 @@
 	tabindex="-1"
 >
 	{#if isEditModal}
-		<EditModal {projectData} />
+		<EditModal {projectData} on:updateParentData={updateProjectDataImages} />
 	{:else}
 		<AddModal />
 	{/if}

@@ -4,7 +4,7 @@
 	import { env } from '$env/dynamic/public';
 	import Swal from 'sweetalert2';
 	import { toasts } from 'svelte-toasts';
-	import { getContext } from 'svelte';
+	import { createEventDispatcher, getContext } from 'svelte';
 
 	export let projectData;
 
@@ -14,8 +14,6 @@
 	};
 
 	let error_msg = '';
-
-
 	let isLoading = false;
 	let title_error = '';
 	let date_started_error = '';
@@ -109,8 +107,63 @@
 
 	}
 
+	const dispatch = createEventDispatcher();
+
+	const deleteImage = async (index, imageId) => {
+		event.preventDefault(); // Prevent form submission
+		try {
+			const { isConfirmed } = await Swal.fire({
+				title: 'Are you sure?',
+				text: 'Once deleted, you will not be able to recover this image!',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#d33',
+				cancelButtonColor: '#3085d6',
+				confirmButtonText: 'Yes, delete it!'
+			});
+
+			if (isConfirmed) {
+				const config: AxiosRequestConfig = {
+					headers: {
+						Accept: 'application/json',
+						Authorization: `Bearer ${getToken()}`
+					} as RawAxiosRequestHeaders
+				};
+				console.log('config', config);
+				const response = await axios.delete(`${env.PUBLIC_BASE_URL}/projects/image/${imageId}`, config);
+				if (response.status == 200) {
+					projectData.images.splice(index, 1);
+					let images = projectData.images;
+					dispatch('updateParentData', images);
+				}
+			}
+		} catch (error) {
+			error_msg = error.response.data.meta.message ?? 'An error occurred, please try again later';
+			toasts.error({
+				title: 'Oops!',
+				description:
+					error.response.data.meta.message ?? 'An error occurred, please try again later',
+				uid: 1615153277482,
+				placement: 'bottom-right',
+				theme: 'dark',
+				duration: 0
+			});
+		}
+	};
 
 </script>
+
+<style>
+    .image-container {
+        position: relative;
+    }
+
+    .delete-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+    }
+</style>
 
 <div class="modal-dialog modal-xl" id="customModal">
 	<div class="modal-content">
@@ -126,16 +179,19 @@
 					{/if}
 					<div class="row text-center text-lg-start">
 
-						{#if projectData !== undefined || projectData.images !== []}
-							{#each projectData.images as image}
-								<div class="col-lg-3 col-md-4 col-6">
+						{#each projectData.images as image, index}
+							<div class="col-lg-3 col-md-4 col-6">
+								<div class="image-container">
 									<a class="d-block mb-4 h-100" href="#">
 										<img alt="{projectData.title}" class="img-fluid img-thumbnail" src="{image.image_path}">
 									</a>
+									<button on:click={() => deleteImage(index, image.id)} class="btn btn-danger btn-sm delete-btn"
+													style="color: white;">
+										<i class="bi bi-trash"></i>
+									</button>
 								</div>
-
-							{/each}
-						{/if}
+							</div>
+						{/each}
 
 
 					</div>
