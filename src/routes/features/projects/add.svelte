@@ -80,6 +80,8 @@
 					mdbackdrop.classList.remove('modal-backdrop', 'show');
 				}
 				fetchData();
+				files.accepted = [];
+				files.rejected = [];
 			}
 		} catch (error) {
 			isLoading = false;
