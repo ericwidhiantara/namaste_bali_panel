@@ -3,7 +3,9 @@
 	import axios, { type AxiosRequestConfig, type RawAxiosRequestHeaders } from 'axios';
 	import AddModal from './add.svelte';
 	import EditModal from './edit.svelte';
-	import { FlatToast, ToastContainer } from 'svelte-toasts';
+	import { FlatToast, ToastContainer, toasts } from 'svelte-toasts';
+	import Swal from 'sweetalert2';
+	import { env } from '$env/dynamic/public';
 
 	setContext('fetchData', { fetchData });
 
@@ -123,6 +125,53 @@
 			console.error('Error fetching data:', error);
 		}
 	}
+
+	const deleteProject = async (id) => {
+		try {
+			const { isConfirmed } = await Swal.fire({
+				title: 'Are you sure?',
+				text: 'You will not be able to recover this data!',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#d33',
+				cancelButtonColor: '#3085d6',
+				confirmButtonText: 'Yes, delete it!'
+			});
+
+			if (isConfirmed) {
+				const config: AxiosRequestConfig = {
+					headers: {
+						Accept: 'application/json',
+						Authorization: `Bearer ${getToken()}`
+					} as RawAxiosRequestHeaders
+				};
+				console.log('config', config);
+				const response = await axios.delete(`${env.PUBLIC_BASE_URL}/projects/${id}`, config);
+				if (response.status == 200) {
+					toasts.success({
+						title: 'Success',
+						description: response.data.meta.message ?? 'Data has been deleted',
+						uid: 1615153277482,
+						placement: 'bottom-right',
+						theme: 'dark',
+						duration: 5000
+					});
+					await fetchData();
+				}
+			}
+		} catch (error) {
+			toasts.error({
+				title: 'Oops!',
+				description:
+					error.response.data.meta.message ?? 'An error occurred, please try again later',
+				uid: 1615153277482,
+				placement: 'bottom-right',
+				theme: 'dark',
+				duration: 0
+			});
+		}
+	};
+
 
 	function handleChange(event) {
 		pageNumber = 1; // Reset page number to 1
@@ -291,21 +340,15 @@
 														>
 															<i class="bi bi-pencil-square"></i>
 														</a>
-														<form method="post" action="" style="display: inline-block;">
-															<input
-																type="text"
-																name="uuid"
-																value={project.id}
-																style="display: none;"
-															/>
-															<button
-																type="submit"
-																class="btn btn-danger btn-sm"
-																style="color: white;"
-															>
-																<i class="bi bi-trash"></i>
-															</button>
-														</form>
+														<button
+															type="button"
+															class="btn btn-danger btn-sm"
+															style="color: white;"
+															on:click={() => deleteProject(project.id)}
+														>
+															<i class="bi bi-trash"></i>
+														</button>
+
 													</td>
 												</tr>
 											{/each}
