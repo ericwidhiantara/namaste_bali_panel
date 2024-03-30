@@ -13,6 +13,7 @@
 		phone: String;
 		picture: String;
 		is_active: Boolean;
+
 		constructor(data) {
 			this.id = data.id;
 			this.first_name = data.first_name;
@@ -28,6 +29,7 @@
 		exp: Number;
 		sub: Number;
 		user: UserModel;
+
 		constructor(data) {
 			this.exp = data.exp;
 			this.sub = data.sub;
@@ -116,6 +118,16 @@
 			console.error('Error loading scripts:', error);
 		}
 	}
+
+	const FEATURES_PATH = ['/projects', '/users'];
+	const featurePath = () => {
+		for (let i = 0; i < FEATURES_PATH.length; i++) {
+			if ($page.url.pathname.startsWith(`/features/${FEATURES_PATH[i]}`)) {
+				return true;
+			}
+		}
+		return false;
+	};
 
 	onMount(async () => {
 		getUserLogin();
@@ -584,7 +596,7 @@
 										<path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"></path>
 										<path d="M10 12h4v4h-4z"></path>
 									</svg>
-									<span class="mx-2">Dashboard</span>
+									<span class="mx-2">Dashboards</span>
 								</a>
 							</li>
 						</ul>
@@ -600,7 +612,7 @@
 								<a
 									href="#FeaturesMenu"
 									data-bs-toggle="collapse"
-									aria-expanded="false"
+									aria-expanded={featurePath()}
 									class="dropdown-toggle"
 									aria-label="Features"
 								>
@@ -622,10 +634,20 @@
 
 									<span class="mx-2">Features</span>
 								</a>
-								<ul class="collapse list-unstyled" id="FeaturesMenu">
-									<li><a href="features/projects" aria-label="Projects">Projects</a></li>
+								<ul class="collapse list-unstyled {featurePath() ? 'show' : ''}" id="FeaturesMenu">
 									<li>
-										<a href="features/users" aria-label="Users">Users</a>
+										<a
+											href="/features/projects"
+											class={$page.url.pathname.startsWith('/features/projects') ? 'active' : ''}
+											aria-label="Project">Projects</a
+										>
+									</li>
+									<li>
+										<a
+											href="/features/users"
+											class={$page.url.pathname.startsWith('/features/users') ? 'active' : ''}
+											aria-label="Project">Users</a
+										>
 									</li>
 								</ul>
 							</li>

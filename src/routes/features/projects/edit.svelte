@@ -104,7 +104,6 @@
 				duration: 0
 			});
 		}
-
 	}
 
 	const dispatch = createEventDispatcher();
@@ -130,7 +129,10 @@
 					} as RawAxiosRequestHeaders
 				};
 				console.log('config', config);
-				const response = await axios.delete(`${env.PUBLIC_BASE_URL}/projects/image/${imageId}`, config);
+				const response = await axios.delete(
+					`${env.PUBLIC_BASE_URL}/projects/image/${imageId}`,
+					config
+				);
 				if (response.status == 200) {
 					projectData.images.splice(index, 1);
 					let images = projectData.images;
@@ -150,20 +152,7 @@
 			});
 		}
 	};
-
 </script>
-
-<style>
-    .image-container {
-        position: relative;
-    }
-
-    .delete-btn {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-    }
-</style>
 
 <div class="modal-dialog modal-xl" id="customModal">
 	<div class="modal-content">
@@ -178,22 +167,26 @@
 						<div class="alert alert-danger" role="alert">{error_msg}</div>
 					{/if}
 					<div class="row text-center text-lg-start">
-
 						{#each projectData.images as image, index}
 							<div class="col-lg-3 col-md-4 col-6">
 								<div class="image-container">
 									<a class="d-block mb-4 h-100" href="#">
-										<img alt="{projectData.title}" class="img-fluid img-thumbnail" src="{image.image_path}">
+										<img
+											alt={projectData.title}
+											class="img-fluid img-thumbnail"
+											src={image.image_path}
+										/>
 									</a>
-									<button on:click={() => deleteImage(index, image.id)} class="btn btn-danger btn-sm delete-btn"
-													style="color: white;">
+									<button
+										on:click={() => deleteImage(index, image.id)}
+										class="btn btn-danger btn-sm delete-btn"
+										style="color: white;"
+									>
 										<i class="bi bi-trash"></i>
 									</button>
 								</div>
 							</div>
 						{/each}
-
-
 					</div>
 
 					<div class="col-12">
@@ -307,3 +300,15 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	.image-container {
+		position: relative;
+	}
+
+	.delete-btn {
+		position: absolute;
+		top: 5px;
+		right: 5px;
+	}
+</style>
