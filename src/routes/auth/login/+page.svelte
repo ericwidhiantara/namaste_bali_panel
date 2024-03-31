@@ -2,9 +2,9 @@
 	import { env } from '$env/dynamic/public';
 	import { onMount } from 'svelte';
 	import Swal from 'sweetalert2';
-	import axios from 'axios';
+	import axios from '$lib/axios_client';
 	import { jwtDecode } from 'jwt-decode';
-	import { toasts, ToastContainer, FlatToast } from 'svelte-toasts';
+	import { FlatToast, ToastContainer, toasts } from 'svelte-toasts';
 
 	let error_msg;
 	let success_msg;
@@ -24,6 +24,7 @@
 	class LoginResponseModel {
 		access_token: string;
 		refresh_token: string;
+
 		constructor(response) {
 			this.access_token = response.data.data.access_token;
 			this.refresh_token = response.data.data.refresh_token;
@@ -38,7 +39,7 @@
 			formData.append('username', username);
 			formData.append('password', password);
 
-			const response = await axios.post(`${env.PUBLIC_BASE_URL}/login`, formData);
+			const response = await axios.post(`/login`, formData);
 
 			if (response.status === 200) {
 				isLoading = false;
@@ -110,7 +111,7 @@
 <svelte:head>
 	<title>Login - {clientTitle} Panel</title>
 </svelte:head>
-<ToastContainer placement="bottom-right" let:data>
+<ToastContainer let:data placement="bottom-right">
 	<FlatToast {data} />
 	<!-- Provider template for your toasts -->
 </ToastContainer>
@@ -119,17 +120,17 @@
 	<!-- start: project logo -->
 	<div class="px-xl-5 px-4 auth-header" data-bs-theme="none">
 		<a
-			href="index.html"
 			class="brand-icon text-decoration-none d-flex align-items-center"
+			href="index.html"
 			title="BVITE Admin Template"
 		>
-			<img class="" src={env.PUBLIC_CLIENT_LOGO} height="60" alt="logo" style="width:100%;" />
+			<img alt="logo" class="" height="60" src={env.PUBLIC_CLIENT_LOGO} style="width:100%;" />
 		</a>
 	</div>
 
 	<!-- start: page menu link -->
 	<aside class="px-xl-5 px-4 auth-aside" data-bs-theme="none">
-		<img class="login-img" src="/assets/images/login-img.png" alt="" />
+		<img alt="" class="login-img" src="/assets/images/login-img.png" />
 	</aside>
 
 	<!-- start: page body area -->
@@ -149,11 +150,11 @@
 				<li class="col-12">
 					<label class="form-label">Username</label>
 					<input
-						type="text"
-						class="form-control form-control-lg"
-						placeholder="Input your username"
-						name="username"
 						bind:value={username}
+						class="form-control form-control-lg"
+						name="username"
+						placeholder="Input your username"
+						type="text"
 					/>
 				</li>
 				<li class="col-12">
@@ -183,7 +184,7 @@
 						{/if}
 
 						<!-- Icon to toggle password vi	sibility -->
-						<span class="icon" style="padding-right: 10px" on:click={togglePasswordVisibility}>
+						<span class="icon" on:click={togglePasswordVisibility} style="padding-right: 10px">
 							{#if showPassword}
 								<i class="bi bi-eye-slash-fill"></i>
 							{:else}
@@ -196,8 +197,8 @@
 				<li class="col-12 my-lg-4">
 					<button
 						class="btn btn-lg w-100 btn-primary text-uppercase mb-2"
-						type="submit"
 						title="sign in"
+						type="submit"
 					>
 						{#if isLoading}
 							<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
@@ -210,7 +211,7 @@
 				</li>
 				<li class="col-12">
 					<span class="text-muted d-flex d-sm-inline-flex"
-						>New to {clientTitle} <a class="ms-2" href="signup.html" title="">Sign up here</a></span
+					>New to {clientTitle} <a class="ms-2" href="signup.html" title="">Sign up here</a></span
 					>
 				</li>
 			</ul>

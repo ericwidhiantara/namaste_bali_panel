@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Dropzone from 'svelte-file-dropzone';
-	import axios, { type AxiosRequestConfig, type RawAxiosRequestHeaders } from 'axios';
-	import { env } from '$env/dynamic/public';
+	import axios from '$lib/axios_client';
 	import Swal from 'sweetalert2';
 	import { toasts } from 'svelte-toasts';
 	import { createEventDispatcher, getContext } from 'svelte';
@@ -31,14 +30,6 @@
 		files.rejected = [...files.rejected, ...fileRejections];
 	}
 
-	function getToken() {
-		const token = localStorage.getItem('access_token');
-		if (!token) {
-			window.location.href = '/auth/login';
-		}
-		return token;
-	}
-
 	async function editProject() {
 		try {
 			isLoading = true;
@@ -52,14 +43,8 @@
 			files.accepted.forEach((file) => {
 				formData.append('images', file);
 			});
-			const config: AxiosRequestConfig = {
-				headers: {
-					Accept: 'application/json',
-					Authorization: `Bearer ${getToken()}`
-				} as RawAxiosRequestHeaders
-			};
-			console.log('config', config);
-			const response = await axios.patch(`${env.PUBLIC_BASE_URL}/projects`, formData, config);
+
+			const response = await axios.patch(`/projects`, formData);
 
 			if (response.status === 200) {
 				isLoading = false;
@@ -122,17 +107,8 @@
 			});
 
 			if (isConfirmed) {
-				const config: AxiosRequestConfig = {
-					headers: {
-						Accept: 'application/json',
-						Authorization: `Bearer ${getToken()}`
-					} as RawAxiosRequestHeaders
-				};
-				console.log('config', config);
-				const response = await axios.delete(
-					`${env.PUBLIC_BASE_URL}/projects/image/${imageId}`,
-					config
-				);
+
+				const response = await axios.delete(`/projects/image/${imageId}`);
 				if (response.status == 200) {
 					projectData.images.splice(index, 1);
 					let images = projectData.images;
@@ -302,13 +278,13 @@
 </div>
 
 <style>
-	.image-container {
-		position: relative;
-	}
+    .image-container {
+        position: relative;
+    }
 
-	.delete-btn {
-		position: absolute;
-		top: 5px;
-		right: 5px;
-	}
+    .delete-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+    }
 </style>

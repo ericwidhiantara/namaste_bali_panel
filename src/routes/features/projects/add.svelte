@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Dropzone from 'svelte-file-dropzone';
-	import axios, { type AxiosRequestConfig, type RawAxiosRequestHeaders } from 'axios';
-	import { env } from '$env/dynamic/public';
+	import axios from '$lib/axios_client';
 	import Swal from 'sweetalert2';
 	import { toasts } from 'svelte-toasts';
 	import { getContext } from 'svelte';
@@ -33,14 +32,6 @@
 		files.rejected = [...files.rejected, ...fileRejections];
 	}
 
-	function getToken() {
-		const token = localStorage.getItem('access_token');
-		if (!token) {
-			window.location.href = '/auth/login';
-		}
-		return token;
-	}
-
 	async function addProject() {
 		try {
 			isLoading = true;
@@ -53,14 +44,8 @@
 			files.accepted.forEach((file) => {
 				formData.append('images', file);
 			});
-			const config: AxiosRequestConfig = {
-				headers: {
-					Accept: 'application/json',
-					Authorization: `Bearer ${getToken()}`
-				} as RawAxiosRequestHeaders
-			};
-			console.log('config', config);
-			const response = await axios.post(`${env.PUBLIC_BASE_URL}/projects`, formData, config);
+
+			const response = await axios.post(`/projects`, formData);
 
 			if (response.status === 200) {
 				isLoading = false;
@@ -82,6 +67,11 @@
 				fetchData();
 				files.accepted = [];
 				files.rejected = [];
+				title = '';
+				date_started = '';
+				date_finished = '';
+				description = '';
+				
 			}
 		} catch (error) {
 			isLoading = false;
