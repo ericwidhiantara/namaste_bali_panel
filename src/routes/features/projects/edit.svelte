@@ -1,9 +1,21 @@
 <script lang="ts">
+	import { fade } from 'svelte/transition';
 	import Dropzone from 'svelte-file-dropzone';
 	import axios from '$lib/axios_client';
 	import Swal from 'sweetalert2';
 	import { toasts } from 'svelte-toasts';
 	import { createEventDispatcher, getContext } from 'svelte';
+
+	export let open = false;
+	export let showBackdrop = true;
+	export let onClosed;
+
+	const modalClose = (data) => {
+		open = false;
+		if (onClosed) {
+			onClosed(data);
+		}
+	};
 
 	export let projectData;
 
@@ -66,6 +78,7 @@
 				fetchData();
 				files.accepted = [];
 				files.rejected = [];
+				modalClose('close');
 			}
 		} catch (error) {
 			isLoading = false;
@@ -129,154 +142,176 @@
 	};
 </script>
 
-<div class="modal-dialog modal-xl" id="customModal">
-	<div class="modal-content">
-		<div class="modal-header">
-			<h5 class="modal-title h4" id="exampleModalXlLabel">Edit Project</h5>
-			<button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
-		</div>
-		<div class="modal-body">
-			<div class="ps-md-4 pe-md-3 px-2 py-3 page-body">
-				<form class="row g-lg-3 g-2" on:submit|preventDefault={editProject}>
-					{#if error_msg}
-						<div class="alert alert-danger" role="alert">{error_msg}</div>
-					{/if}
-					<div class="row text-center text-lg-start">
-						{#each projectData.images as image, index}
-							<div class="col-lg-3 col-md-4 col-6">
-								<div class="image-container">
-									<a class="d-block mb-4 h-100" href="#">
-										<img
-											alt={projectData.title}
-											class="img-fluid img-thumbnail"
-											src={image.image_path}
+{#if open}
+	<div
+		class="modal fade show"
+		id="exampleModalXl"
+		tabindex="-1"
+		aria-labelledby="exampleModalXlLabel"
+		style="display: block;"
+		aria-modal="true"
+		role="dialog"
+		aria-hidden={false}
+	>
+		<div class="modal-dialog modal-xl" role="document">
+			<form on:submit|preventDefault={editProject}>
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title h4" id="exampleModalXlLabel">Edit Project</h5>
+						<button
+							type="button"
+							class="btn-close"
+							data-bs-dismiss="modal"
+							aria-label="Close"
+							on:click={() => modalClose('close')}
+						></button>
+					</div>
+					<div class="modal-body">
+						<div class="ps-md-4 pe-md-3 px-2 py-3 page-body">
+							{#if error_msg}
+								<div class="alert alert-danger" role="alert">{error_msg}</div>
+							{/if}
+
+							<div class="row text-center text-lg-start">
+								{#each projectData.images as image, index}
+									<div class="col-lg-3 col-md-4 col-6">
+										<div class="image-container">
+											<a class="d-block mb-4 h-100" href="#">
+												<img
+													alt={projectData.title}
+													class="img-fluid img-thumbnail"
+													src={image.image_path}
+												/>
+											</a>
+											{#if projectData.images.length > 1}
+												<button
+													on:click={() => deleteImage(index, image.id)}
+													class="btn btn-danger btn-sm delete-btn"
+													style="color: white;"
+												>
+													<i class="bi bi-trash"></i>
+												</button>
+											{/if}
+										</div>
+									</div>
+								{/each}
+							</div>
+
+							<div class="row g-lg-3 g-2">
+								<div class="col-12">
+									<div class="form-floating">
+										<input
+											bind:value={projectData.title}
+											class="form-control"
+											name="title"
+											placeholder="Tambahkan judul"
+											required
+											type="text"
 										/>
-									</a>
-									{#if projectData.images.length > 1}
-										<button
-											on:click={() => deleteImage(index, image.id)}
-											class="btn btn-danger btn-sm delete-btn"
-											style="color: white;"
-										>
-											<i class="bi bi-trash"></i>
-										</button>
+										<label>Judul</label>
+										{#if title_error !== ''}
+											{#each title_error as error}
+												<div class="invalid-feedback d-block">{error}</div>
+											{/each}
+										{/if}
+									</div>
+								</div>
+								<div class="col-sm-6 col-12">
+									<div class="form-floating">
+										<input
+											bind:value={projectData.date_started}
+											class="form-control"
+											name="date_started"
+											required
+											type="date"
+										/>
+										<label>Tanggal Mulai</label>
+										{#if date_started_error !== ''}
+											{#each date_started_error as error}
+												<div class="invalid-feedback d-block">{error}</div>
+											{/each}
+										{/if}
+									</div>
+								</div>
+								<div class="col-sm-6 col-12">
+									<div class="form-floating">
+										<input
+											bind:value={projectData.date_finished}
+											class="form-control"
+											name="date_finished"
+											required
+											type="date"
+										/>
+										<label>Tanggal Selesai</label>
+										{#if date_finished_error !== ''}
+											{#each date_finished_error as error}
+												<div class="invalid-feedback d-block">{error}</div>
+											{/each}
+										{/if}
+									</div>
+								</div>
+								<div class="col-12">
+									<div class="form-floating">
+										<textarea
+											bind:value={projectData.description}
+											class="form-control"
+											name="description"
+											placeholder="Tambahkan deskripsi "
+											required
+											style="height: 100px"
+										/>
+
+										<label>Deskripsi</label>
+										{#if description_error !== ''}
+											{#each description_error as error}
+												<div class="invalid-feedback d-block">{error}</div>
+											{/each}
+										{/if}
+									</div>
+								</div>
+								<div class="col-12">
+									<Dropzone multiple name="images" on:drop={handleFilesSelect} />
+									{#if images_error !== ''}
+										{#each images_error as error}
+											<div class="invalid-feedback d-block">{error}</div>
+										{/each}
 									{/if}
 								</div>
+								<ul class="grid-wrapper li_animate list-unstyled mb-0">
+									{#each files.accepted as item}
+										<li><img src={URL.createObjectURL(item)} alt="" /></li>
+									{/each}
+								</ul>
 							</div>
-						{/each}
-					</div>
-
-					<div class="col-12">
-						<div class="form-floating">
-							<input
-								bind:value={projectData.title}
-								class="form-control"
-								name="title"
-								placeholder="Tambahkan judul"
-								required
-								type="text"
-							/>
-							<label>Judul</label>
-							{#if title_error !== ''}
-								{#each title_error as error}
-									<div class="invalid-feedback d-block">{error}</div>
-								{/each}
-							{/if}
 						</div>
 					</div>
-					<div class="col-sm-6 col-12">
-						<div class="form-floating">
-							<input
-								bind:value={projectData.date_started}
-								class="form-control"
-								name="date_started"
-								required
-								type="date"
-							/>
-							<label>Tanggal Mulai</label>
-							{#if date_started_error !== ''}
-								{#each date_started_error as error}
-									<div class="invalid-feedback d-block">{error}</div>
-								{/each}
-							{/if}
-						</div>
-					</div>
-					<div class="col-sm-6 col-12">
-						<div class="form-floating">
-							<input
-								bind:value={projectData.date_finished}
-								class="form-control"
-								name="date_finished"
-								required
-								type="date"
-							/>
-							<label>Tanggal Selesai</label>
-							{#if date_finished_error !== ''}
-								{#each date_finished_error as error}
-									<div class="invalid-feedback d-block">{error}</div>
-								{/each}
-							{/if}
-						</div>
-					</div>
-					<div class="col-12">
-						<div class="form-floating">
-							<textarea
-								bind:value={projectData.description}
-								class="form-control"
-								name="description"
-								placeholder="Tambahkan deskripsi "
-								required
-								style="height: 100px"
-							/>
-
-							<label>Deskripsi</label>
-							{#if description_error !== ''}
-								{#each description_error as error}
-									<div class="invalid-feedback d-block">{error}</div>
-								{/each}
-							{/if}
-						</div>
-					</div>
-					<div class="col-12">
-						<Dropzone multiple name="images" on:drop={handleFilesSelect} />
-						{#if images_error !== ''}
-							{#each images_error as error}
-								<div class="invalid-feedback d-block">{error}</div>
-							{/each}
-						{/if}
-					</div>
-					<ul class="grid-wrapper li_animate list-unstyled mb-0">
-						{#each files.accepted as item}
-							<li><img src={URL.createObjectURL(item)} alt="" /></li>
-						{/each}
-					</ul>
-					<div class="col-12">
+					<div class="modal-footer">
 						<button
-							class="btn btn-md w-10 btn-secondary text-uppercase mb-2"
-							data-bs-dismiss="modal"
 							type="button"
+							class="btn btn-secondary"
+							data-dismiss="modal"
+							on:click={() => modalClose('close')}
 						>
 							Batal
 						</button>
-						<button
-							class="btn btn-md w-10 btn-primary text-uppercase mb-2"
-							title="edit project"
-							type="submit"
-						>
+						<button type="submit" class="btn btn-primary">
 							{#if isLoading}
 								<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
 								></span>
 								Loading...
 							{:else}
-								Edit Project
+								Simpan
 							{/if}
 						</button>
 					</div>
-				</form>
-			</div>
+				</div>
+			</form>
 		</div>
 	</div>
-</div>
+	{#if showBackdrop}
+		<div class="modal-backdrop show" transition:fade={{ duration: 150 }} />
+	{/if}
+{/if}
 
 <style>
 	.image-container {
