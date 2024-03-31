@@ -69,9 +69,6 @@
 	let token;
 	let searchTimeout;
 
-	let customModal;
-	let isEditModal = true;
-
 	// Define a sample project data;;
 	let projectData = new ProjectModel({
 		id: '',
@@ -85,19 +82,10 @@
 		updated_at: 0
 	});
 
-	function openModal(isEdit: boolean, item?) {
-		// Trigger Bootstrap modal using JavaScript
-		isEditModal = isEdit;
-		console.log('item', item);
-		projectData = item;
-		const myModal = new bootstrap.Modal(customModal);
-		myModal.show();
-	}
-
 	async function fetchData() {
 		try {
 			const response = await axios.get(
-				`/projects/pagination?page=${pageNumber}&limit=${pageSize}&search=${search}`
+				`/projects/pagination?page=${pageNumber}&page_size=${pageSize}&search=${search}`
 			);
 
 			if (response.status === 200) {
@@ -204,6 +192,32 @@
 		});
 	}
 
+	let showAddPopup = false;
+
+	const onShowAddPopup = () => {
+		showAddPopup = true;
+	};
+
+	const onPopupAddClose = (data) => {
+		showAddPopup = false;
+
+		console.log(data);
+	};
+
+	let showEditPopup = false;
+
+	const onShowEditPopup = (item?) => {
+		projectData = item;
+
+		showEditPopup = true;
+	};
+
+	const onPopupEditClose = (data) => {
+		showEditPopup = false;
+
+		console.log(data);
+	};
+
 	// Call fetchData function on component mount
 	onMount(() => {
 		fetchData();
@@ -225,7 +239,7 @@
 			<div class="card">
 				<div class="card-header">
 					<h4 class="card-title">List Project</h4>
-					<a class="btn btn-primary" href="#" on:click={() => openModal(false)} role="button">
+					<a class="btn btn-primary" href="#" on:click={onShowAddPopup} role="button">
 						<i class="fa fa-plus-circle me-1"></i>Tambah Project
 					</a>
 				</div>
@@ -309,7 +323,7 @@
 														<td style="position: sticky; right: 0">
 															<a
 																href="#"
-																on:click={() => openModal(true, project)}
+																on:click={() => onShowEditPopup(project)}
 																class="btn btn-info btn-sm"
 																style="color: white;"
 															>
@@ -416,21 +430,30 @@
 			</div>
 		</div>
 	</div>
+
+	<EditModal
+		on:updateParentData={updateProjectDataImages}
+		onClosed={(data) => onPopupEditClose(data)}
+		open={showEditPopup}
+		{projectData}
+	/>
+
+	<AddModal onClosed={(data) => onPopupAddClose(data)} open={showAddPopup} />
 </div>
 <!-- end: page body area -->
 
-<!-- Render the modal but keep it hidden -->
-<div
-	aria-hidden="true"
-	aria-labelledby="exampleModalXlLabel"
-	bind:this={customModal}
-	class="modal fade"
-	id="exampleModalXl"
-	tabindex="-1"
->
-	{#if isEditModal}
-		<EditModal {projectData} on:updateParentData={updateProjectDataImages} />
-	{:else}
-		<AddModal />
-	{/if}
-</div>
+<!--&lt;!&ndash; Render the modal but keep it hidden &ndash;&gt;-->
+<!--<div-->
+<!--	aria-hidden="true"-->
+<!--	aria-labelledby="exampleModalXlLabel"-->
+<!--	bind:this={customModal}-->
+<!--	class="modal fade"-->
+<!--	id="exampleModalXl"-->
+<!--	tabindex="-1"-->
+<!--&gt;-->
+<!--	{#if isEditModal}-->
+<!--		<EditModal {projectData} on:updateParentData={updateProjectDataImages} />-->
+<!--	{:else}-->
+<!--		<AddModal />-->
+<!--	{/if}-->
+<!--</div>-->
