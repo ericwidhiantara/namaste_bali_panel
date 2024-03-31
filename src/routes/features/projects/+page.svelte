@@ -95,9 +95,10 @@
 	}
 
 	async function fetchData() {
-
 		try {
-			const response = await axios.get(`/projects/pagination?page=${pageNumber}&limit=${pageSize}&search=${search}`);
+			const response = await axios.get(
+				`/projects/pagination?page=${pageNumber}&limit=${pageSize}&search=${search}`
+			);
 
 			if (response.status === 200) {
 				projects = response.data.data.projects;
@@ -121,7 +122,6 @@
 			});
 
 			if (isConfirmed) {
-
 				const response = await axios.delete(`/projects/${id}`);
 				if (response.status == 200) {
 					toasts.success({
@@ -253,13 +253,13 @@
 							<div class="col-sm-12 col-md-6">
 								<div class="dataTables_filter" id="DataTables_Table_0_filter">
 									<label
-									>Pencarian:<input
-										aria-controls="DataTables_Table_0"
-										class="form-control form-control-sm"
-										on:input={handleSearch}
-										placeholder=""
-										type="search"
-									/></label
+										>Pencarian:<input
+											aria-controls="DataTables_Table_0"
+											class="form-control form-control-sm"
+											on:input={handleSearch}
+											placeholder=""
+											type="search"
+										/></label
 									>
 								</div>
 							</div>
@@ -273,61 +273,61 @@
 									style="width: 100%;"
 								>
 									<thead>
-									<tr>
-										<th scope="col">#</th>
-										<th scope="col">Judul</th>
-										<th scope="col">Deskripsi</th>
-										<th scope="col">Tanggal</th>
-										<th scope="col">Dibuat Pada</th>
-										<th scope="col">Aksi</th>
-									</tr>
+										<tr>
+											<th scope="col">#</th>
+											<th scope="col">Judul</th>
+											<th scope="col">Deskripsi</th>
+											<th scope="col">Tanggal</th>
+											<th scope="col">Dibuat Pada</th>
+											<th scope="col">Aksi</th>
+										</tr>
 									</thead>
 									<tbody>
-									{#await fetchData()}
-										<tr>
-											<td colspan="6" class="text-center">Loading...</td>
-										</tr>
-									{:then result}
-										{#if projects.length <= 0}
+										{#await fetchData()}
 											<tr>
 												<td colspan="6" class="text-center">Loading...</td>
 											</tr>
-										{:else}
-											{#each projects as project, index}
+										{:then result}
+											{#if projects.length <= 0}
 												<tr>
-													<!-- Calculate the correct row number based on the current page number and page size -->
-													<th scope="row">{(pageNumber - 1) * pageSize + index + 1}</th>
-													<td>{project.title}</td>
-													<td>{project.description}</td>
-													<td>
-														{formatDate(project.date_started)} - {formatDate(
-														project.date_finished
-													)}
-													</td>
-
-													<td>{formatHumanDate(project.created_at)}</td>
-													<td style="position: sticky; right: 0">
-														<a
-															href="#"
-															on:click={() => openModal(true, project)}
-															class="btn btn-info btn-sm"
-															style="color: white;"
-														>
-															<i class="bi bi-pencil-square"></i>
-														</a>
-														<button
-															type="button"
-															class="btn btn-danger btn-sm"
-															style="color: white;"
-															on:click={() => deleteProject(project.id)}
-														>
-															<i class="bi bi-trash"></i>
-														</button>
-													</td>
+													<td colspan="6" class="text-center">Loading...</td>
 												</tr>
-											{/each}
-										{/if}
-									{/await}
+											{:else}
+												{#each projects as project, index}
+													<tr>
+														<!-- Calculate the correct row number based on the current page number and page size -->
+														<th scope="row">{(pageNumber - 1) * pageSize + index + 1}</th>
+														<td>{project.title}</td>
+														<td>{project.description}</td>
+														<td>
+															{formatDate(project.date_started)} - {formatDate(
+																project.date_finished
+															)}
+														</td>
+
+														<td>{formatHumanDate(project.created_at)}</td>
+														<td style="position: sticky; right: 0">
+															<a
+																href="#"
+																on:click={() => openModal(true, project)}
+																class="btn btn-info btn-sm"
+																style="color: white;"
+															>
+																<i class="bi bi-pencil-square"></i>
+															</a>
+															<button
+																type="button"
+																class="btn btn-danger btn-sm"
+																style="color: white;"
+																on:click={() => deleteProject(project.id)}
+															>
+																<i class="bi bi-trash"></i>
+															</button>
+														</td>
+													</tr>
+												{/each}
+											{/if}
+										{/await}
 									</tbody>
 								</table>
 							</div>
@@ -341,9 +341,9 @@
 									role="status"
 								>
 									Menampilkan {(pageNumber - 1) * pageSize + 1} sampai {Math.min(
-									pageNumber * pageSize,
-									projectInfo.total
-								)} dari {projectInfo.total} data
+										pageNumber * pageSize,
+										projectInfo.total
+									)} dari {projectInfo.total} data
 								</div>
 							</div>
 							<div class="col-sm-12 col-md-7">

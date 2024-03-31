@@ -211,7 +211,7 @@
 				</li>
 				<li class="col-12">
 					<span class="text-muted d-flex d-sm-inline-flex"
-					>New to {clientTitle} <a class="ms-2" href="signup.html" title="">Sign up here</a></span
+						>New to {clientTitle} <a class="ms-2" href="signup.html" title="">Sign up here</a></span
 					>
 				</li>
 			</ul>

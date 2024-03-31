@@ -142,7 +142,7 @@
 		class="layout-border svgstroke-a layout-default auth rightbar-hide"
 		data-sveltekit-preload-data="hover"
 	>
-	<slot />
+		<slot />
 	</body>
 {:else}
 	<!-- start: main grid layout -->
@@ -230,21 +230,21 @@
 							<li>
 								<a class="dropdown-item rounded-pill" aria-label="my wallet" href="my-wallet.html">
 									<span class="align-middle"
-									>Balance: <span class="fw-bold text-success"
-									><span
-										data-purecounter-start="0"
-										data-purecounter-separator=","
-										data-purecounter-currency="$"
-										data-purecounter-end="14000"
-										class="purecounter">0</span
-									></span
-									></span
+										>Balance: <span class="fw-bold text-success"
+											><span
+												data-purecounter-start="0"
+												data-purecounter-separator=","
+												data-purecounter-currency="$"
+												data-purecounter-end="14000"
+												class="purecounter">0</span
+											></span
+										></span
 									>
 								</a>
 							</li>
 							<li>
 								<a class="dropdown-item rounded-pill" aria-label="my profile" href="my-profile.html"
-								>My Profile</a
+									>My Profile</a
 								>
 							</li>
 						</ul>
@@ -385,7 +385,7 @@
 												</li>
 												<li>
 													<a href="project-details.html" aria-label="Project Details"
-													>Project Details</a
+														>Project Details</a
 													>
 												</li>
 												<li><a href="clients-list.html" aria-label="Clients">Clients</a></li>
@@ -423,17 +423,17 @@
 											<ul class="list-unstyled li_animate link-hover">
 												<li>
 													<a href="docs/widgets-basic-card.html" aria-label="Widgets Basic card"
-													>Basic card</a
+														>Basic card</a
 													>
 												</li>
 												<li>
 													<a href="docs/widgets-card-tiles.html" aria-label="Widgets tiles"
-													>Card tiles</a
+														>Card tiles</a
 													>
 												</li>
 												<li>
 													<a href="docs/widgets-card-tab.html" aria-label="Widgets Tabbed"
-													>Tabbed card</a
+														>Tabbed card</a
 													>
 												</li>
 												<li><a href="table.html" aria-label="Widgets Tables">Tables</a></li>

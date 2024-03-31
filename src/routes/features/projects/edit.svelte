@@ -107,7 +107,6 @@
 			});
 
 			if (isConfirmed) {
-
 				const response = await axios.delete(`/projects/image/${imageId}`);
 				if (response.status == 200) {
 					projectData.images.splice(index, 1);
@@ -278,13 +277,13 @@
 </div>
 
 <style>
-    .image-container {
-        position: relative;
-    }
+	.image-container {
+		position: relative;
+	}
 
-    .delete-btn {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-    }
+	.delete-btn {
+		position: absolute;
+		top: 5px;
+		right: 5px;
+	}
 </style>

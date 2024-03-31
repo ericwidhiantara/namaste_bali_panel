@@ -71,7 +71,6 @@
 				date_started = '';
 				date_finished = '';
 				description = '';
-				
 			}
 		} catch (error) {
 			isLoading = false;
