@@ -19,11 +19,9 @@ const getAccessToken = (): string | null => {
 // Function to set Authorization header with bearer token
 const setAuthHeader = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
 	const token: string | null = getAccessToken();
-	console.log('ini token di axios client', token);
 	if (token) {
 		config.headers = { ...config.headers, Authorization: `Bearer ${token}` };
 	}
-	console.log('ini config di axios client', config);
 	return config;
 };
 // Request interceptor to set Authorization header for all requests except login
