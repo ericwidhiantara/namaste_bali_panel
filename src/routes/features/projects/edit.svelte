@@ -152,13 +152,15 @@
 											src={image.image_path}
 										/>
 									</a>
-									<button
-										on:click={() => deleteImage(index, image.id)}
-										class="btn btn-danger btn-sm delete-btn"
-										style="color: white;"
-									>
-										<i class="bi bi-trash"></i>
-									</button>
+									{#if projectData.images.length > 1}
+										<button
+											on:click={() => deleteImage(index, image.id)}
+											class="btn btn-danger btn-sm delete-btn"
+											style="color: white;"
+										>
+											<i class="bi bi-trash"></i>
+										</button>
+									{/if}
 								</div>
 							</div>
 						{/each}
@@ -277,13 +279,13 @@
 </div>
 
 <style>
-	.image-container {
-		position: relative;
-	}
+    .image-container {
+        position: relative;
+    }
 
-	.delete-btn {
-		position: absolute;
-		top: 5px;
-		right: 5px;
-	}
+    .delete-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+    }
 </style>
