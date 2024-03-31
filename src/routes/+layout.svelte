@@ -228,21 +228,6 @@
 						</div>
 						<ul class="list-unstyled mt-3">
 							<li>
-								<a class="dropdown-item rounded-pill" aria-label="my wallet" href="my-wallet.html">
-									<span class="align-middle"
-										>Balance: <span class="fw-bold text-success"
-											><span
-												data-purecounter-start="0"
-												data-purecounter-separator=","
-												data-purecounter-currency="$"
-												data-purecounter-end="14000"
-												class="purecounter">0</span
-											></span
-										></span
-									>
-								</a>
-							</li>
-							<li>
 								<a class="dropdown-item rounded-pill" aria-label="my profile" href="my-profile.html"
 									>My Profile</a
 								>
@@ -279,218 +264,6 @@
 		<!-- start: page header -->
 		<header class="px-md-4 px-2" data-bs-theme="none">
 			<div class="d-flex justify-content-between align-items-center py-2 w-100">
-				<!--[ Start:: Full screen modal popup menu ]-->
-				<div
-					class="modal fade"
-					id="FullscreenMenu"
-					tabindex="-1"
-					aria-labelledby="FullscreenMenu"
-					aria-hidden="true"
-					data-bs-theme="dark"
-				>
-					<div class="modal-dialog modal-fullscreen">
-						<div class="modal-content border-4 border border-primary">
-							<div class="modal-header border-0">
-								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-								></button>
-							</div>
-							<div class="modal-body custom_scroll">
-								<div class="container-xxl">
-									<h5 class="text-light fw-light">Application</h5>
-									<ul
-										class="row g-2 list-unstyled li_animate row-cols-lg-5 row-cols-md-3 row-cols-sm-3 row-cols-2 row-deck mb-lg-5 mb-4"
-									>
-										<li class="col">
-											<a
-												class="card hr-arrow p-4"
-												href="inbox.html"
-												title="Inbox"
-												style="--dynamic-color: var(--theme-color1);"
-											>
-												<svg
-													class="mb-3"
-													width="20"
-													viewBox="0 0 16 16"
-													fill="currentColor"
-													xmlns="http://www.w3.org/2000/svg"
-												>
-													<path
-														opacity="0.7"
-														d="M4.97978 1C4.90484 1.00011 4.83088 1.01706 4.76338 1.0496C4.69587 1.08214 4.63654 1.12944 4.58978 1.188L1.53978 5H5.99978C6.13239 5 6.25957 5.05268 6.35334 5.14645C6.4471 5.24021 6.49978 5.36739 6.49978 5.5C6.49978 5.89782 6.65782 6.27936 6.93912 6.56066C7.22043 6.84196 7.60196 7 7.99978 7C8.39761 7 8.77914 6.84196 9.06044 6.56066C9.34175 6.27936 9.49978 5.89782 9.49978 5.5C9.49978 5.36739 9.55246 5.24021 9.64623 5.14645C9.74 5.05268 9.86717 5 9.99978 5H14.4598L11.4098 1.188C11.363 1.12944 11.3037 1.08214 11.2362 1.0496C11.1687 1.01706 11.0947 1.00011 11.0198 1H4.97978ZM3.80978 0.563C3.95017 0.387503 4.1282 0.245795 4.33071 0.148346C4.53322 0.050898 4.75504 0.000200429 4.97978 0L11.0198 0C11.2445 0.000200429 11.4663 0.050898 11.6689 0.148346C11.8714 0.245795 12.0494 0.387503 12.1898 0.563L15.8898 5.188C15.9315 5.24011 15.9624 5.30004 15.9806 5.36428C15.9988 5.42851 16.004 5.49574 15.9958 5.562L15.6058 8.686C15.5604 9.04889 15.3841 9.38271 15.1099 9.62469C14.8357 9.86667 14.4825 10.0001 14.1168 10H1.88278C1.51707 10.0001 1.16391 9.86667 0.889698 9.62469C0.61549 9.38271 0.43913 9.04889 0.393782 8.686L0.00378209 5.562C-0.00441416 5.49574 0.000742512 5.42851 0.0189479 5.36428C0.0371533 5.30004 0.0680387 5.24011 0.109782 5.188L3.80978 0.563Z"
-													/>
-													<path
-														opacity="0.2"
-														d="M0.294097 11.0446C0.229438 11.0739 0.171762 11.1167 0.124907 11.17V11.169C0.0780298 11.2222 0.0429981 11.2847 0.0221368 11.3525C0.00127556 11.4202 -0.00493837 11.4917 0.00390735 11.562L0.393907 14.686C0.439256 15.0489 0.615615 15.3827 0.889823 15.6247C1.16403 15.8667 1.5172 16.0001 1.88291 16H14.1169C14.4826 16.0001 14.8358 15.8667 15.11 15.6247C15.3842 15.3827 15.5606 15.0489 15.6059 14.686L15.9959 11.562C16.0047 11.4917 15.9984 11.4203 15.9775 11.3525C15.9566 11.2848 15.9216 11.2223 15.8746 11.1691C15.8277 11.116 15.7701 11.0734 15.7055 11.0443C15.6409 11.0151 15.5708 11 15.4999 11H9.99991C9.8673 11 9.74012 11.0527 9.64635 11.1464C9.55259 11.2402 9.49991 11.3674 9.49991 11.5C9.49991 11.8978 9.34187 12.2794 9.06057 12.5607C8.77926 12.842 8.39773 13 7.99991 13C7.60208 13 7.22055 12.842 6.93925 12.5607C6.65794 12.2794 6.49991 11.8978 6.49991 11.5C6.49991 11.3674 6.44723 11.2402 6.35346 11.1464C6.25969 11.0527 6.13252 11 5.99991 11H0.499907C0.428915 11.0001 0.358755 11.0153 0.294097 11.0446Z"
-													/>
-												</svg>
-												<h6 class="title mb-1">
-													Inbox <span class="badge rounded-pill bg-warning">11</span>
-												</h6>
-												<p class="small text-muted mb-0 d-none d-xl-inline-flex">
-													Description text here...
-												</p>
-												<div class="go-corner">
-													<div class="go-arrow">→</div>
-												</div>
-											</a>
-										</li>
-										<li class="col">
-											<a
-												class="card hr-arrow p-4"
-												href="chat.html"
-												title="Chat App"
-												style="--dynamic-color: var(--theme-color2);"
-											>
-												<svg
-													class="mb-3"
-													width="20"
-													viewBox="0 0 16 16"
-													fill="currentColor"
-													xmlns="http://www.w3.org/2000/svg"
-												>
-													<path
-														opacity="0.4"
-														d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"
-													/>
-													<path
-														opacity="0.9"
-														d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6zm0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"
-													/>
-												</svg>
-												<h6 class="title mb-1">Chat App</h6>
-												<p class="small text-muted mb-0 d-none d-xl-inline-flex">
-													Description text here...
-												</p>
-												<div class="go-corner">
-													<div class="go-arrow">→</div>
-												</div>
-											</a>
-										</li>
-									</ul>
-									<div class="row g-5">
-										<div class="col-lg-3 col-md-6 col-sm-6">
-											<h6 class="mb-1 text-light fw-light">Project</h6>
-											<p class="text-muted small">
-												Lorem ipsum dolor sit amet dis sociosqu sapien.
-											</p>
-											<ul class="list-unstyled li_animate link-hover">
-												<li>
-													<a href="new-project.html" aria-label="New Project">New Project</a>
-												</li>
-												<li>
-													<a href="project-list.html" aria-label="Project List">Project List</a>
-												</li>
-												<li>
-													<a href="project-grid.html" aria-label="Project Grid">Project Grid</a>
-												</li>
-												<li>
-													<a href="project-details.html" aria-label="Project Details"
-														>Project Details</a
-													>
-												</li>
-												<li><a href="clients-list.html" aria-label="Clients">Clients</a></li>
-											</ul>
-										</div>
-										<div class="col-lg-3 col-md-6 col-sm-6">
-											<h6 class="mb-1 text-light fw-light">Crafted Page</h6>
-											<p class="text-muted small">
-												Lorem ipsum dolor sit amet dis sociosqu sapien.
-											</p>
-											<ul class="list-unstyled li_animate link-hover">
-												<li><a href="my-profile.html">My Profile</a></li>
-												<li><a href="user-activity.html">User Activity</a></li>
-												<li><a href="gallery.html">Imgae gallery</a></li>
-												<li><a href="pricing.html">Pricing table</a></li>
-												<li><a href="search.html">Search page</a></li>
-											</ul>
-										</div>
-										<div class="col-lg-3 col-md-6 col-sm-6">
-											<h6 class="mb-1 text-light fw-light">Authentication Page</h6>
-											<p class="text-muted small">Lorem phasellus sociosqu nec turpis montes.</p>
-											<ul class="list-unstyled li_animate link-hover">
-												<li><a href="signin.html">Sign in</a></li>
-												<li><a href="signup.html">Sign up</a></li>
-												<li><a href="password-reset.html">Password reset</a></li>
-												<li><a href="two-step.html">2-Step Authentication</a></li>
-												<li><a href="lockscreen.html">Lockscreen</a></li>
-												<li><a href="maintenance.html">Maintenance</a></li>
-												<li><a href="404.html">404</a></li>
-											</ul>
-										</div>
-										<div class="col-lg-3 col-md-6 col-sm-6">
-											<h6 class="mb-1 text-light fw-light">Widgets</h6>
-											<p class="text-muted small">Lorem phasellus sociosqu nec turpis montes.</p>
-											<ul class="list-unstyled li_animate link-hover">
-												<li>
-													<a href="docs/widgets-basic-card.html" aria-label="Widgets Basic card"
-														>Basic card</a
-													>
-												</li>
-												<li>
-													<a href="docs/widgets-card-tiles.html" aria-label="Widgets tiles"
-														>Card tiles</a
-													>
-												</li>
-												<li>
-													<a href="docs/widgets-card-tab.html" aria-label="Widgets Tabbed"
-														>Tabbed card</a
-													>
-												</li>
-												<li><a href="table.html" aria-label="Widgets Tables">Tables</a></li>
-											</ul>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="modal-footer border-0 justify-content-center">
-								<div class="container-xxl">
-									<div class="row g-3">
-										<div class="col-auto">
-											<div class="card">
-												<div class="card-body d-flex align-items-center p-2">
-													<div class="avatar rounded-circle no-thumbnail">
-														<i class="fa fa-skype"></i>
-													</div>
-													<div class="ms-3">
-														<small class="text-muted">Skype ID</small>
-														<p class="mb-0 small">bvite.theme</p>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-auto">
-											<div class="card">
-												<div class="card-body d-flex align-items-center p-2">
-													<div class="avatar rounded-circle no-thumbnail">
-														<i class="fa fa-envelope"></i>
-													</div>
-													<div class="ms-3">
-														<small class="text-muted">Email us</small>
-														<p class="mb-0 small">bvite.theme@info.com</p>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-auto">
-											<div class="card">
-												<div class="card-body d-flex align-items-center p-2">
-													<div class="avatar rounded-circle no-thumbnail">
-														<i class="fa fa-phone"></i>
-													</div>
-													<div class="ms-3">
-														<small class="text-muted">United States</small>
-														<p class="mb-0 small">+1 111-222-1234</p>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
 				<ul class="header-menu flex-grow-1">
 					<!--[ Start:: user detail ]-->
 					<li class="nav-item user ms-3">
@@ -682,9 +455,19 @@
 				</button>
 				<ol class="breadcrumb mb-0 bg-transparent">
 					<li class="breadcrumb-item"><a href="/" title="home">Home</a></li>
-					<li class="breadcrumb-item"><a href="#" title="App">Pages</a></li>
-					<li class="breadcrumb-item active" aria-current="page" title="Search page">
-						Search page
+					<li class="breadcrumb-item">
+						<a href="#" title="App">
+							{#if $page.url.pathname.startsWith('/features')}
+								Features
+							{/if}
+						</a>
+					</li>
+					<li class="breadcrumb-item active" aria-current="page" title="">
+						{#if $page.url.pathname.startsWith('/features/projects')}
+							Projects Page
+						{:else}
+							Users Page
+						{/if}
 					</li>
 				</ol>
 			</div>
@@ -696,8 +479,24 @@
 		<!-- start: page footer -->
 		<footer class="px-md-4 px-2">
 			<p class="mb-0 text-muted">
-				© 2023 <a href="https://richh.my.id/" target="_blank" title="richh">Richh</a>, All Rights
-				Reserved.
+				Crafted with <i class="bi bi-heart-fill text-danger"></i> by
+				<a href="https://richh.my.id/" target="_blank" title="richh">Richh</a>
+				using
+				<a href="https://svelte.dev/" target="_blank" title="richh">
+					<!-- License: MIT. Made by vscode-icons: https://github.com/vscode-icons/vscode-icons -->
+					<svg width="20px" height="20px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+						<title>Svelte</title>
+						<path
+							d="M26.47,5.7A8.973,8.973,0,0,0,14.677,3.246L7.96,7.4a7.461,7.461,0,0,0-3.481,5.009,7.686,7.686,0,0,0,.8,5.058,7.358,7.358,0,0,0-1.151,2.8,7.789,7.789,0,0,0,1.4,6.028,8.977,8.977,0,0,0,11.794,2.458L24.04,24.6a7.468,7.468,0,0,0,3.481-5.009,7.673,7.673,0,0,0-.8-5.062,7.348,7.348,0,0,0,1.152-2.8A7.785,7.785,0,0,0,26.47,5.7"
+							style="fill:#ff3e00"
+						/>
+						<path
+							d="M14.022,26.64A5.413,5.413,0,0,1,8.3,24.581a4.678,4.678,0,0,1-.848-3.625,4.307,4.307,0,0,1,.159-.61l.127-.375.344.238a8.76,8.76,0,0,0,2.628,1.274l.245.073-.025.237a1.441,1.441,0,0,0,.271.968,1.63,1.63,0,0,0,1.743.636,1.512,1.512,0,0,0,.411-.175l6.7-4.154a1.366,1.366,0,0,0,.633-.909,1.407,1.407,0,0,0-.244-1.091,1.634,1.634,0,0,0-1.726-.622,1.509,1.509,0,0,0-.413.176l-2.572,1.584a4.934,4.934,0,0,1-1.364.582,5.415,5.415,0,0,1-5.727-2.06A4.678,4.678,0,0,1,7.811,13.1,4.507,4.507,0,0,1,9.9,10.09l6.708-4.154a4.932,4.932,0,0,1,1.364-.581A5.413,5.413,0,0,1,23.7,7.414a4.679,4.679,0,0,1,.848,3.625,4.272,4.272,0,0,1-.159.61l-.127.375-.344-.237a8.713,8.713,0,0,0-2.628-1.274l-.245-.074.025-.237a1.438,1.438,0,0,0-.272-.968,1.629,1.629,0,0,0-1.725-.622,1.484,1.484,0,0,0-.411.176l-6.722,4.14a1.353,1.353,0,0,0-.631.908,1.394,1.394,0,0,0,.244,1.092,1.634,1.634,0,0,0,1.726.621,1.538,1.538,0,0,0,.413-.175l2.562-1.585a4.9,4.9,0,0,1,1.364-.581,5.417,5.417,0,0,1,5.728,2.059,4.681,4.681,0,0,1,.843,3.625A4.5,4.5,0,0,1,22.1,21.905l-6.707,4.154a4.9,4.9,0,0,1-1.364.581"
+							style="fill:#fff"
+						/>
+					</svg>
+				</a>
+				© {new Date().getFullYear()}, All Rights Reserved.
 			</p>
 		</footer>
 	</main>
