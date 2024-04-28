@@ -16,45 +16,42 @@
 		}
 	};
 
-	let files = {
-		accepted: [],
-		rejected: []
-	};
-
 	let error_msg = '';
 	let title = '';
-	let date_started = '';
-	let date_finished = '';
 	let description = '';
 	let isLoading = false;
 	let title_error = '';
-	let date_started_error = '';
-	let date_finished_error = '';
 	let description_error = '';
-	let images_error = '';
+	let image_error = '';
+	let input;
+	let image;
+	let showImage = false;
 
-	function handleFilesSelect(e) {
-		const { acceptedFiles, fileRejections } = e.detail;
-		console.log(e);
-		console.log('acceptedFiles', acceptedFiles);
-		files.accepted = [...files.accepted, ...acceptedFiles];
-		files.rejected = [...files.rejected, ...fileRejections];
+	function onChange() {
+		const file = input.files[0];
+
+		if (file) {
+			showImage = true;
+
+			const reader = new FileReader();
+			reader.addEventListener('load', function () {
+				image.setAttribute('src', reader.result);
+			});
+			reader.readAsDataURL(file);
+
+			return;
+		}
+		showImage = false;
 	}
-
-	async function addProject() {
+	async function addDestination() {
 		try {
 			isLoading = true;
 			const formData = new FormData();
 			formData.append('title', title);
 			formData.append('description', description);
-			formData.append('date_started', date_started);
-			formData.append('date_finished', date_finished);
+			formData.append('image', input.files[0]);
 
-			files.accepted.forEach((file) => {
-				formData.append('images', file);
-			});
-
-			const response = await axios.post(`/projects`, formData);
+			const response = await axios.post(`/destinations`, formData);
 
 			if (response.status === 200) {
 				isLoading = false;
@@ -75,22 +72,20 @@
 				}
 				// fetchData();
 				modalClose('close');
-				files.accepted = [];
-				files.rejected = [];
+
 				title = '';
-				date_started = '';
-				date_finished = '';
 				description = '';
+				input.value = '';
+				image.src = '';
+				showImage = false;
 			}
 		} catch (error) {
 			isLoading = false;
 			// Get error response
 			console.log('error', error.response.data.data);
 			title_error = error.response.data.data.title;
-			date_started_error = error.response.data.data.date_started;
-			date_finished_error = error.response.data.data.date_finished;
 			description_error = error.response.data.data.description;
-			images_error = error.response.data.data.images;
+			image_error = error.response.data.data.images;
 
 			// Handle error, show error message
 			error_msg = error.response.data.meta.message ?? 'An error occurred, please try again later';
@@ -119,10 +114,10 @@
 		aria-hidden={false}
 	>
 		<div class="modal-dialog modal-xl" role="document">
-			<form on:submit|preventDefault={addProject}>
+			<form on:submit|preventDefault={addDestination}>
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title h4" id="exampleModalXlLabel">Tambah Project</h5>
+						<h5 class="modal-title h4" id="exampleModalXlLabel">Tambah Destinasi Wisata</h5>
 						<button
 							type="button"
 							class="btn-close"
@@ -155,40 +150,7 @@
 										{/if}
 									</div>
 								</div>
-								<div class="col-sm-6 col-12">
-									<div class="form-floating">
-										<input
-											bind:value={date_started}
-											class="form-control"
-											name="date_started"
-											required
-											type="date"
-										/>
-										<label>Tanggal Mulai</label>
-										{#if date_started_error !== ''}
-											{#each date_started_error as error}
-												<div class="invalid-feedback d-block">{error}</div>
-											{/each}
-										{/if}
-									</div>
-								</div>
-								<div class="col-sm-6 col-12">
-									<div class="form-floating">
-										<input
-											bind:value={date_finished}
-											class="form-control"
-											name="date_finished"
-											required
-											type="date"
-										/>
-										<label>Tanggal Selesai</label>
-										{#if date_finished_error !== ''}
-											{#each date_finished_error as error}
-												<div class="invalid-feedback d-block">{error}</div>
-											{/each}
-										{/if}
-									</div>
-								</div>
+
 								<div class="col-12">
 									<div class="form-floating">
 										<textarea
@@ -209,17 +171,25 @@
 									</div>
 								</div>
 								<div class="col-12">
-									<Dropzone multiple name="images" on:drop={handleFilesSelect} />
-									{#if images_error !== ''}
-										{#each images_error as error}
+									<input
+										type="file"
+										accept="image/*"
+										class="form-control"
+										name="image"
+										bind:this={input}
+										on:change={onChange}
+										required
+									/>
+									{#if image_error !== ''}
+										{#each image_error as error}
 											<div class="invalid-feedback d-block">{error}</div>
 										{/each}
 									{/if}
 								</div>
 								<ul class="grid-wrapper li_animate list-unstyled mb-0">
-									{#each files.accepted as item}
-										<li><img src={URL.createObjectURL(item)} alt="" /></li>
-									{/each}
+									{#if showImage}
+										<img bind:this={image} src="" alt="Preview" />
+									{/if}
 								</ul>
 							</div>
 						</div>

@@ -17,7 +17,7 @@
 		}
 	};
 
-	export let projectData;
+	export let destinationData;
 
 	let files = {
 		accepted: [],
@@ -30,33 +30,43 @@
 	let date_started_error = '';
 	let date_finished_error = '';
 	let description_error = '';
-	let images_error = '';
+	let image_error = '';
+	let input;
+	let image;
+	let showImage = false;
 
 	const { fetchData } = getContext('fetchData');
 
-	function handleFilesSelect(e) {
-		const { acceptedFiles, fileRejections } = e.detail;
-		console.log(e);
-		console.log('acceptedFiles', acceptedFiles);
-		files.accepted = [...files.accepted, ...acceptedFiles];
-		files.rejected = [...files.rejected, ...fileRejections];
+	function onChange() {
+		const file = input.files[0];
+
+		if (file) {
+			showImage = true;
+
+			const reader = new FileReader();
+			reader.addEventListener('load', function () {
+				image.setAttribute('src', reader.result);
+			});
+			reader.readAsDataURL(file);
+
+			return;
+		}
+		showImage = false;
 	}
 
 	async function editProject() {
 		try {
 			isLoading = true;
 			const formData = new FormData();
-			formData.append('id', projectData.id);
-			formData.append('title', projectData.title);
-			formData.append('description', projectData.description);
-			formData.append('date_started', projectData.date_started);
-			formData.append('date_finished', projectData.date_finished);
+			formData.append('id', destinationData.id);
+			formData.append('title', destinationData.title);
+			formData.append('description', destinationData.description);
 
-			files.accepted.forEach((file) => {
-				formData.append('images', file);
-			});
+			if (input.files[0]) {
+				formData.append('image', input.files[0]);
+			}
 
-			const response = await axios.patch(`/projects`, formData);
+			const response = await axios.patch(`/destinations`, formData);
 
 			if (response.status === 200) {
 				isLoading = false;
@@ -75,20 +85,22 @@
 				if (mdbackdrop) {
 					mdbackdrop.classList.remove('modal-backdrop', 'show');
 				}
-				fetchData();
-				files.accepted = [];
-				files.rejected = [];
+
+				input.value = '';
+				image.src = '';
+				showImage = false;
+
 				modalClose('close');
+
+				fetchData();
 			}
 		} catch (error) {
 			isLoading = false;
 			// Get error response
 			console.log('error', error.response.data.data);
 			title_error = error.response.data.data.title;
-			date_started_error = error.response.data.data.date_started;
-			date_finished_error = error.response.data.data.date_finished;
 			description_error = error.response.data.data.description;
-			images_error = error.response.data.data.images;
+			image_error = error.response.data.data.image;
 
 			// Handle error, show error message
 			error_msg = error.response.data.meta.message ?? 'An error occurred, please try again later';
@@ -105,41 +117,6 @@
 	}
 
 	const dispatch = createEventDispatcher();
-
-	const deleteImage = async (index, imageId) => {
-		event.preventDefault(); // Prevent form submission
-		try {
-			const { isConfirmed } = await Swal.fire({
-				title: 'Are you sure?',
-				text: 'Once deleted, you will not be able to recover this image!',
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonColor: '#d33',
-				cancelButtonColor: '#3085d6',
-				confirmButtonText: 'Yes, delete it!'
-			});
-
-			if (isConfirmed) {
-				const response = await axios.delete(`/projects/image/${imageId}`);
-				if (response.status == 200) {
-					projectData.images.splice(index, 1);
-					let images = projectData.images;
-					dispatch('updateParentData', images);
-				}
-			}
-		} catch (error) {
-			error_msg = error.response.data.meta.message ?? 'An error occurred, please try again later';
-			toasts.error({
-				title: 'Oops!',
-				description:
-					error.response.data.meta.message ?? 'An error occurred, please try again later',
-				uid: 1615153277482,
-				placement: 'bottom-right',
-				theme: 'dark',
-				duration: 0
-			});
-		}
-	};
 </script>
 
 {#if open}
@@ -173,35 +150,24 @@
 							{/if}
 
 							<div class="row text-center text-lg-start">
-								{#each projectData.images as image, index}
-									<div class="col-lg-3 col-md-4 col-6">
-										<div class="image-container">
-											<a class="d-block mb-4 h-100" href="#">
-												<img
-													alt={projectData.title}
-													class="img-fluid img-thumbnail"
-													src={image.image_path}
-												/>
-											</a>
-											{#if projectData.images.length > 1}
-												<button
-													on:click={() => deleteImage(index, image.id)}
-													class="btn btn-danger btn-sm delete-btn"
-													style="color: white;"
-												>
-													<i class="bi bi-trash"></i>
-												</button>
-											{/if}
-										</div>
+								<div class="col-lg-3 col-md-4 col-6">
+									<div class="image-container">
+										<a class="d-block mb-4 h-100" href="#">
+											<img
+												alt={destinationData.title}
+												class="img-fluid img-thumbnail"
+												src={destinationData.image}
+											/>
+										</a>
 									</div>
-								{/each}
+								</div>
 							</div>
 
 							<div class="row g-lg-3 g-2">
 								<div class="col-12">
 									<div class="form-floating">
 										<input
-											bind:value={projectData.title}
+											bind:value={destinationData.title}
 											class="form-control"
 											name="title"
 											placeholder="Tambahkan judul"
@@ -216,44 +182,11 @@
 										{/if}
 									</div>
 								</div>
-								<div class="col-sm-6 col-12">
-									<div class="form-floating">
-										<input
-											bind:value={projectData.date_started}
-											class="form-control"
-											name="date_started"
-											required
-											type="date"
-										/>
-										<label>Tanggal Mulai</label>
-										{#if date_started_error !== ''}
-											{#each date_started_error as error}
-												<div class="invalid-feedback d-block">{error}</div>
-											{/each}
-										{/if}
-									</div>
-								</div>
-								<div class="col-sm-6 col-12">
-									<div class="form-floating">
-										<input
-											bind:value={projectData.date_finished}
-											class="form-control"
-											name="date_finished"
-											required
-											type="date"
-										/>
-										<label>Tanggal Selesai</label>
-										{#if date_finished_error !== ''}
-											{#each date_finished_error as error}
-												<div class="invalid-feedback d-block">{error}</div>
-											{/each}
-										{/if}
-									</div>
-								</div>
+
 								<div class="col-12">
 									<div class="form-floating">
 										<textarea
-											bind:value={projectData.description}
+											bind:value={destinationData.description}
 											class="form-control"
 											name="description"
 											placeholder="Tambahkan deskripsi "
@@ -270,17 +203,24 @@
 									</div>
 								</div>
 								<div class="col-12">
-									<Dropzone multiple name="images" on:drop={handleFilesSelect} />
-									{#if images_error !== ''}
-										{#each images_error as error}
+									<input
+										type="file"
+										accept="image/*"
+										class="form-control"
+										name="image"
+										bind:this={input}
+										on:change={onChange}
+									/>
+									{#if image_error !== ''}
+										{#each image_error as error}
 											<div class="invalid-feedback d-block">{error}</div>
 										{/each}
 									{/if}
 								</div>
 								<ul class="grid-wrapper li_animate list-unstyled mb-0">
-									{#each files.accepted as item}
-										<li><img src={URL.createObjectURL(item)} alt="" /></li>
-									{/each}
+									{#if showImage}
+										<img bind:this={image} src="" alt="Preview" />
+									{/if}
 								</ul>
 							</div>
 						</div>

@@ -108,25 +108,6 @@
 	});
 </script>
 
-<style>
-    .input-with-icon {
-        position: relative;
-    }
-
-    .input-with-icon input {
-        padding-right: 2.5rem; /* Adjust padding to accommodate the icon */
-    }
-
-    .input-with-icon .icon {
-        position: absolute;
-        top: 50%;
-        right: 0.5rem; /* Adjust the distance of the icon from the right */
-        transform: translateY(-50%);
-        cursor: pointer;
-    }
-</style>
-
-
 <svelte:head>
 	<title>Login - {clientTitle} Panel</title>
 </svelte:head>
@@ -177,7 +158,6 @@
 					/>
 				</li>
 				<li class="col-12">
-					
 					<div class="input-with-icon">
 						{#if !showPassword}
 							<input
@@ -223,7 +203,6 @@
 						{/if}
 					</button>
 				</li>
-				
 			</ul>
 			<!--[ ul.row end ]-->
 		</form>
@@ -232,9 +211,27 @@
 	<!-- start: page footer -->
 	<footer class="px-xl-5 px-4">
 		<p class="mb-0 text-muted">
-			© {new Date().getFullYear()} <a href="https://richh.my.id/" target="_blank" title="richh">{clientTitle}</a>, All
-			Rights Reserved.
+			© {new Date().getFullYear()}
+			<a href="https://richh.my.id/" target="_blank" title="richh">{clientTitle}</a>, All Rights
+			Reserved.
 		</p>
 	</footer>
 </main>
 
+<style>
+	.input-with-icon {
+		position: relative;
+	}
+
+	.input-with-icon input {
+		padding-right: 2.5rem; /* Adjust padding to accommodate the icon */
+	}
+
+	.input-with-icon .icon {
+		position: absolute;
+		top: 50%;
+		right: 0.5rem; /* Adjust the distance of the icon from the right */
+		transform: translateY(-50%);
+		cursor: pointer;
+	}
+</style>

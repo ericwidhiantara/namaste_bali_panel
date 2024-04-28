@@ -71,9 +71,7 @@
 		title: '',
 		slug: '',
 		description: '',
-		date_started: new Date(),
-		date_finished: new Date(),
-		images: [],
+		image: '',
 		created_at: 0,
 		updated_at: 0
 	});
@@ -196,6 +194,7 @@
 
 	const onPopupAddClose = (data) => {
 		showAddPopup = false;
+		fetchData();
 
 		console.log(data);
 	};
@@ -210,6 +209,7 @@
 
 	const onPopupEditClose = (data) => {
 		showEditPopup = false;
+		fetchData();
 
 		console.log(data);
 	};
@@ -221,7 +221,7 @@
 </script>
 
 <svelte:head>
-	<title>destinations</title>
+	<title>Destinasi Wisata</title>
 </svelte:head>
 
 <ToastContainer let:data placement="bottom-right">
@@ -321,9 +321,8 @@
 																	style="width: 100px; height: 100px; object-fit: cover;"
 																/>
 															{/if}
-														<td>{destination.title}</td>
+														</td><td>{destination.title}</td>
 														<td>{destination.description}</td>
-														
 
 														<td>{formatHumanDate(destination.created_at)}</td>
 														<td style="position: sticky; right: 0">
@@ -412,7 +411,8 @@
 											</li>
 										{/each}
 										<li
-											class="paginate_button next page-item {pageNumber === destinationInfo.total_pages
+											class="paginate_button next page-item {pageNumber ===
+											destinationInfo.total_pages
 												? 'disabled'
 												: 'none'} "
 											id="DataTables_Table_0_next"

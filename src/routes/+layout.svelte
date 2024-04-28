@@ -226,7 +226,7 @@
 								placeholder="Update my status"
 							/>
 						</div>
-						
+
 						<a
 							class="btn py-2 btn-primary w-100 mt-3 rounded-pill"
 							href="#"
@@ -278,7 +278,7 @@
 								<h4 class="mb-1 title-font text-gradient">{user.first_name} {user.last_name}</h4>
 								<p class="small text-muted">{user.email}</p>
 							</div>
-							
+
 							<a
 								class="btn py-2 btn-primary w-100 mt-3 rounded-pill"
 								href="#"
@@ -391,13 +391,15 @@
 										/>
 									</svg>
 
-									<span class="mx-2">Features</span>
+									<span class="mx-2">Menu Utama</span>
 								</a>
 								<ul class="collapse list-unstyled {featurePath() ? 'show' : ''}" id="FeaturesMenu">
 									<li>
 										<a
 											href="/features/destinations"
-											class={$page.url.pathname.startsWith('/features/destinations') ? 'active' : ''}
+											class={$page.url.pathname.startsWith('/features/destinations')
+												? 'active'
+												: ''}
 											aria-label="Project">Destinasi Wisata</a
 										>
 									</li>
@@ -444,13 +446,13 @@
 					<li class="breadcrumb-item">
 						<a href="#" title="App">
 							{#if $page.url.pathname.startsWith('/features')}
-								Features
+								Fitur
 							{/if}
 						</a>
 					</li>
 					<li class="breadcrumb-item active" aria-current="page" title="">
 						{#if $page.url.pathname.startsWith('/features/destinations')}
-							destinations Page
+							Destinasi Wisata
 						{:else}
 							Users Page
 						{/if}

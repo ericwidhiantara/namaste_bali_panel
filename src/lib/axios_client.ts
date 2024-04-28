@@ -1,6 +1,7 @@
 // axiosClient.ts
 import axios, { type AxiosInstance, type InternalAxiosRequestConfig } from 'axios';
 import { env } from '$env/dynamic/public';
+import Swal from 'sweetalert2';
 
 const BASE_URL = env.PUBLIC_BASE_URL; // Your API base URL
 
@@ -24,6 +25,7 @@ const setAuthHeader = (config: InternalAxiosRequestConfig): InternalAxiosRequest
 	}
 	return config;
 };
+
 // Request interceptor to set Authorization header for all requests except login
 axiosInstance.interceptors.request.use(
 	(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig<any> => {
@@ -41,12 +43,40 @@ axiosInstance.interceptors.request.use(
 	}
 );
 
+// Response interceptor to handle unauthorized responses (HTTP 401 or 403)
 axiosInstance.interceptors.response.use(
 	(response) => response,
 	(error) => {
 		// Handle error responses
+		if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+			// Show notification about session expiration
+			showSessionExpiredNotification();
+			// Immediately force logout
+			logout();
+		}
 		return Promise.reject(error);
 	}
 );
+
+// Function to show session expired notification
+const showSessionExpiredNotification = () => {
+	Swal.fire({
+		icon: 'warning',
+		title: 'Session Expired',
+		text: 'Your session has expired. Please log in again.'
+	}).then(() => {
+		// Redirect to the login page or any other appropriate action
+		window.location.href = '/login';
+	});
+};
+
+// Function to perform logout action
+const logout = () => {
+	// Perform logout action here, such as clearing local storage, redirecting to login page, etc.
+	localStorage.removeItem('access_token');
+	// Redirect to the login page or any other appropriate action
+	// Example:
+	// window.location.href = '/login';
+};
 
 export default axiosInstance;
