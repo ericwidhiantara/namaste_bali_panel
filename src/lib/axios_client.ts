@@ -66,7 +66,9 @@ const showSessionExpiredNotification = () => {
 		text: 'Your session has expired. Please log in again.'
 	}).then(() => {
 		// Redirect to the login page or any other appropriate action
-		window.location.href = '/login';
+		setTimeout(() => {
+			window.location.href = '/auth/login';
+		}, 3000);
 	});
 };
 
@@ -76,7 +78,7 @@ const logout = () => {
 	localStorage.removeItem('access_token');
 	// Redirect to the login page or any other appropriate action
 	// Example:
-	// window.location.href = '/login';
+	window.location.href = '/auth/login';
 };
 
 export default axiosInstance;

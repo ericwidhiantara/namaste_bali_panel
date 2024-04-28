@@ -405,6 +405,15 @@
 									</li>
 									<li>
 										<a
+											href="/features/teams"
+											class={$page.url.pathname.startsWith('/features/teams')
+												? 'active'
+												: ''}
+											aria-label="Project">Tim</a
+										>
+									</li>
+									<li>
+										<a
 											href="/features/users"
 											class={$page.url.pathname.startsWith('/features/users') ? 'active' : ''}
 											aria-label="Project">Users</a
@@ -453,8 +462,15 @@
 					<li class="breadcrumb-item active" aria-current="page" title="">
 						{#if $page.url.pathname.startsWith('/features/destinations')}
 							Destinasi Wisata
+						
+						{:else if $page.url.pathname.startsWith('/features/teams')}
+							Tim
+						
+						{:else if $page.url.pathname.startsWith('/features/users')}
+							Pengguna
+							
 						{:else}
-							Users Page
+							Users
 						{/if}
 					</li>
 				</ol>

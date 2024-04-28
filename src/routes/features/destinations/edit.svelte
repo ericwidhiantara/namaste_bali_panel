@@ -54,7 +54,7 @@
 		showImage = false;
 	}
 
-	async function editProject() {
+	async function editDestination() {
 		try {
 			isLoading = true;
 			const formData = new FormData();
@@ -131,10 +131,10 @@
 		aria-hidden={false}
 	>
 		<div class="modal-dialog modal-xl" role="document">
-			<form on:submit|preventDefault={editProject}>
+			<form on:submit|preventDefault={editDestination}>
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title h4" id="exampleModalXlLabel">Edit Project</h5>
+						<h5 class="modal-title h4" id="exampleModalXlLabel">Edit Destinasi Wisata</h5>
 						<button
 							type="button"
 							class="btn-close"

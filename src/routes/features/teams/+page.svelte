@@ -8,44 +8,56 @@
 
 	setContext('fetchData', { fetchData });
 
-	class DestinationModel {
+	class TeamModel {
 		id: string;
-		title: string;
-		slug: string;
-		description: string;
+		name: string;
+		email: string;
+		whatsapp: string;
+		facebook: string;
+		instagram: string;
+		twitter: string;
+		tiktok: string;
+		role: string;
+		address: string;
 		image: string;
 		created_at: number;
 		updated_at: number;
 
 		constructor(data) {
 			this.id = data.id;
-			this.title = data.title;
-			this.slug = data.slug;
-			this.description = data.description;
+			this.name = data.name;
+			this.email = data.email;
+			this.whatsapp = data.whatsapp;
+			this.facebook = data.facebook;
+			this.instagram = data.instagram;
+			this.twitter = data.twitter;
+			this.tiktok = data.tiktok;
+			this.role = data.role;
+			this.address = data.address;
 			this.image = data.image;
 			this.created_at = data.created_at;
 			this.updated_at = data.updated_at;
 		}
 	}
 
-	class DestinationDataModel {
+	class TeamDataModel {
 		page_number: number;
 		page_size: number;
 		total: number;
 		total_pages: number;
-		destinations: DestinationModel[];
+		teams: TeamModel[];
 
 		constructor(data) {
 			this.page_number = data.page_number;
 			this.page_size = data.page_size;
 			this.total = data.total;
 			this.total_pages = data.total_pages;
-			this.destinations = data.destinations;
+			this.teams = data.teams;
 		}
 	}
 
-	let destinations = [] as DestinationModel[];
-	let destinationInfo = {} as DestinationDataModel;
+	let teams = [] as TeamModel[];
+	let teamInfo = {} as TeamDataModel;
 	let pageNumber = 1; // Define page number
 	let pageSize = '10'; // Define page size
 	let pageSizes = ['10', '25', '50', '100'];
@@ -53,12 +65,18 @@
 	let token;
 	let searchTimeout;
 
-	// Define a sample destination data;;
-	let destinationData = new DestinationModel({
+	// Define a sample team data;;
+	let teamData = new TeamModel({
 		id: '',
-		title: '',
-		slug: '',
-		description: '',
+		name: '',
+		email: '',
+		whatsapp: '',
+		facebook: '',
+		instagram: '',
+		twitter: '',
+		tiktok: '',
+		role: '',
+		address: '',
 		image: '',
 		created_at: 0,
 		updated_at: 0
@@ -67,19 +85,19 @@
 	async function fetchData() {
 		try {
 			const response = await axios.get(
-				`/destinations?page=${pageNumber}&page_size=${pageSize}&search=${search}`
+				`/teams?page=${pageNumber}&page_size=${pageSize}&search=${search}`
 			);
 
 			if (response.status === 200) {
-				destinations = response.data.data.destinations;
-				destinationInfo = response.data.data;
+				teams = response.data.data.teams;
+				teamInfo = response.data.data;
 			}
 		} catch (error) {
 			console.error('Error fetching data:', error);
 		}
 	}
 
-	const deletedestination = async (id) => {
+	const deleteteam = async (id) => {
 		try {
 			const { isConfirmed } = await Swal.fire({
 				title: 'Are you sure?',
@@ -92,7 +110,7 @@
 			});
 
 			if (isConfirmed) {
-				const response = await axios.delete(`/destinations/${id}`);
+				const response = await axios.delete(`/teams/${id}`);
 				if (response.status == 200) {
 					toasts.success({
 						title: 'Success',
@@ -132,7 +150,7 @@
 	}
 
 	function handleNext() {
-		if (pageNumber < destinationInfo.total_pages) {
+		if (pageNumber < teamInfo.total_pages) {
 			pageNumber++;
 			fetchData();
 		}
@@ -150,10 +168,10 @@
 		}, 500); // Delay in milliseconds (adjust as needed)
 	}
 
-	// function to update the destinationdata images when user delete a single image
-	const updatedestinationDataImages = (newData) => {
+	// function to update the teamdata images when user delete a single image
+	const updateteamDataImages = (newData) => {
 		console.log('parent updated', newData.detail);
-		destinationData.images = newData.detail;
+		teamData.images = newData.detail;
 	};
 
 	function formatDate(date: string): string {
@@ -190,7 +208,7 @@
 	let showEditPopup = false;
 
 	const onShowEditPopup = (item?) => {
-		destinationData = item;
+		teamData = item;
 
 		showEditPopup = true;
 	};
@@ -209,7 +227,7 @@
 </script>
 
 <svelte:head>
-	<title>Destinasi Wisata</title>
+	<title>Tim</title>
 </svelte:head>
 
 <ToastContainer let:data placement="bottom-right">
@@ -222,9 +240,9 @@
 		<div class="col-xxl-12 col-xl-7 col-lg-12">
 			<div class="card">
 				<div class="card-header">
-					<h4 class="card-title">List Destinasi Wisata</h4>
+					<h4 class="card-title">List Tim</h4>
 					<a class="btn btn-primary" href="#" on:click={onShowAddPopup} role="button">
-						<i class="fa fa-plus-circle me-1"></i>Tambah Destinasi Wisata
+						<i class="fa fa-plus-circle me-1"></i>Tambah Tim
 					</a>
 				</div>
 				<div class="card-body">
@@ -274,8 +292,9 @@
 										<tr>
 											<th scope="col">#</th>
 											<th scope="col">Foto</th>
-											<th scope="col">Nama Tempat Wisata</th>
-											<th scope="col">Deskripsi</th>
+											<th scope="col">Nama</th>
+											<th scope="col">Role</th>
+											<th scope="col">Alamat</th>
 											<th scope="col">Dibuat Pada</th>
 											<th scope="col">Aksi</th>
 										</tr>
@@ -286,37 +305,72 @@
 												<td colspan="6" class="text-center">Loading...</td>
 											</tr>
 										{:then result}
-											{#if destinations.length <= 0}
+											{#if teams.length <= 0}
 												<tr>
 													<td colspan="6" class="text-center">Tidak ada data</td>
 												</tr>
 											{:else}
-												{#each destinations as destination, index}
+												{#each teams as team, index}
 													<tr>
 														<!-- Calculate the correct row number based on the current page number and page size -->
 														<th scope="row">{(pageNumber - 1) * pageSize + index + 1}</th>
 														<td>
-															{#if destination.image !== null || destination.image !== ''}
+															{#if team.image !== null || team.image !== ''}
 																<img
-																	src={destination.image}
-																	alt={destination.title}
+																	src={team.image}
+																	alt={team.name}
 																	style="width: 100px; height: 100px; object-fit: cover;"
 																/>
 															{:else}
 																<img
 																	src="https://via.placeholder.com/100"
-																	alt={destination.title}
+																	alt={team.name}
 																	style="width: 100px; height: 100px; object-fit: cover;"
 																/>
 															{/if}
-														</td><td>{destination.title}</td>
-														<td>{destination.description}</td>
+														</td>
+														<td>{team.name}
+															<br/>
+															Whatsapp : {team.whatsapp}
+															<br/>
+															{#if team.facebook}
+																<a href={team.facebook} target="#">
+																	<span class="badge bg-primary">Facebook</span>
+																</a>
+															{/if}
+																
+															{#if team.instagram}
+																
+															<a href={team.instagram} target="#">
+																
+																<span class="badge bg-danger">Instagram</span>
+															</a>
+															{/if}
+															{#if team.twitter}
 
-														<td>{formatHumanDate(destination.created_at)}</td>
+															<a href={team.twitter} target="#">
+																
+																<span class="badge bg-info">Twitter</span>
+															</a>
+															{/if}
+															{#if team.tiktok}
+
+															<a href={team.tiktok} target="#">
+																
+																<span class="badge bg-success">Tiktok</span>
+															</a>
+															
+															{/if}
+
+														</td>
+														<td>{team.role}</td>
+														<td>{team.address}</td>
+
+														<td>{formatHumanDate(team.created_at)}</td>
 														<td style="position: sticky; right: 0">
 															<a
 																href="#"
-																on:click={() => onShowEditPopup(destination)}
+																on:click={() => onShowEditPopup(team)}
 																class="btn btn-info btn-sm"
 																style="color: white;"
 															>
@@ -326,7 +380,7 @@
 																type="button"
 																class="btn btn-danger btn-sm"
 																style="color: white;"
-																on:click={() => deletedestination(destination.id)}
+																on:click={() => deleteteam(team.id)}
 															>
 																<i class="bi bi-trash"></i>
 															</button>
@@ -347,11 +401,11 @@
 									id="DataTables_Table_0_info"
 									role="status"
 								>
-									{#if destinationInfo.total > 0}
+									{#if teamInfo.total > 0}
 										Menampilkan {(pageNumber - 1) * pageSize + 1} sampai {Math.min(
 											pageNumber * pageSize,
-											destinationInfo.total
-										)} dari {destinationInfo.total} data
+											teamInfo.total
+										)} dari {teamInfo.total} data
 									{:else}
 										Tidak ada data yang ditemukan
 									{/if}
@@ -379,7 +433,7 @@
 												tabindex="0"><span aria-hidden="true">«</span></a
 											>
 										</li>
-										{#each Array.from({ length: destinationInfo.total_pages }, (_, i) => i + 1) as page}
+										{#each Array.from({ length: teamInfo.total_pages }, (_, i) => i + 1) as page}
 											<li
 												class="paginate_button page-item {pageNumber === page ? 'active' : 'none'}"
 											>
@@ -400,7 +454,7 @@
 										{/each}
 										<li
 											class="paginate_button next page-item {pageNumber ===
-											destinationInfo.total_pages
+											teamInfo.total_pages
 												? 'disabled'
 												: 'none'} "
 											id="DataTables_Table_0_next"
@@ -426,10 +480,10 @@
 	</div>
 
 	<EditModal
-		on:updateParentData={updatedestinationDataImages}
+		on:updateParentData={updateteamDataImages}
 		onClosed={(data) => onPopupEditClose(data)}
 		open={showEditPopup}
-		{destinationData}
+		{teamData}
 	/>
 
 	<AddModal onClosed={(data) => onPopupAddClose(data)} open={showAddPopup} />
@@ -446,7 +500,7 @@
 <!--	tabindex="-1"-->
 <!--&gt;-->
 <!--	{#if isEditModal}-->
-<!--		<EditModal {destinationData} on:updateParentData={updatedestinationDataImages} />-->
+<!--		<EditModal {teamData} on:updateParentData={updateteamDataImages} />-->
 <!--	{:else}-->
 <!--		<AddModal />-->
 <!--	{/if}-->
