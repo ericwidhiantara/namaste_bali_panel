@@ -226,13 +226,7 @@
 								placeholder="Update my status"
 							/>
 						</div>
-						<ul class="list-unstyled mt-3">
-							<li>
-								<a class="dropdown-item rounded-pill" aria-label="my profile" href="my-profile.html"
-									>My Profile</a
-								>
-							</li>
-						</ul>
+						
 						<a
 							class="btn py-2 btn-primary w-100 mt-3 rounded-pill"
 							href="#"
@@ -284,15 +278,7 @@
 								<h4 class="mb-1 title-font text-gradient">{user.first_name} {user.last_name}</h4>
 								<p class="small text-muted">{user.email}</p>
 							</div>
-							<ul class="list-unstyled mt-3">
-								<li>
-									<a
-										class="dropdown-item rounded-pill"
-										aria-label="my profile"
-										href="my-profile.html">My Profile</a
-									>
-								</li>
-							</ul>
+							
 							<a
 								class="btn py-2 btn-primary w-100 mt-3 rounded-pill"
 								href="#"
