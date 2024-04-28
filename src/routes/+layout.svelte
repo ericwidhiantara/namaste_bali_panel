@@ -119,7 +119,7 @@
 		}
 	}
 
-	const FEATURES_PATH = ['/projects', '/users'];
+	const FEATURES_PATH = ['/destinations', '/users'];
 	const featurePath = () => {
 		for (let i = 0; i < FEATURES_PATH.length; i++) {
 			if ($page.url.pathname.startsWith(`/features/${FEATURES_PATH[i]}`)) {
@@ -396,9 +396,9 @@
 								<ul class="collapse list-unstyled {featurePath() ? 'show' : ''}" id="FeaturesMenu">
 									<li>
 										<a
-											href="/features/projects"
-											class={$page.url.pathname.startsWith('/features/projects') ? 'active' : ''}
-											aria-label="Project">Projects</a
+											href="/features/destinations"
+											class={$page.url.pathname.startsWith('/features/destinations') ? 'active' : ''}
+											aria-label="Project">Destinasi Wisata</a
 										>
 									</li>
 									<li>
@@ -449,8 +449,8 @@
 						</a>
 					</li>
 					<li class="breadcrumb-item active" aria-current="page" title="">
-						{#if $page.url.pathname.startsWith('/features/projects')}
-							Projects Page
+						{#if $page.url.pathname.startsWith('/features/destinations')}
+							destinations Page
 						{:else}
 							Users Page
 						{/if}

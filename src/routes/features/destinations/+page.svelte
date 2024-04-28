@@ -10,24 +10,22 @@
 
 	class ImageModel {
 		id: string;
-		project_id: string;
+		destination_id: string;
 		image_path: string;
 
 		constructor(data) {
 			this.id = data.id;
-			this.project_id = data.project_id;
+			this.destination_id = data.destination_id;
 			this.image_path = data.image_path;
 		}
 	}
 
-	class ProjectModel {
+	class DestinationModel {
 		id: string;
 		title: string;
 		slug: string;
 		description: string;
-		date_started: Date;
-		date_finished: Date;
-		images: ImageModel[];
+		image: string;
 		created_at: number;
 		updated_at: number;
 
@@ -36,32 +34,30 @@
 			this.title = data.title;
 			this.slug = data.slug;
 			this.description = data.description;
-			this.date_started = new Date(data.date_started);
-			this.date_finished = new Date(data.date_finished);
-			this.images = data.images;
+			this.image = data.image;
 			this.created_at = data.created_at;
 			this.updated_at = data.updated_at;
 		}
 	}
 
-	class ProjectDataModel {
+	class destinationDataModel {
 		page_number: number;
 		page_size: number;
 		total: number;
 		total_pages: number;
-		projects: ProjectModel[];
+		destinations: DestinationModel[];
 
 		constructor(data) {
 			this.page_number = data.page_number;
 			this.page_size = data.page_size;
 			this.total = data.total;
 			this.total_pages = data.total_pages;
-			this.projects = data.projects;
+			this.destinations = data.destinations;
 		}
 	}
 
-	let projects = [] as ProjectModel[];
-	let projectInfo = {} as ProjectDataModel;
+	let destinations = [] as DestinationModel[];
+	let destinationInfo = {} as destinationDataModel;
 	let pageNumber = 1; // Define page number
 	let pageSize = '10'; // Define page size
 	let pageSizes = ['10', '25', '50', '100'];
@@ -69,8 +65,8 @@
 	let token;
 	let searchTimeout;
 
-	// Define a sample project data;;
-	let projectData = new ProjectModel({
+	// Define a sample destination data;;
+	let destinationData = new DestinationModel({
 		id: '',
 		title: '',
 		slug: '',
@@ -85,19 +81,19 @@
 	async function fetchData() {
 		try {
 			const response = await axios.get(
-				`/projects/pagination?page=${pageNumber}&page_size=${pageSize}&search=${search}`
+				`/destinations?page=${pageNumber}&page_size=${pageSize}&search=${search}`
 			);
 
 			if (response.status === 200) {
-				projects = response.data.data.projects;
-				projectInfo = response.data.data;
+				destinations = response.data.data.destinations;
+				destinationInfo = response.data.data;
 			}
 		} catch (error) {
 			console.error('Error fetching data:', error);
 		}
 	}
 
-	const deleteProject = async (id) => {
+	const deletedestination = async (id) => {
 		try {
 			const { isConfirmed } = await Swal.fire({
 				title: 'Are you sure?',
@@ -110,7 +106,7 @@
 			});
 
 			if (isConfirmed) {
-				const response = await axios.delete(`/projects/${id}`);
+				const response = await axios.delete(`/destinations/${id}`);
 				if (response.status == 200) {
 					toasts.success({
 						title: 'Success',
@@ -150,7 +146,7 @@
 	}
 
 	function handleNext() {
-		if (pageNumber < projectInfo.total_pages) {
+		if (pageNumber < destinationInfo.total_pages) {
 			pageNumber++;
 			fetchData();
 		}
@@ -168,10 +164,10 @@
 		}, 500); // Delay in milliseconds (adjust as needed)
 	}
 
-	// function to update the projectdata images when user delete a single image
-	const updateProjectDataImages = (newData) => {
+	// function to update the destinationdata images when user delete a single image
+	const updatedestinationDataImages = (newData) => {
 		console.log('parent updated', newData.detail);
-		projectData.images = newData.detail;
+		destinationData.images = newData.detail;
 	};
 
 	function formatDate(date: string): string {
@@ -207,7 +203,7 @@
 	let showEditPopup = false;
 
 	const onShowEditPopup = (item?) => {
-		projectData = item;
+		destinationData = item;
 
 		showEditPopup = true;
 	};
@@ -225,7 +221,7 @@
 </script>
 
 <svelte:head>
-	<title>Projects</title>
+	<title>destinations</title>
 </svelte:head>
 
 <ToastContainer let:data placement="bottom-right">
@@ -238,9 +234,9 @@
 		<div class="col-xxl-12 col-xl-7 col-lg-12">
 			<div class="card">
 				<div class="card-header">
-					<h4 class="card-title">List Project</h4>
+					<h4 class="card-title">List Destinasi Wisata</h4>
 					<a class="btn btn-primary" href="#" on:click={onShowAddPopup} role="button">
-						<i class="fa fa-plus-circle me-1"></i>Tambah Project
+						<i class="fa fa-plus-circle me-1"></i>Tambah Destinasi Wisata
 					</a>
 				</div>
 				<div class="card-body">
@@ -289,9 +285,9 @@
 									<thead>
 										<tr>
 											<th scope="col">#</th>
-											<th scope="col">Judul</th>
+											<th scope="col">Foto</th>
+											<th scope="col">Nama Tempat Wisata</th>
 											<th scope="col">Deskripsi</th>
-											<th scope="col">Tanggal</th>
 											<th scope="col">Dibuat Pada</th>
 											<th scope="col">Aksi</th>
 										</tr>
@@ -302,28 +298,38 @@
 												<td colspan="6" class="text-center">Loading...</td>
 											</tr>
 										{:then result}
-											{#if projects.length <= 0}
+											{#if destinations.length <= 0}
 												<tr>
 													<td colspan="6" class="text-center">Tidak ada data</td>
 												</tr>
 											{:else}
-												{#each projects as project, index}
+												{#each destinations as destination, index}
 													<tr>
 														<!-- Calculate the correct row number based on the current page number and page size -->
 														<th scope="row">{(pageNumber - 1) * pageSize + index + 1}</th>
-														<td>{project.title}</td>
-														<td>{project.description}</td>
 														<td>
-															{formatDate(project.date_started)} - {formatDate(
-																project.date_finished
-															)}
-														</td>
+															{#if destination.image !== null || destination.image !== ''}
+																<img
+																	src={destination.image}
+																	alt={destination.title}
+																	style="width: 100px; height: 100px; object-fit: cover;"
+																/>
+															{:else}
+																<img
+																	src="https://via.placeholder.com/100"
+																	alt={destination.title}
+																	style="width: 100px; height: 100px; object-fit: cover;"
+																/>
+															{/if}
+														<td>{destination.title}</td>
+														<td>{destination.description}</td>
+														
 
-														<td>{formatHumanDate(project.created_at)}</td>
+														<td>{formatHumanDate(destination.created_at)}</td>
 														<td style="position: sticky; right: 0">
 															<a
 																href="#"
-																on:click={() => onShowEditPopup(project)}
+																on:click={() => onShowEditPopup(destination)}
 																class="btn btn-info btn-sm"
 																style="color: white;"
 															>
@@ -333,7 +339,7 @@
 																type="button"
 																class="btn btn-danger btn-sm"
 																style="color: white;"
-																on:click={() => deleteProject(project.id)}
+																on:click={() => deletedestination(destination.id)}
 															>
 																<i class="bi bi-trash"></i>
 															</button>
@@ -354,11 +360,11 @@
 									id="DataTables_Table_0_info"
 									role="status"
 								>
-									{#if projectInfo.total > 0}
+									{#if destinationInfo.total > 0}
 										Menampilkan {(pageNumber - 1) * pageSize + 1} sampai {Math.min(
 											pageNumber * pageSize,
-											projectInfo.total
-										)} dari {projectInfo.total} data
+											destinationInfo.total
+										)} dari {destinationInfo.total} data
 									{:else}
 										Tidak ada data yang ditemukan
 									{/if}
@@ -386,7 +392,7 @@
 												tabindex="0"><span aria-hidden="true">«</span></a
 											>
 										</li>
-										{#each Array.from({ length: projectInfo.total_pages }, (_, i) => i + 1) as page}
+										{#each Array.from({ length: destinationInfo.total_pages }, (_, i) => i + 1) as page}
 											<li
 												class="paginate_button page-item {pageNumber === page ? 'active' : 'none'}"
 											>
@@ -406,7 +412,7 @@
 											</li>
 										{/each}
 										<li
-											class="paginate_button next page-item {pageNumber === projectInfo.total_pages
+											class="paginate_button next page-item {pageNumber === destinationInfo.total_pages
 												? 'disabled'
 												: 'none'} "
 											id="DataTables_Table_0_next"
@@ -432,10 +438,10 @@
 	</div>
 
 	<EditModal
-		on:updateParentData={updateProjectDataImages}
+		on:updateParentData={updatedestinationDataImages}
 		onClosed={(data) => onPopupEditClose(data)}
 		open={showEditPopup}
-		{projectData}
+		{destinationData}
 	/>
 
 	<AddModal onClosed={(data) => onPopupAddClose(data)} open={showAddPopup} />
@@ -452,7 +458,7 @@
 <!--	tabindex="-1"-->
 <!--&gt;-->
 <!--	{#if isEditModal}-->
-<!--		<EditModal {projectData} on:updateParentData={updateProjectDataImages} />-->
+<!--		<EditModal {destinationData} on:updateParentData={updatedestinationDataImages} />-->
 <!--	{:else}-->
 <!--		<AddModal />-->
 <!--	{/if}-->
