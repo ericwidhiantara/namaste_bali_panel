@@ -5,63 +5,20 @@
 	import EditModal from './edit.svelte';
 	import { FlatToast, ToastContainer, toasts } from 'svelte-toasts';
 	import Swal from 'sweetalert2';
+	import { DestinationDataModel, DestinationModel } from '$lib/models/destinations/destination_model';
 
 	setContext('fetchData', { fetchData });
 
-	class DestinationModel {
-		id: string;
-		title: string;
-		slug: string;
-		description: string;
-		image: string;
-		created_at: number;
-		updated_at: number;
 
-		constructor(data: any) {
-			this.id = data.id;
-			this.title = data.title;
-			this.slug = data.slug;
-			this.description = data.description;
-			this.image = data.image;
-			this.created_at = data.created_at;
-			this.updated_at = data.updated_at;
-		}
-	}
-
-	class DestinationDataModel {
-		page_number: number;
-		page_size: number;
-		total: number;
-		total_pages: number;
-		destinations: DestinationModel[];
-
-		constructor(data: any) {
-			this.page_number = data.page_number;
-			this.page_size = data.page_size;
-			this.total = data.total;
-			this.total_pages = data.total_pages;
-			this.destinations = data.destinations;
-		}
-	}
-
-	let destinations = [] as DestinationModel[];
-	let destinationInfo = {} as DestinationDataModel;
+	let destinations = [] as DestinationDataModel[];
+	let destinationInfo = {} as DestinationModel;
+	let destinationData = {} as DestinationDataModel;
 	let pageNumber = 1; // Define page number
 	let pageSize = '10'; // Define page size
 	let pageSizes = ['10', '25', '50', '100'];
 	let search = '';
 	let searchTimeout = 0;
 
-	// Define a sample destination data;;
-	let destinationData = new DestinationModel({
-		id: '',
-		title: '',
-		slug: '',
-		description: '',
-		image: '',
-		created_at: 0,
-		updated_at: 0
-	});
 
 	async function fetchData() {
 		try {
@@ -152,7 +109,7 @@
 	// function to update the destinationdata images when user delete a single image
 	const updatedestinationDataImages = (newData: any) => {
 		console.log('parent updated', newData.detail);
-		destinationData.image = newData.detail;
+		destinationData = newData.detail;
 	};
 
 	function formatHumanDate(timestamp: number): string {

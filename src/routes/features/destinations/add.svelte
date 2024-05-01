@@ -1,15 +1,14 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import Dropzone from 'svelte-file-dropzone';
 	import axios from '$lib/axios_client';
 	import Swal from 'sweetalert2';
 	import { toasts } from 'svelte-toasts';
 
 	export let open = false;
 	export let showBackdrop = true;
-	export let onClosed;
+	export let onClosed: (data: any) => void;
 
-	const modalClose = (data) => {
+	const modalClose = (data: any) => {
 		open = false;
 		if (onClosed) {
 			onClosed(data);
@@ -23,19 +22,21 @@
 	let title_error = '';
 	let description_error = '';
 	let image_error = '';
-	let input;
-	let image;
+	let input: HTMLInputElement;
+	let image: HTMLImageElement;
 	let showImage = false;
 
 	function onChange() {
-		const file = input.files[0];
+		const file = input.files![0];
 
 		if (file) {
 			showImage = true;
 
 			const reader = new FileReader();
-			reader.addEventListener('load', function () {
-				image.setAttribute('src', reader.result);
+			reader.addEventListener('load', function() {
+				if (image) {
+					image.setAttribute('src', reader.result as string);
+				}
 			});
 			reader.readAsDataURL(file);
 
@@ -43,13 +44,14 @@
 		}
 		showImage = false;
 	}
+
 	async function addDestination() {
 		try {
 			isLoading = true;
 			const formData = new FormData();
 			formData.append('title', title);
 			formData.append('description', description);
-			formData.append('image', input.files[0]);
+			formData.append('image', input.files![0]);
 
 			const response = await axios.post(`/destinations`, formData);
 
@@ -64,8 +66,14 @@
 					timer: 1500
 				});
 
-				document.querySelector('#exampleModalXl').classList.remove('show');
-				document.querySelector('body').classList.remove('modal-open');
+				const modalElement = document.querySelector('#exampleModalXl');
+				const bodyElement = document.querySelector('body');
+
+				if (modalElement && bodyElement) {
+					modalElement.classList.remove('show');
+					bodyElement.classList.remove('modal-open');
+				}
+
 				const mdbackdrop = document.querySelector('.modal-backdrop');
 				if (mdbackdrop) {
 					mdbackdrop.classList.remove('modal-backdrop', 'show');
@@ -79,7 +87,7 @@
 				image.src = '';
 				showImage = false;
 			}
-		} catch (error) {
+		} catch (error: any) {
 			isLoading = false;
 			// Get error response
 			console.log('error', error.response.data.data);
@@ -135,6 +143,7 @@
 								<div class="col-12">
 									<div class="form-floating">
 										<input
+											id="judul"
 											bind:value={title}
 											class="form-control"
 											name="title"
@@ -142,7 +151,7 @@
 											required
 											type="text"
 										/>
-										<label>Judul</label>
+										<label for="judul">Judul</label>
 										{#if title_error !== ''}
 											{#each title_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -154,6 +163,7 @@
 								<div class="col-12">
 									<div class="form-floating">
 										<textarea
+											id="deskripsi"
 											bind:value={description}
 											class="form-control"
 											name="description"
@@ -162,7 +172,7 @@
 											style="height: 100px"
 										/>
 
-										<label>Deskripsi</label>
+										<label for="deskripsi">Deskripsi</label>
 										{#if description_error !== ''}
 											{#each description_error as error}
 												<div class="invalid-feedback d-block">{error}</div>

@@ -1,51 +1,49 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import Dropzone from 'svelte-file-dropzone';
 	import axios from '$lib/axios_client';
 	import Swal from 'sweetalert2';
 	import { toasts } from 'svelte-toasts';
-	import { createEventDispatcher, getContext } from 'svelte';
+	import { getContext } from 'svelte';
+	import { DestinationDataModel } from '$lib/models/destinations/destination_model';
+
 
 	export let open = false;
 	export let showBackdrop = true;
-	export let onClosed;
+	export let onClosed: (data: any) => void;
 
-	const modalClose = (data) => {
+	const modalClose = (data: any) => {
 		open = false;
 		if (onClosed) {
 			onClosed(data);
 		}
 	};
 
-	export let destinationData;
 
-	let files = {
-		accepted: [],
-		rejected: []
-	};
+	export let destinationData: DestinationDataModel;
+
 
 	let error_msg = '';
 	let isLoading = false;
 	let title_error = '';
-	let date_started_error = '';
-	let date_finished_error = '';
 	let description_error = '';
 	let image_error = '';
-	let input;
-	let image;
+	let input: HTMLInputElement;
+	let image: HTMLImageElement;
 	let showImage = false;
 
-	const { fetchData } = getContext('fetchData');
+	const { fetchData } = getContext('fetchData') as { fetchData: () => void };
 
 	function onChange() {
-		const file = input.files[0];
+		const file = input.files![0];
 
 		if (file) {
 			showImage = true;
 
 			const reader = new FileReader();
-			reader.addEventListener('load', function () {
-				image.setAttribute('src', reader.result);
+			reader.addEventListener('load', function() {
+				if (typeof reader.result === 'string') {
+					image.setAttribute('src', reader.result);
+				}
 			});
 			reader.readAsDataURL(file);
 
@@ -62,8 +60,8 @@
 			formData.append('title', destinationData.title);
 			formData.append('description', destinationData.description);
 
-			if (input.files[0]) {
-				formData.append('image', input.files[0]);
+			if (input.files && input.files.length > 0) {
+				formData.append('image', input.files![0]);
 			}
 
 			const response = await axios.patch(`/destinations`, formData);
@@ -79,8 +77,15 @@
 					timer: 1500
 				});
 
-				document.querySelector('#exampleModalXl').classList.remove('show');
-				document.querySelector('body').classList.remove('modal-open');
+
+				const modalElement = document.querySelector('#exampleModalXl');
+				const bodyElement = document.querySelector('body');
+
+				if (modalElement && bodyElement) {
+					modalElement.classList.remove('show');
+					bodyElement.classList.remove('modal-open');
+				}
+
 				const mdbackdrop = document.querySelector('.modal-backdrop');
 				if (mdbackdrop) {
 					mdbackdrop.classList.remove('modal-backdrop', 'show');
@@ -94,7 +99,7 @@
 
 				fetchData();
 			}
-		} catch (error) {
+		} catch (error: any) {
 			isLoading = false;
 			// Get error response
 			console.log('error', error.response.data.data);
@@ -116,7 +121,6 @@
 		}
 	}
 
-	const dispatch = createEventDispatcher();
 </script>
 
 {#if open}
@@ -152,7 +156,7 @@
 							<div class="row text-center text-lg-start">
 								<div class="col-lg-3 col-md-4 col-6">
 									<div class="image-container">
-										<a class="d-block mb-4 h-100" href="#">
+										<a class="d-block mb-4 h-100" href="{'#'}">
 											<img
 												alt={destinationData.title}
 												class="img-fluid img-thumbnail"
@@ -167,6 +171,7 @@
 								<div class="col-12">
 									<div class="form-floating">
 										<input
+											id="judul"
 											bind:value={destinationData.title}
 											class="form-control"
 											name="title"
@@ -174,7 +179,7 @@
 											required
 											type="text"
 										/>
-										<label>Judul</label>
+										<label for="judul">Judul</label>
 										{#if title_error !== ''}
 											{#each title_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -186,6 +191,7 @@
 								<div class="col-12">
 									<div class="form-floating">
 										<textarea
+											id="deskripsi"
 											bind:value={destinationData.description}
 											class="form-control"
 											name="description"
@@ -194,7 +200,7 @@
 											style="height: 100px"
 										/>
 
-										<label>Deskripsi</label>
+										<label for="deskripsi">Deskripsi</label>
 										{#if description_error !== ''}
 											{#each description_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -254,13 +260,7 @@
 {/if}
 
 <style>
-	.image-container {
-		position: relative;
-	}
-
-	.delete-btn {
-		position: absolute;
-		top: 5px;
-		right: 5px;
-	}
+    .image-container {
+        position: relative;
+    }
 </style>
