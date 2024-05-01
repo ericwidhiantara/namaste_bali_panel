@@ -329,39 +329,32 @@
 																/>
 															{/if}
 														</td>
-														<td>{team.name}
-															<br/>
+														<td
+															>{team.name}
+															<br />
 															Whatsapp : {team.whatsapp}
-															<br/>
+															<br />
 															{#if team.facebook}
 																<a href={team.facebook} target="#">
 																	<span class="badge bg-primary">Facebook</span>
 																</a>
 															{/if}
-																
+
 															{#if team.instagram}
-																
-															<a href={team.instagram} target="#">
-																
-																<span class="badge bg-danger">Instagram</span>
-															</a>
+																<a href={team.instagram} target="#">
+																	<span class="badge bg-danger">Instagram</span>
+																</a>
 															{/if}
 															{#if team.twitter}
-
-															<a href={team.twitter} target="#">
-																
-																<span class="badge bg-info">Twitter</span>
-															</a>
+																<a href={team.twitter} target="#">
+																	<span class="badge bg-info">Twitter</span>
+																</a>
 															{/if}
 															{#if team.tiktok}
-
-															<a href={team.tiktok} target="#">
-																
-																<span class="badge bg-success">Tiktok</span>
-															</a>
-															
+																<a href={team.tiktok} target="#">
+																	<span class="badge bg-success">Tiktok</span>
+																</a>
 															{/if}
-
 														</td>
 														<td>{team.role}</td>
 														<td>{team.address}</td>
@@ -453,8 +446,7 @@
 											</li>
 										{/each}
 										<li
-											class="paginate_button next page-item {pageNumber ===
-											teamInfo.total_pages
+											class="paginate_button next page-item {pageNumber === teamInfo.total_pages
 												? 'disabled'
 												: 'none'} "
 											id="DataTables_Table_0_next"

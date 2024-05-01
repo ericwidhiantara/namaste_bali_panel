@@ -35,13 +35,11 @@
 	let image;
 	let showImage = false;
 
-
 	let showPassword = false;
 
 	function togglePasswordVisibility() {
 		showPassword = !showPassword;
 	}
-
 
 	const { fetchData } = getContext('fetchData');
 
@@ -52,7 +50,7 @@
 			showImage = true;
 
 			const reader = new FileReader();
-			reader.addEventListener('load', function() {
+			reader.addEventListener('load', function () {
 				image.setAttribute('src', reader.result);
 			});
 			reader.readAsDataURL(file);
@@ -122,7 +120,6 @@
 			phone_error = error.response.data.data.phone;
 			password_error = error.response.data.data.password;
 
-
 			image_error = error.response.data.data.image;
 
 			// Handle error, show error message
@@ -187,7 +184,6 @@
 							</div>
 
 							<div class="row g-lg-3 g-2">
-
 								<div class="col-12">
 									<div class="form-floating">
 										<input
@@ -314,8 +310,7 @@
 {/if}
 
 <style>
-    .image-container {
-        position: relative;
-    }
-
+	.image-container {
+		position: relative;
+	}
 </style>

@@ -26,7 +26,7 @@
 	let tiktok = '';
 	let role = '';
 	let address = '';
-	
+
 	let isLoading = false;
 	let name_error = '';
 	let email_error = '';
@@ -95,7 +95,6 @@
 				// fetchData();
 				modalClose('close');
 
-				
 				name = '';
 				email = '';
 				whatsapp = '';
@@ -115,8 +114,7 @@
 				role_error = '';
 				address_error = '';
 				image_error = '';
-				
-			
+
 				input.value = '';
 				image.src = '';
 				showImage = false;
@@ -181,7 +179,10 @@
 							{#if error_msg}
 								<div class="alert alert-danger" role="alert">{error_msg}</div>
 							{/if}
-							<div class="alert alert-info" role="alert">Perhatian: Untuk Facebook, Instagram, Twitter, Tiktok harap dimasukan URL nya, contoh : https://facebook.com/username</div>
+							<div class="alert alert-info" role="alert">
+								Perhatian: Untuk Facebook, Instagram, Twitter, Tiktok harap dimasukan URL nya,
+								contoh : https://facebook.com/username
+							</div>
 
 							<div class="row g-lg-3 g-2">
 								<div class="col-12">
@@ -238,40 +239,40 @@
 										{/if}
 									</div>
 								</div>
-									<div class="col-12">
-										<div class="form-floating">
-											<input
-												bind:value={facebook}
-												class="form-control"
-												name="facebook"
-												placeholder="Masukan link facebook : contoh https://facebook.com/username"
-												type="text"
-											/>
-											<label>Facebook</label>
-											{#if facebook_error !== ''}
-												{#each facebook_error as error}
-													<div class="invalid-feedback d-block">{error}</div>
-												{/each}
-											{/if}
-										</div>
+								<div class="col-12">
+									<div class="form-floating">
+										<input
+											bind:value={facebook}
+											class="form-control"
+											name="facebook"
+											placeholder="Masukan link facebook : contoh https://facebook.com/username"
+											type="text"
+										/>
+										<label>Facebook</label>
+										{#if facebook_error !== ''}
+											{#each facebook_error as error}
+												<div class="invalid-feedback d-block">{error}</div>
+											{/each}
+										{/if}
 									</div>
-									<div class="col-12">
-										<div class="form-floating">
-											<input
-												bind:value={instagram}
-												class="form-control"
-												name="instagram"
-												placeholder="Masukan link instagram : contoh https://instagram.com/username"
-												type="text"
-											/>
-											<label>Instagram</label>
-											{#if instagram_error !== ''}
-												{#each instagram_error as error}
-													<div class="invalid-feedback d-block">{error}</div>
-												{/each}
-											{/if}
-										</div>
+								</div>
+								<div class="col-12">
+									<div class="form-floating">
+										<input
+											bind:value={instagram}
+											class="form-control"
+											name="instagram"
+											placeholder="Masukan link instagram : contoh https://instagram.com/username"
+											type="text"
+										/>
+										<label>Instagram</label>
+										{#if instagram_error !== ''}
+											{#each instagram_error as error}
+												<div class="invalid-feedback d-block">{error}</div>
+											{/each}
+										{/if}
 									</div>
+								</div>
 								<div class="col-12">
 									<div class="form-floating">
 										<input

@@ -140,7 +140,7 @@
 		class="layout-border svgstroke-a layout-default auth rightbar-hide"
 		data-sveltekit-preload-data="hover"
 	>
-	<slot />
+		<slot />
 	</body>
 {:else}
 	<!-- start: main grid layout -->
@@ -404,9 +404,7 @@
 									<li>
 										<a
 											href="/features/teams"
-											class={$page.url.pathname.startsWith('/features/teams')
-												? 'active'
-												: ''}
+											class={$page.url.pathname.startsWith('/features/teams') ? 'active' : ''}
 											aria-label="Project">Tim</a
 										>
 									</li>
@@ -460,13 +458,10 @@
 					<li class="breadcrumb-item active" aria-current="page" title="">
 						{#if $page.url.pathname.startsWith('/features/destinations')}
 							Destinasi Wisata
-
 						{:else if $page.url.pathname.startsWith('/features/teams')}
 							Tim
-
 						{:else if $page.url.pathname.startsWith('/features/users')}
 							Pengguna
-
 						{:else}
 							Users
 						{/if}

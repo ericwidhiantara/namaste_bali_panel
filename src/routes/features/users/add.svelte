@@ -33,13 +33,11 @@
 	let image;
 	let showImage = false;
 
-
 	let showPassword = false;
 
 	function togglePasswordVisibility() {
 		showPassword = !showPassword;
 	}
-
 
 	function onChange() {
 		const file = input.files[0];
@@ -48,7 +46,7 @@
 			showImage = true;
 
 			const reader = new FileReader();
-			reader.addEventListener('load', function() {
+			reader.addEventListener('load', function () {
 				image.setAttribute('src', reader.result);
 			});
 			reader.readAsDataURL(file);
@@ -91,7 +89,6 @@
 				// fetchData();
 				modalClose('close');
 
-
 				name = '';
 				username = '';
 				email = '';
@@ -102,7 +99,6 @@
 				phone_error = '';
 				password_error = '';
 				image_error = '';
-
 
 				input.value = '';
 				image.src = '';
@@ -267,13 +263,17 @@
 											{/each}
 										{/if}
 										<!-- Icon to toggle password vi	sibility -->
-										<span class="icon" on:click={togglePasswordVisibility} style="padding-right: 10px">
-							{#if showPassword}
-								<i class="bi bi-eye-slash-fill"></i>
-							{:else}
-								<i class="bi bi-eye-fill"></i>
-							{/if}
-						</span>
+										<span
+											class="icon"
+											on:click={togglePasswordVisibility}
+											style="padding-right: 10px"
+										>
+											{#if showPassword}
+												<i class="bi bi-eye-slash-fill"></i>
+											{:else}
+												<i class="bi bi-eye-fill"></i>
+											{/if}
+										</span>
 									</div>
 								</div>
 
@@ -330,19 +330,19 @@
 {/if}
 
 <style>
-    .input-with-icon {
-        position: relative;
-    }
+	.input-with-icon {
+		position: relative;
+	}
 
-    .input-with-icon input {
-        padding-right: 2.5rem; /* Adjust padding to accommodate the icon */
-    }
+	.input-with-icon input {
+		padding-right: 2.5rem; /* Adjust padding to accommodate the icon */
+	}
 
-    .input-with-icon .icon {
-        position: absolute;
-        top: 50%;
-        right: 0.5rem; /* Adjust the distance of the icon from the right */
-        transform: translateY(-50%);
-        cursor: pointer;
-    }
+	.input-with-icon .icon {
+		position: absolute;
+		top: 50%;
+		right: 0.5rem; /* Adjust the distance of the icon from the right */
+		transform: translateY(-50%);
+		cursor: pointer;
+	}
 </style>
