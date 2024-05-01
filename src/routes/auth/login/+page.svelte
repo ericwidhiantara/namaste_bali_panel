@@ -6,8 +6,8 @@
 	import { jwtDecode } from 'jwt-decode';
 	import { FlatToast, ToastContainer, toasts } from 'svelte-toasts';
 
-	let error_msg;
-	let success_msg;
+	let error_msg = '';
+	let success_msg = '';
 	let isLoading = false;
 
 	const clientTitle = env.PUBLIC_CLIENT_NAME;
@@ -25,11 +25,12 @@
 		access_token: string;
 		refresh_token: string;
 
-		constructor(response) {
+		constructor(response: any) {
 			this.access_token = response.data.data.access_token;
 			this.refresh_token = response.data.data.refresh_token;
 		}
 	}
+
 
 	async function login() {
 		try {
@@ -61,7 +62,7 @@
 				// Redirect to dashboard
 				window.location.href = '/';
 			}
-		} catch (error) {
+		} catch (error: any) {
 			isLoading = false;
 			// Handle error, show error message
 			error_msg = error.response.data.meta.message ?? 'An error occurred, please try again later';
@@ -77,6 +78,7 @@
 		}
 	}
 
+
 	function checkTokenExpiry() {
 		const access_token = localStorage.getItem('access_token');
 		if (!access_token) {
@@ -85,7 +87,8 @@
 		}
 		// Decode JWT to get expiry time
 		const decoded = jwtDecode(access_token);
-		const expiry_time = decoded.exp * 1000;
+		const expired = decoded?.exp ?? 0;
+		const expiry_time = expired * 1000;
 
 		if (expiry_time && expiry_time > Date.now()) {
 			// Token is still valid
@@ -148,10 +151,11 @@
 					<div class="alert alert-success" role="alert">{success_msg}</div>
 				{/if}
 				<li class="col-12">
-					<label class="form-label">Username</label>
+					<label class="form-label" for="username">Username</label>
 					<input
 						bind:value={username}
 						class="form-control form-control-lg"
+						id="username"
 						name="username"
 						placeholder="Input your username"
 						type="text"
@@ -178,13 +182,15 @@
 						{/if}
 
 						<!-- Icon to toggle password vi	sibility -->
-						<span class="icon" on:click={togglePasswordVisibility} style="padding-right: 10px">
+						<button aria-label="Toggle password visibility" class="icon" on:click={() => togglePasswordVisibility()}
+										style="padding-right: 10px; border: none; background-color: transparent;"
+										type="button">
 							{#if showPassword}
 								<i class="bi bi-eye-slash-fill"></i>
 							{:else}
 								<i class="bi bi-eye-fill"></i>
 							{/if}
-						</span>
+						</button>
 					</div>
 				</li>
 
@@ -219,19 +225,19 @@
 </main>
 
 <style>
-	.input-with-icon {
-		position: relative;
-	}
+    .input-with-icon {
+        position: relative;
+    }
 
-	.input-with-icon input {
-		padding-right: 2.5rem; /* Adjust padding to accommodate the icon */
-	}
+    .input-with-icon input {
+        padding-right: 2.5rem; /* Adjust padding to accommodate the icon */
+    }
 
-	.input-with-icon .icon {
-		position: absolute;
-		top: 50%;
-		right: 0.5rem; /* Adjust the distance of the icon from the right */
-		transform: translateY(-50%);
-		cursor: pointer;
-	}
+    .input-with-icon .icon {
+        position: absolute;
+        top: 50%;
+        right: 0.5rem; /* Adjust the distance of the icon from the right */
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
 </style>
