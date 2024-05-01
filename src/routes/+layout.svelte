@@ -6,14 +6,14 @@
 	import axios, { type AxiosRequestConfig, type RawAxiosRequestHeaders } from 'axios';
 
 	class UserModel {
-		id: String;
-		name: String;
-		email: String;
-		phone: String;
-		picture: String;
-		is_active: Boolean;
+		id: string;
+		name: string;
+		email: string;
+		phone: string;
+		picture: string;
+		is_active: boolean;
 
-		constructor(data) {
+		constructor(data: any) {
 			this.id = data.id;
 			this.name = data.name;
 			this.email = data.email;
@@ -28,7 +28,7 @@
 		sub: Number;
 		user: UserModel;
 
-		constructor(data) {
+		constructor(data: any) {
 			this.exp = data.exp;
 			this.sub = data.sub;
 			this.user = new UserModel(data.user);
@@ -37,7 +37,7 @@
 
 	let user = new UserModel({});
 
-	function loadScript(src) {
+	function loadScript(src: string) {
 		return new Promise((resolve, reject) => {
 			const script = document.createElement('script');
 			script.src = src;
@@ -202,7 +202,7 @@
 				<div class="mb-2">
 					<a
 						class="d-flex align-items-center lh-sm p-0"
-						href="#"
+						href={'#'}
 						role="button"
 						data-bs-toggle="dropdown"
 						aria-expanded="false"
@@ -227,13 +227,13 @@
 
 						<a
 							class="btn py-2 btn-primary w-100 mt-3 rounded-pill"
-							href="#"
+							href={'#'}
 							on:click={logout}
 							role="button">Logout</a
 						>
 					</div>
 				</div>
-				<a href="#" class="btn p-1" title="Sign out">
+				<a href={'#'} class="btn p-1" title="Sign out">
 					<svg
 						class="svg-stroke"
 						xmlns="http://www.w3.org/2000/svg"
@@ -261,7 +261,7 @@
 					<li class="nav-item user ms-3">
 						<a
 							class="dropdown-toggle gray-6 d-flex text-decoration-none align-items-center lh-sm p-0"
-							href="#"
+							href={'#'}
 							role="button"
 							data-bs-toggle="dropdown"
 							aria-expanded="false"
@@ -279,7 +279,7 @@
 
 							<a
 								class="btn py-2 btn-primary w-100 mt-3 rounded-pill"
-								href="#"
+								href={'#'}
 								on:click={logout}
 								role="button">Logout</a
 							>
@@ -449,7 +449,7 @@
 				<ol class="breadcrumb mb-0 bg-transparent">
 					<li class="breadcrumb-item"><a href="/" title="home">Home</a></li>
 					<li class="breadcrumb-item">
-						<a href="#" title="App">
+						<a href={'#'} title="App">
 							{#if $page.url.pathname.startsWith('/features')}
 								Fitur
 							{/if}
@@ -463,7 +463,7 @@
 						{:else if $page.url.pathname.startsWith('/features/users')}
 							Pengguna
 						{:else}
-							Users
+							Dashboard
 						{/if}
 					</li>
 				</ol>
