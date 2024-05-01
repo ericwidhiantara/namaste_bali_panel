@@ -17,7 +17,7 @@
 		created_at: number;
 		updated_at: number;
 
-		constructor(data) {
+		constructor(data: any) {
 			this.id = data.id;
 			this.title = data.title;
 			this.slug = data.slug;
@@ -35,7 +35,7 @@
 		total_pages: number;
 		destinations: DestinationModel[];
 
-		constructor(data) {
+		constructor(data: any) {
 			this.page_number = data.page_number;
 			this.page_size = data.page_size;
 			this.total = data.total;
@@ -50,8 +50,7 @@
 	let pageSize = '10'; // Define page size
 	let pageSizes = ['10', '25', '50', '100'];
 	let search = '';
-	let token;
-	let searchTimeout;
+	let searchTimeout = 0;
 
 	// Define a sample destination data;;
 	let destinationData = new DestinationModel({
@@ -79,7 +78,7 @@
 		}
 	}
 
-	const deletedestination = async (id) => {
+	const deletedestination = async (id: string) => {
 		try {
 			const { isConfirmed } = await Swal.fire({
 				title: 'Are you sure?',
@@ -105,7 +104,7 @@
 					await fetchData();
 				}
 			}
-		} catch (error) {
+		} catch (error: any) {
 			toasts.error({
 				title: 'Oops!',
 				description:
@@ -118,7 +117,7 @@
 		}
 	};
 
-	function handleChange(event) {
+	function handleChange(event: any) {
 		pageNumber = 1; // Reset page number to 1
 		pageSize = event.target.value;
 		fetchData(); // Fetch data with the updated page size
@@ -138,7 +137,7 @@
 		}
 	}
 
-	function handleSearch(event) {
+	function handleSearch(event: any) {
 		// Clear previous timeout to debounce the input
 		clearTimeout(searchTimeout);
 
@@ -151,19 +150,10 @@
 	}
 
 	// function to update the destinationdata images when user delete a single image
-	const updatedestinationDataImages = (newData) => {
+	const updatedestinationDataImages = (newData: any) => {
 		console.log('parent updated', newData.detail);
-		destinationData.images = newData.detail;
+		destinationData.image = newData.detail;
 	};
-
-	function formatDate(date: string): string {
-		const options: Intl.DateTimeFormatOptions = {
-			day: 'numeric',
-			month: 'long',
-			year: 'numeric'
-		};
-		return new Intl.DateTimeFormat('id-ID', options).format(new Date(date));
-	}
 
 	function formatHumanDate(timestamp: number): string {
 		const date = new Date(timestamp * 1000); // Convert Unix timestamp to milliseconds
@@ -180,7 +170,7 @@
 		showAddPopup = true;
 	};
 
-	const onPopupAddClose = (data) => {
+	const onPopupAddClose = (data: any) => {
 		showAddPopup = false;
 		fetchData();
 
@@ -189,13 +179,13 @@
 
 	let showEditPopup = false;
 
-	const onShowEditPopup = (item?) => {
+	const onShowEditPopup = (item?: any) => {
 		destinationData = item;
 
 		showEditPopup = true;
 	};
 
-	const onPopupEditClose = (data) => {
+	const onPopupEditClose = (data: any) => {
 		showEditPopup = false;
 		fetchData();
 
@@ -223,7 +213,7 @@
 			<div class="card">
 				<div class="card-header">
 					<h4 class="card-title">List Destinasi Wisata</h4>
-					<a class="btn btn-primary" href="#" on:click={onShowAddPopup} role="button">
+					<a class="btn btn-primary" href="{'#'}" on:click={onShowAddPopup} role="button">
 						<i class="fa fa-plus-circle me-1"></i>Tambah Destinasi Wisata
 					</a>
 				</div>
@@ -251,13 +241,13 @@
 							<div class="col-sm-12 col-md-6">
 								<div class="dataTables_filter" id="DataTables_Table_0_filter">
 									<label
-										>Pencarian:<input
-											aria-controls="DataTables_Table_0"
-											class="form-control form-control-sm"
-											on:input={handleSearch}
-											placeholder=""
-											type="search"
-										/></label
+									>Pencarian:<input
+										aria-controls="DataTables_Table_0"
+										class="form-control form-control-sm"
+										on:input={handleSearch}
+										placeholder=""
+										type="search"
+									/></label
 									>
 								</div>
 							</div>
@@ -271,70 +261,71 @@
 									style="width: 100%;"
 								>
 									<thead>
-										<tr>
-											<th scope="col">#</th>
-											<th scope="col">Foto</th>
-											<th scope="col">Nama Tempat Wisata</th>
-											<th scope="col">Deskripsi</th>
-											<th scope="col">Dibuat Pada</th>
-											<th scope="col">Aksi</th>
-										</tr>
+									<tr>
+										<th scope="col">#</th>
+										<th scope="col">Foto</th>
+										<th scope="col">Nama Tempat Wisata</th>
+										<th scope="col">Deskripsi</th>
+										<th scope="col">Dibuat Pada</th>
+										<th scope="col">Aksi</th>
+									</tr>
 									</thead>
 									<tbody>
-										{#await fetchData()}
+									{#await fetchData()}
+										<tr>
+											<td colspan="6" class="text-center">Loading...</td>
+										</tr>
+									{:then _}
+										{#if destinations.length <= 0}
 											<tr>
-												<td colspan="6" class="text-center">Loading...</td>
+												<td colspan="6" class="text-center">Tidak ada data</td>
 											</tr>
-										{:then result}
-											{#if destinations.length <= 0}
+										{:else}
+											{#each destinations as destination, index}
 												<tr>
-													<td colspan="6" class="text-center">Tidak ada data</td>
-												</tr>
-											{:else}
-												{#each destinations as destination, index}
-													<tr>
-														<!-- Calculate the correct row number based on the current page number and page size -->
-														<th scope="row">{(pageNumber - 1) * pageSize + index + 1}</th>
-														<td>
-															{#if destination.image !== null || destination.image !== ''}
-																<img
-																	src={destination.image}
-																	alt={destination.title}
-																	style="width: 100px; height: 100px; object-fit: cover;"
-																/>
-															{:else}
-																<img
-																	src="https://via.placeholder.com/100"
-																	alt={destination.title}
-																	style="width: 100px; height: 100px; object-fit: cover;"
-																/>
-															{/if}
-														</td><td>{destination.title}</td>
-														<td>{destination.description}</td>
+													<!-- Calculate the correct row number based on the current page number and page size -->
+													<th scope="row">{(pageNumber - 1) * parseInt(pageSize) + index + 1}</th>
+													<td>
+														{#if destination.image !== null || destination.image !== ''}
+															<img
+																src={destination.image}
+																alt={destination.title}
+																style="width: 100px; height: 100px; object-fit: cover;"
+															/>
+														{:else}
+															<img
+																src="https://via.placeholder.com/100"
+																alt={destination.title}
+																style="width: 100px; height: 100px; object-fit: cover;"
+															/>
+														{/if}
+													</td>
+													<td>{destination.title}</td>
+													<td>{destination.description}</td>
 
-														<td>{formatHumanDate(destination.created_at)}</td>
-														<td style="position: sticky; right: 0">
-															<a
-																href="#"
-																on:click={() => onShowEditPopup(destination)}
-																class="btn btn-info btn-sm"
-																style="color: white;"
-															>
-																<i class="bi bi-pencil-square"></i>
-															</a>
-															<button
-																type="button"
-																class="btn btn-danger btn-sm"
-																style="color: white;"
-																on:click={() => deletedestination(destination.id)}
-															>
-																<i class="bi bi-trash"></i>
-															</button>
-														</td>
-													</tr>
-												{/each}
-											{/if}
-										{/await}
+													<td>{formatHumanDate(destination.created_at)}</td>
+													<td style="position: sticky; right: 0">
+														<a
+															href="{'#'}"
+															on:click={() => onShowEditPopup(destination)}
+															class="btn btn-info btn-sm"
+															style="color: white;"
+														>
+															<i class="bi bi-pencil-square"></i>
+														</a>
+														<button
+															type="button"
+															class="btn btn-danger btn-sm"
+															style="color: white;"
+															on:click={() => deletedestination(destination.id)}
+														>
+															<i class="bi bi-trash"></i>
+														</button>
+													</td>
+												</tr>
+											{/each}
+										{/if}
+									{/await}
 									</tbody>
 								</table>
 							</div>
@@ -348,10 +339,10 @@
 									role="status"
 								>
 									{#if destinationInfo.total > 0}
-										Menampilkan {(pageNumber - 1) * pageSize + 1} sampai {Math.min(
-											pageNumber * pageSize,
-											destinationInfo.total
-										)} dari {destinationInfo.total} data
+										Menampilkan {(pageNumber - 1) * parseInt(pageSize) + 1} sampai {Math.min(
+										pageNumber * parseInt(pageSize),
+										destinationInfo.total
+									)} dari {destinationInfo.total} data
 									{:else}
 										Tidak ada data yang ditemukan
 									{/if}
@@ -369,14 +360,15 @@
 												: 'none'}"
 											id="DataTables_Table_0_previous"
 										>
-											<a
+											<button
 												aria-controls="DataTables_Table_0"
 												aria-disabled="true"
 												class="page-link"
 												data-dt-idx="previous"
 												on:click={handlePrev}
 												role="link"
-												tabindex="0"><span aria-hidden="true">«</span></a
+												tabindex="0"
+												type="button"><span aria-hidden="true">«</span></button
 											>
 										</li>
 										{#each Array.from({ length: destinationInfo.total_pages }, (_, i) => i + 1) as page}
@@ -384,9 +376,8 @@
 												class="paginate_button page-item {pageNumber === page ? 'active' : 'none'}"
 											>
 												<a
-													href="#"
+													href="{'#'}"
 													aria-controls="DataTables_Table_0"
-													role="link"
 													aria-current="page"
 													data-dt-idx="0"
 													tabindex="0"
@@ -405,14 +396,15 @@
 												: 'none'} "
 											id="DataTables_Table_0_next"
 										>
-											<a
+											<button
 												aria-controls="DataTables_Table_0"
 												aria-disabled="true"
 												class="page-link"
 												data-dt-idx="next"
 												on:click={handleNext}
 												role="link"
-												tabindex="0"><span aria-hidden="true">»</span></a
+												tabindex="0"
+												type="button"><span aria-hidden="true">»</span></button
 											>
 										</li>
 									</ul>
@@ -426,28 +418,12 @@
 	</div>
 
 	<EditModal
+		{destinationData}
 		on:updateParentData={updatedestinationDataImages}
 		onClosed={(data) => onPopupEditClose(data)}
 		open={showEditPopup}
-		{destinationData}
 	/>
 
 	<AddModal onClosed={(data) => onPopupAddClose(data)} open={showAddPopup} />
 </div>
 <!-- end: page body area -->
-
-<!--&lt;!&ndash; Render the modal but keep it hidden &ndash;&gt;-->
-<!--<div-->
-<!--	aria-hidden="true"-->
-<!--	aria-labelledby="exampleModalXlLabel"-->
-<!--	bind:this={customModal}-->
-<!--	class="modal fade"-->
-<!--	id="exampleModalXl"-->
-<!--	tabindex="-1"-->
-<!--&gt;-->
-<!--	{#if isEditModal}-->
-<!--		<EditModal {destinationData} on:updateParentData={updatedestinationDataImages} />-->
-<!--	{:else}-->
-<!--		<AddModal />-->
-<!--	{/if}-->
-<!--</div>-->
