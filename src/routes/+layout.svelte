@@ -7,8 +7,7 @@
 
 	class UserModel {
 		id: String;
-		first_name: String;
-		last_name: String;
+		name: String;
 		email: String;
 		phone: String;
 		picture: String;
@@ -16,8 +15,7 @@
 
 		constructor(data) {
 			this.id = data.id;
-			this.first_name = data.first_name;
-			this.last_name = data.last_name;
+			this.name = data.name;
 			this.email = data.email;
 			this.phone = data.phone;
 			this.picture = data.picture;
@@ -119,7 +117,7 @@
 		}
 	}
 
-	const FEATURES_PATH = ['/destinations', '/users'];
+	const FEATURES_PATH = ['/destinations', '/teams', '/users'];
 	const featurePath = () => {
 		for (let i = 0; i < FEATURES_PATH.length; i++) {
 			if ($page.url.pathname.startsWith(`/features/${FEATURES_PATH[i]}`)) {
@@ -142,7 +140,7 @@
 		class="layout-border svgstroke-a layout-default auth rightbar-hide"
 		data-sveltekit-preload-data="hover"
 	>
-		<slot />
+	<slot />
 	</body>
 {:else}
 	<!-- start: main grid layout -->
@@ -218,7 +216,7 @@
 					</a>
 					<div class="dropdown-menu dropdown-menu-end shadow p-2 p-xl-3 rounded-4">
 						<div class="bg-body p-3 rounded-3">
-							<h4 class="mb-1 title-font text-gradient">{user.first_name}</h4>
+							<h4 class="mb-1 title-font text-gradient">{user.name}</h4>
 							<p class="small text-muted">{user.email}</p>
 							<input
 								type="text"
@@ -271,11 +269,11 @@
 							data-bs-auto-close="outside"
 						>
 							<img class="avatar rounded-circle border border-3" src={user.picture} alt="avatar" />
-							<span class="ms-2 fs-6 d-none d-sm-inline-flex">{user.first_name}</span>
+							<span class="ms-2 fs-6 d-none d-sm-inline-flex">{user.name}</span>
 						</a>
 						<div class="dropdown-menu dropdown-menu-end shadow p-2 p-xl-3 rounded-4">
 							<div class="bg-body p-3 rounded-3">
-								<h4 class="mb-1 title-font text-gradient">{user.first_name} {user.last_name}</h4>
+								<h4 class="mb-1 title-font text-gradient">{user.name}</h4>
 								<p class="small text-muted">{user.email}</p>
 							</div>
 
@@ -416,7 +414,7 @@
 										<a
 											href="/features/users"
 											class={$page.url.pathname.startsWith('/features/users') ? 'active' : ''}
-											aria-label="Project">Users</a
+											aria-label="Project">Pengguna</a
 										>
 									</li>
 								</ul>
@@ -462,13 +460,13 @@
 					<li class="breadcrumb-item active" aria-current="page" title="">
 						{#if $page.url.pathname.startsWith('/features/destinations')}
 							Destinasi Wisata
-						
+
 						{:else if $page.url.pathname.startsWith('/features/teams')}
 							Tim
-						
+
 						{:else if $page.url.pathname.startsWith('/features/users')}
 							Pengguna
-							
+
 						{:else}
 							Users
 						{/if}
