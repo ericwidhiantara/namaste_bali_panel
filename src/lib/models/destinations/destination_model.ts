@@ -5,12 +5,12 @@ export class DestinationModel {
 	total_pages: number;
 	destinations: DestinationDataModel[];
 
-	constructor(data: any) {
-		this.page_number = data.page_number;
-		this.page_size = data.page_size;
-		this.total = data.total;
-		this.total_pages = data.total_pages;
-		this.destinations = data.destinations;
+	constructor(data: Partial<DestinationModel> = {}) {
+		this.page_number = data.page_number || 0;
+		this.page_size = data.page_size || 0;
+		this.total = data.total || 0;
+		this.total_pages = data.total_pages || 0;
+		this.destinations = data.destinations || [];
 	}
 }
 
