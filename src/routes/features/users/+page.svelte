@@ -6,49 +6,13 @@
 	import { FlatToast, ToastContainer, toasts } from 'svelte-toasts';
 	import Swal from 'sweetalert2';
 	import { jwtDecode } from 'jwt-decode';
+	import { UserDataModel, type UserModel } from '$lib/models/users/user_model';
+	import { JWTModel } from '$lib/models/general/jwt_model';
 
 	setContext('fetchData', { fetchData });
 
-	class UserModel {
-		id: string;
-		name: string;
-		username: string;
-		email: string;
-		phone: string;
-		picture: string;
-		created_at: number;
-		updated_at: number;
-
-		constructor(data: any) {
-			this.id = data.id;
-			this.name = data.name;
-			this.username = data.username;
-			this.email = data.email;
-			this.phone = data.whatsapp;
-			this.picture = data.picture;
-			this.created_at = data.created_at;
-			this.updated_at = data.updated_at;
-		}
-	}
-
-	class UserDataModel {
-		page_number: number;
-		page_size: number;
-		total: number;
-		total_pages: number;
-		users: UserModel[];
-
-		constructor(data: any) {
-			this.page_number = data.page_number;
-			this.page_size = data.page_size;
-			this.total = data.total;
-			this.total_pages = data.total_pages;
-			this.users = data.users;
-		}
-	}
-
-	let users = [] as UserModel[];
-	let userInfo = {} as UserDataModel;
+	let users = [] as UserDataModel[];
+	let userInfo = {} as UserModel;
 	let pageNumber = 1; // Define page number
 	let pageSize = '10'; // Define page size
 	let pageSizes = ['10', '25', '50', '100'];
@@ -57,16 +21,7 @@
 	let searchTimeout = 0;
 
 	// Define a sample user data;;
-	let userData = new UserModel({
-		id: '',
-		name: '',
-		username: '',
-		email: '',
-		whatsapp: '',
-		picture: '',
-		created_at: 0,
-		updated_at: 0
-	});
+	let userData = {} as UserDataModel;
 
 	async function fetchData() {
 		try {
@@ -206,19 +161,7 @@
 		console.log(data);
 	};
 
-	class JWTModel {
-		exp: Number;
-		sub: Number;
-		user: UserModel;
-
-		constructor(data) {
-			this.exp = data.exp;
-			this.sub = data.sub;
-			this.user = new UserModel(data.user);
-		}
-	}
-
-	let userLogin = new UserModel({});
+	let userLogin = {} as UserDataModel;
 
 	function getUserLogin() {
 		const access_token = localStorage.getItem('access_token');
@@ -229,7 +172,11 @@
 		// Decode JWT to get expiry time
 		const decoded = jwtDecode(access_token);
 
-		const jwtData = new JWTModel(decoded);
+		const jwtData = new JWTModel({
+			exp: decoded.exp,
+			sub: decoded.sub,
+			user: decoded.user
+		});
 
 		userLogin = jwtData.user;
 	}
