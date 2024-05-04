@@ -68,7 +68,7 @@ const showSessionExpiredNotification = () => {
 		// Redirect to the login page or any other appropriate action
 		setTimeout(() => {
 			window.location.href = '/auth/login';
-		}, 3000);
+		}, 3001);
 	});
 };
 
