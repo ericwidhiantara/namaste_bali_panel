@@ -6,7 +6,6 @@
 	import { getContext } from 'svelte';
 	import { DestinationDataModel } from '$lib/models/destinations/destination_model';
 
-
 	export let open = false;
 	export let showBackdrop = true;
 	export let onClosed: (data: any) => void;
@@ -18,9 +17,7 @@
 		}
 	};
 
-
 	export let destinationData: DestinationDataModel;
-
 
 	let error_msg = '';
 	let isLoading = false;
@@ -40,7 +37,7 @@
 			showImage = true;
 
 			const reader = new FileReader();
-			reader.addEventListener('load', function() {
+			reader.addEventListener('load', function () {
 				if (typeof reader.result === 'string') {
 					image.setAttribute('src', reader.result);
 				}
@@ -76,7 +73,6 @@
 					showConfirmButton: false,
 					timer: 1500
 				});
-
 
 				const modalElement = document.querySelector('#exampleModalXl');
 				const bodyElement = document.querySelector('body');
@@ -120,7 +116,6 @@
 			});
 		}
 	}
-
 </script>
 
 {#if open}
@@ -156,7 +151,7 @@
 							<div class="row text-center text-lg-start">
 								<div class="col-lg-3 col-md-4 col-6">
 									<div class="image-container">
-										<a class="d-block mb-4 h-100" href="{'#'}">
+										<a class="d-block mb-4 h-100" href={'#'}>
 											<img
 												alt={destinationData.title}
 												class="img-fluid img-thumbnail"
@@ -260,7 +255,7 @@
 {/if}
 
 <style>
-    .image-container {
-        position: relative;
-    }
+	.image-container {
+		position: relative;
+	}
 </style>
