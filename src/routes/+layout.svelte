@@ -3,7 +3,6 @@
 	import { onMount } from 'svelte';
 	import { jwtDecode } from 'jwt-decode';
 	import Swal from 'sweetalert2';
-	import axios, { type AxiosRequestConfig, type RawAxiosRequestHeaders } from 'axios';
 
 	class UserModel {
 		id: string;
@@ -59,33 +58,6 @@
 		const jwtData = new JWTModel(decoded);
 
 		user = jwtData.user;
-		getUserPicture();
-	}
-
-	async function getUserPicture() {
-		const access_token = localStorage.getItem('access_token');
-		if (!access_token) {
-			// Token is not available
-			return false;
-		}
-		try {
-			const config: AxiosRequestConfig = {
-				headers: {
-					Accept: 'application/json',
-					Authorization: `Bearer ${access_token}`
-				} as RawAxiosRequestHeaders
-			};
-			const response = await axios.get('http://localhost:8000/get-picture', config);
-
-			if (response.status === 200) {
-				// Assuming user is defined elsewhere
-				user.picture = response.data;
-				return response.data;
-			}
-			return 'https://via.placeholder.com/150x150';
-		} catch (error) {
-			console.error('Error fetching data:', error);
-		}
 	}
 
 	function logout() {
@@ -117,7 +89,7 @@
 		}
 	}
 
-	const FEATURES_PATH = ['/destinations', '/teams', '/users'];
+	const FEATURES_PATH = ['/destinations', '/teams', '/users', 'orders'];
 	const featurePath = () => {
 		for (let i = 0; i < FEATURES_PATH.length; i++) {
 			if ($page.url.pathname.startsWith(`/features/${FEATURES_PATH[i]}`)) {
@@ -410,6 +382,13 @@
 									</li>
 									<li>
 										<a
+											href="/features/orders"
+											class={$page.url.pathname.startsWith('/features/orders') ? 'active' : ''}
+											aria-label="Project">Pesanan</a
+										>
+									</li>
+									<li>
+										<a
 											href="/features/users"
 											class={$page.url.pathname.startsWith('/features/users') ? 'active' : ''}
 											aria-label="Project">Pengguna</a
@@ -462,6 +441,8 @@
 							Tim
 						{:else if $page.url.pathname.startsWith('/features/users')}
 							Pengguna
+						{:else if $page.url.pathname.startsWith('/features/orders')}
+							Pesanan
 						{:else}
 							Dashboard
 						{/if}
