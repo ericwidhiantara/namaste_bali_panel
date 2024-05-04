@@ -47,12 +47,13 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
 	(response) => response,
 	(error) => {
+		if (window.location.pathname === '/auth/login') return Promise.reject(error);
 		// Handle error responses
 		if (error.response && (error.response.status === 401 || error.response.status === 403)) {
 			// Show notification about session expiration
 			showSessionExpiredNotification();
 			// Immediately force logout
-			logout();
+			// logout();
 		}
 		return Promise.reject(error);
 	}
@@ -65,20 +66,11 @@ const showSessionExpiredNotification = () => {
 		title: 'Session Expired',
 		text: 'Your session has expired. Please log in again.'
 	}).then(() => {
+		// Perform logout action here, such as clearing local storage, redirecting to login page, etc.
+		localStorage.removeItem('access_token');
 		// Redirect to the login page or any other appropriate action
-		setTimeout(() => {
-			window.location.href = '/auth/login';
-		}, 3001);
+		window.location.href = '/auth/login';
 	});
-};
-
-// Function to perform logout action
-const logout = () => {
-	// Perform logout action here, such as clearing local storage, redirecting to login page, etc.
-	localStorage.removeItem('access_token');
-	// Redirect to the login page or any other appropriate action
-	// Example:
-	window.location.href = '/auth/login';
 };
 
 export default axiosInstance;
