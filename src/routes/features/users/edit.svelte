@@ -50,7 +50,7 @@
 			showImage = true;
 
 			const reader = new FileReader();
-			reader.addEventListener('load', function () {
+			reader.addEventListener('load', function() {
 				image.setAttribute('src', reader.result);
 			});
 			reader.readAsDataURL(file);
@@ -113,7 +113,6 @@
 		} catch (error: any) {
 			isLoading = false;
 			// Get error response
-			console.log('error', error.response.data.data);
 			name_error = error.response.data.data.name;
 			username_error = error.response.data.data.username;
 			email_error = error.response.data.data.email;
@@ -310,7 +309,7 @@
 {/if}
 
 <style>
-	.image-container {
-		position: relative;
-	}
+    .image-container {
+        position: relative;
+    }
 </style>

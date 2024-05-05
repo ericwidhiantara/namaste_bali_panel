@@ -79,7 +79,6 @@
 		} catch (error: any) {
 			isLoading = false;
 			// Get error response
-			console.log('error', error.response.data.data);
 			customer_name_error = error.response.data.data.customer_name;
 			customer_email_error = error.response.data.data.customer_email;
 			customer_phone_error = error.response.data.data.customer_phone;
@@ -270,7 +269,7 @@
 									{/if}
 								</div>
 							</div>
-							
+
 						</div>
 					</div>
 

@@ -33,7 +33,7 @@
 			showImage = true;
 
 			const reader = new FileReader();
-			reader.addEventListener('load', function () {
+			reader.addEventListener('load', function() {
 				if (image) {
 					image.setAttribute('src', reader.result as string);
 				}
@@ -90,7 +90,7 @@
 		} catch (error: any) {
 			isLoading = false;
 			// Get error response
-			console.log('error', error.response.data.data);
+
 			title_error = error.response.data.data.title;
 			description_error = error.response.data.data.description;
 			image_error = error.response.data.data.images;

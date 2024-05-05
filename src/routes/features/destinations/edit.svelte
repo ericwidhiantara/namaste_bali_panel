@@ -37,7 +37,7 @@
 			showImage = true;
 
 			const reader = new FileReader();
-			reader.addEventListener('load', function () {
+			reader.addEventListener('load', function() {
 				if (typeof reader.result === 'string') {
 					image.setAttribute('src', reader.result);
 				}
@@ -98,7 +98,7 @@
 		} catch (error: any) {
 			isLoading = false;
 			// Get error response
-			console.log('error', error.response.data.data);
+
 			title_error = error.response.data.data.title;
 			description_error = error.response.data.data.description;
 			image_error = error.response.data.data.image;
@@ -255,7 +255,7 @@
 {/if}
 
 <style>
-	.image-container {
-		position: relative;
-	}
+    .image-container {
+        position: relative;
+    }
 </style>

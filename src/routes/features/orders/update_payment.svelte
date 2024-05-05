@@ -95,7 +95,6 @@
 		} catch (error: any) {
 			isLoading = false;
 			// Get error response
-			console.log('error', error.response.data.data);
 			if (error.response.status === 422) {
 				const errors = error.response.data.data;
 				payment_status_error = errors.payment_status;

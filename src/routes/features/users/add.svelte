@@ -46,7 +46,7 @@
 			showImage = true;
 
 			const reader = new FileReader();
-			reader.addEventListener('load', function () {
+			reader.addEventListener('load', function() {
 				image.setAttribute('src', reader.result);
 			});
 			reader.readAsDataURL(file);
@@ -107,7 +107,6 @@
 		} catch (error: any) {
 			isLoading = false;
 			// Get error response
-			console.log('error', error.response.data.data);
 			name_error = error.response.data.data.name;
 			username_error = error.response.data.data.username;
 			email_error = error.response.data.data.email;
@@ -330,19 +329,19 @@
 {/if}
 
 <style>
-	.input-with-icon {
-		position: relative;
-	}
+    .input-with-icon {
+        position: relative;
+    }
 
-	.input-with-icon input {
-		padding-right: 2.5rem; /* Adjust padding to accommodate the icon */
-	}
+    .input-with-icon input {
+        padding-right: 2.5rem; /* Adjust padding to accommodate the icon */
+    }
 
-	.input-with-icon .icon {
-		position: absolute;
-		top: 50%;
-		right: 0.5rem; /* Adjust the distance of the icon from the right */
-		transform: translateY(-50%);
-		cursor: pointer;
-	}
+    .input-with-icon .icon {
+        position: absolute;
+        top: 50%;
+        right: 0.5rem; /* Adjust the distance of the icon from the right */
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
 </style>

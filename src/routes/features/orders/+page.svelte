@@ -107,7 +107,7 @@
 
 	// function to update the orderdata payment_proofs when user delete a single payment_proof
 	const updateorderDataImages = (newData: any) => {
-		console.log('parent updated', newData.detail);
+
 		orderData = newData.detail;
 	};
 
@@ -130,7 +130,6 @@
 		showAddPopup = false;
 		fetchData();
 
-		console.log(data);
 	};
 
 
@@ -147,7 +146,6 @@
 		showPaymentPopup = false;
 		fetchData();
 
-		console.log(data);
 	};
 
 
@@ -163,7 +161,6 @@
 		showEditPopup = false;
 		fetchData();
 
-		console.log(data);
 	};
 
 	// Call fetchData function on component mount

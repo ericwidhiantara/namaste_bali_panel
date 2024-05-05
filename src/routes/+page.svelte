@@ -34,7 +34,7 @@
 
 			if (response.status === 200) {
 				data = response.data.data;
-				console.log('Data:', data);
+
 			} else {
 				console.error('Error fetching data:', response);
 			}

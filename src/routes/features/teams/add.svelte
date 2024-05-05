@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import Dropzone from 'svelte-file-dropzone';
 	import axios from '$lib/axios_client';
 	import Swal from 'sweetalert2';
 	import { toasts } from 'svelte-toasts';
@@ -49,7 +48,7 @@
 			showImage = true;
 
 			const reader = new FileReader();
-			reader.addEventListener('load', function () {
+			reader.addEventListener('load', function() {
 				image.setAttribute('src', reader.result);
 			});
 			reader.readAsDataURL(file);
@@ -58,6 +57,7 @@
 		}
 		showImage = false;
 	}
+
 	async function addTeam() {
 		try {
 			isLoading = true;
@@ -122,7 +122,6 @@
 		} catch (error) {
 			isLoading = false;
 			// Get error response
-			console.log('error', error.response.data.data);
 			name_error = error.response.data.data.name;
 			email_error = error.response.data.data.email;
 			whatsapp_error = error.response.data.data.whatsapp;
