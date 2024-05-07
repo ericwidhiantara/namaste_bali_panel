@@ -2,6 +2,8 @@
 	import { jwtDecode } from 'jwt-decode';
 	import { onMount } from 'svelte';
 	import axios from '$lib/axios_client';
+	import { DashboardModel } from '$lib/models/general/dashboard_model';
+
 
 	function checkTokenExpiry() {
 		const access_token = localStorage.getItem('access_token');
@@ -24,7 +26,7 @@
 		}
 	}
 
-	let data = {};
+	let data = new DashboardModel();
 
 	async function fetchData() {
 		try {
@@ -77,7 +79,7 @@
 		</div>
 	</div>
 	{#await fetchData()}
-
+		<br /> Loading ...
 	{:then _}
 		<div class="col-lg-12">
 			<div class="row g-3">
