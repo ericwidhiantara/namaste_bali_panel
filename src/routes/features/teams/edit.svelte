@@ -81,21 +81,8 @@
 
 			if (response.status === 200) {
 				isLoading = false;
-
-				name_error = '';
-				email_error = '';
-				whatsapp_error = '';
-				facebook_error = '';
-				instagram_error = '';
-				twitter_error = '';
-				tiktok_error = '';
-				role_error = '';
-				address_error = '';
-				image_error = '';
-
-				input.value = '';
-				image.src = '';
 				showImage = false;
+
 				// Login successful, redirect or show success message
 				await Swal.fire({
 					icon: 'success',
@@ -103,21 +90,6 @@
 					showConfirmButton: false,
 					timer: 1500
 				});
-
-				const modalElement = document.querySelector('#exampleModalXl');
-				const bodyElement = document.querySelector('body');
-
-				if (modalElement && bodyElement) {
-					modalElement.classList.remove('show');
-					bodyElement.classList.remove('modal-open');
-				}
-
-				const mdbackdrop = document.querySelector('.modal-backdrop');
-				if (mdbackdrop) {
-					mdbackdrop.classList.remove('modal-backdrop', 'show');
-				}
-
-				fetchData();
 
 				modalClose('close');
 

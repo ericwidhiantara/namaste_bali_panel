@@ -3,7 +3,7 @@
 	import axios from '$lib/axios_client';
 	import Swal from 'sweetalert2';
 	import { toasts } from 'svelte-toasts';
-	import { getContext, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { OrderDataModel } from '$lib/models/orders/order_model';
 	import type { UserDataModel } from '$lib/models/users/user_model';
 	import { jwtDecode } from 'jwt-decode';
@@ -31,8 +31,6 @@
 	let customer_address_error = '';
 	let total_price_error = '';
 
-	const { fetchData } = getContext('fetchData') as { fetchData: () => void };
-
 	async function editOrder() {
 		try {
 			isLoading = true;
@@ -58,20 +56,6 @@
 					showConfirmButton: false,
 					timer: 1500
 				});
-
-				const modalElement = document.querySelector('#exampleModalXl');
-				const bodyElement = document.querySelector('body');
-
-				if (modalElement && bodyElement) {
-					modalElement.classList.remove('show');
-					bodyElement.classList.remove('modal-open');
-				}
-
-				const mdbackdrop = document.querySelector('.modal-backdrop');
-				if (mdbackdrop) {
-					mdbackdrop.classList.remove('modal-backdrop', 'show');
-				}
-				fetchData();
 
 				modalClose('close');
 

@@ -5,7 +5,7 @@
 	import { toasts } from 'svelte-toasts';
 	import { jwtDecode } from 'jwt-decode';
 	import { type ExtendedJwt, JWTModel } from '$lib/models/general/jwt_model';
-	import { getContext, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import type { UserDataModel } from '$lib/models/users/user_model';
 	import { OrderDataModel } from '$lib/models/orders/order_model';
 
@@ -51,21 +51,21 @@
 		showImage = false;
 	}
 
-	const { fetchData } = getContext('fetchData') as { fetchData: () => void };
-
-
 	async function updatePaymentStatus() {
 		try {
 			isLoading = true;
 			const formData = new FormData();
 			formData.append('id', orderData.id);
 			formData.append('payment_status', payment_status);
-			formData.append('payment_proof', input.files![0]);
+			if (payment_status === 'paid') {
+				formData.append('payment_proof', input.files![0]);
+			}
 			formData.append('user_id', userLogin.id);
 
 			const response = await axios.patch(`/orders/payment`, formData);
 			if (response.status === 200) {
 				isLoading = false;
+				showImage = false;
 
 				// Login successful, redirect or show success message
 				await Swal.fire({
@@ -74,20 +74,6 @@
 					showConfirmButton: false,
 					timer: 1500
 				});
-
-				const modalElement = document.querySelector('#exampleModalXl');
-				const bodyElement = document.querySelector('body');
-
-				if (modalElement && bodyElement) {
-					modalElement.classList.remove('show');
-					bodyElement.classList.remove('modal-open');
-				}
-
-				const mdbackdrop = document.querySelector('.modal-backdrop');
-				if (mdbackdrop) {
-					mdbackdrop.classList.remove('modal-backdrop', 'show');
-				}
-				fetchData();
 
 				modalClose('close');
 
@@ -198,7 +184,7 @@
 									>
 
 									<input
-										required
+										required="{payment_status === 'paid'}"
 										id="payment_proof"
 										type="file"
 										accept="image/*"

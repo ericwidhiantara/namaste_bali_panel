@@ -3,7 +3,6 @@
 	import axios from '$lib/axios_client';
 	import Swal from 'sweetalert2';
 	import { toasts } from 'svelte-toasts';
-	import { getContext } from 'svelte';
 	import { DestinationDataModel } from '$lib/models/destinations/destination_model';
 
 	export let open = false;
@@ -27,8 +26,6 @@
 	let input: HTMLInputElement;
 	let image: HTMLImageElement;
 	let showImage = false;
-
-	const { fetchData } = getContext('fetchData') as { fetchData: () => void };
 
 	function onChange() {
 		const file = input.files![0];
@@ -65,6 +62,7 @@
 
 			if (response.status === 200) {
 				isLoading = false;
+				showImage = false;
 
 				// Login successful, redirect or show success message
 				await Swal.fire({
@@ -74,26 +72,8 @@
 					timer: 1500
 				});
 
-				const modalElement = document.querySelector('#exampleModalXl');
-				const bodyElement = document.querySelector('body');
-
-				if (modalElement && bodyElement) {
-					modalElement.classList.remove('show');
-					bodyElement.classList.remove('modal-open');
-				}
-
-				const mdbackdrop = document.querySelector('.modal-backdrop');
-				if (mdbackdrop) {
-					mdbackdrop.classList.remove('modal-backdrop', 'show');
-				}
-
-				input.value = '';
-				image.src = '';
-				showImage = false;
-
 				modalClose('close');
 
-				fetchData();
 			}
 		} catch (error: any) {
 			isLoading = false;
