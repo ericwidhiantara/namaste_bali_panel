@@ -3,25 +3,21 @@
 	import axios from '$lib/axios_client';
 	import Swal from 'sweetalert2';
 	import { toasts } from 'svelte-toasts';
-	import { createEventDispatcher, getContext } from 'svelte';
+	import { getContext } from 'svelte';
+	import type { UserDataModel } from '$lib/models/users/user_model';
 
 	export let open = false;
 	export let showBackdrop = true;
-	export let onClosed;
+	export let onClosed: (data: any) => void;
 
-	const modalClose = (data) => {
+	const modalClose = (data: any) => {
 		open = false;
 		if (onClosed) {
 			onClosed(data);
 		}
 	};
 
-	export let userData;
-
-	let files = {
-		accepted: [],
-		rejected: []
-	};
+	export let userData: UserDataModel;
 
 	let error_msg = '';
 	let isLoading = false;
@@ -29,29 +25,26 @@
 	let username_error = '';
 	let email_error = '';
 	let phone_error = '';
-	let password_error = '';
 	let image_error = '';
-	let input;
-	let image;
+	let input: HTMLInputElement;
+	let image: HTMLImageElement;
 	let showImage = false;
 
-	let showPassword = false;
 
-	function togglePasswordVisibility() {
-		showPassword = !showPassword;
-	}
+	const { fetchData } = getContext('fetchData') as { fetchData: () => void };
 
-	const { fetchData } = getContext('fetchData');
 
 	function onChange() {
-		const file = input.files[0];
+		const file = input.files![0];
 
 		if (file) {
 			showImage = true;
 
 			const reader = new FileReader();
 			reader.addEventListener('load', function() {
-				image.setAttribute('src', reader.result);
+				if (typeof reader.result === 'string') {
+					image.setAttribute('src', reader.result);
+				}
 			});
 			reader.readAsDataURL(file);
 
@@ -71,15 +64,13 @@
 			formData.append('email', userData.email);
 			formData.append('phone', userData.phone);
 
-			if (input.files[0]) {
-				formData.append('picture', input.files[0]);
+			if (input.files && input.files.length > 0) {
+				formData.append('picture', input.files![0]);
 			}
-
 			const response = await axios.patch(`/users`, formData);
 
 			if (response.status === 200) {
 				isLoading = false;
-
 				// Login successful, redirect or show success message
 				await Swal.fire({
 					icon: 'success',
@@ -87,24 +78,6 @@
 					showConfirmButton: false,
 					timer: 1500
 				});
-
-				document.querySelector('#exampleModalXl').classList.remove('show');
-				document.querySelector('body').classList.remove('modal-open');
-				const mdbackdrop = document.querySelector('.modal-backdrop');
-				if (mdbackdrop) {
-					mdbackdrop.classList.remove('modal-backdrop', 'show');
-				}
-
-				name_error = '';
-				username_error = '';
-				email_error = '';
-				phone_error = '';
-				password_error = '';
-				image_error = '';
-
-				input.value = '';
-				image.src = '';
-				showImage = false;
 
 				modalClose('close');
 
@@ -117,9 +90,8 @@
 			username_error = error.response.data.data.username;
 			email_error = error.response.data.data.email;
 			phone_error = error.response.data.data.phone;
-			password_error = error.response.data.data.password;
 
-			image_error = error.response.data.data.image;
+			image_error = error.response.data.data.picture;
 
 			// Handle error, show error message
 			error_msg = error.response.data.meta.message ?? 'An error occurred, please try again later';
@@ -135,7 +107,6 @@
 		}
 	}
 
-	const dispatch = createEventDispatcher();
 </script>
 
 {#if open}
@@ -171,7 +142,7 @@
 							<div class="row text-center text-lg-start">
 								<div class="col-lg-3 col-md-4 col-6">
 									<div class="image-container">
-										<a class="d-block mb-4 h-100" href="#">
+										<a class="d-block mb-4 h-100" href="{'#'}">
 											<img
 												alt={userData.name}
 												class="img-fluid img-thumbnail"
@@ -183,17 +154,17 @@
 							</div>
 
 							<div class="row g-lg-3 g-2">
-								<div class="col-12">
-									<div class="form-floating">
+								<div class="col-md-12">
+									<div>
+										<label for="name" class="form-label">Nama</label>
 										<input
 											bind:value={userData.name}
 											class="form-control"
 											name="name"
-											placeholder="Masukan nama"
+											placeholder="Masukan Nama"
 											required
 											type="text"
 										/>
-										<label>Nama</label>
 										{#if name_error !== ''}
 											{#each name_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -201,17 +172,18 @@
 										{/if}
 									</div>
 								</div>
-								<div class="col-12">
-									<div class="form-floating">
+								<div class="col-md-6">
+									<div>
+										<label for="username" class="form-label">Username</label>
 										<input
 											bind:value={userData.username}
+											id="username"
 											class="form-control"
 											name="username"
-											placeholder="Masukan username"
+											placeholder="Masukan Username"
 											required
 											type="text"
 										/>
-										<label>Username</label>
 										{#if username_error !== ''}
 											{#each username_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -220,35 +192,18 @@
 									</div>
 								</div>
 
-								<div class="col-12">
-									<div class="form-floating">
-										<input
-											bind:value={userData.email}
-											class="form-control"
-											name="email"
-											placeholder="Masukan email"
-											required
-											type="email"
-										/>
-										<label>Email</label>
-										{#if email_error !== ''}
-											{#each email_error as error}
-												<div class="invalid-feedback d-block">{error}</div>
-											{/each}
-										{/if}
-									</div>
-								</div>
-								<div class="col-12">
-									<div class="form-floating">
+								<div class="col-md-6">
+									<div>
+										<label for="phone" class="form-label">No HP</label>
 										<input
 											bind:value={userData.phone}
+											id="phone"
 											class="form-control"
 											name="phone"
-											placeholder="Masukan nomor handphone"
+											placeholder="Masukan No HP / Whatsapp"
 											required
 											type="number"
 										/>
-										<label>No HP</label>
 										{#if phone_error !== ''}
 											{#each phone_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -256,8 +211,30 @@
 										{/if}
 									</div>
 								</div>
+								<div class="col-md-6">
+									<div>
+										<label for="email" class="form-label">Email</label>
+										<input
+											bind:value={userData.email}
+											id="phone"
+											class="form-control"
+											name="phone"
+											placeholder="Masukan Email"
+											required
+											type="email"
+										/>
+										{#if email_error !== ''}
+											{#each email_error as error}
+												<div class="invalid-feedback d-block">{error}</div>
+											{/each}
+										{/if}
+									</div>
+								</div>
+
 
 								<div class="col-12">
+									<label for="file" class="form-label">Foto</label>
+
 									<input
 										type="file"
 										accept="image/*"
@@ -265,6 +242,7 @@
 										name="image"
 										bind:this={input}
 										on:change={onChange}
+										id="file"
 									/>
 									{#if image_error !== ''}
 										{#each image_error as error}

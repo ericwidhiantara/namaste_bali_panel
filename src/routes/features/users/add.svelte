@@ -6,15 +6,14 @@
 
 	export let open = false;
 	export let showBackdrop = true;
-	export let onClosed;
+	export let onClosed: (data: any) => void;
 
-	const modalClose = (data) => {
+	const modalClose = (data: any) => {
 		open = false;
 		if (onClosed) {
 			onClosed(data);
 		}
 	};
-
 	let error_msg = '';
 	let name = '';
 	let username = '';
@@ -29,8 +28,8 @@
 	let phone_error = '';
 	let password_error = '';
 	let image_error = '';
-	let input;
-	let image;
+	let input: HTMLInputElement;
+	let image: HTMLImageElement;
 	let showImage = false;
 
 	let showPassword = false;
@@ -40,14 +39,16 @@
 	}
 
 	function onChange() {
-		const file = input.files[0];
+		const file = input.files![0];
 
 		if (file) {
 			showImage = true;
 
 			const reader = new FileReader();
 			reader.addEventListener('load', function() {
-				image.setAttribute('src', reader.result);
+				if (image) {
+					image.setAttribute('src', reader.result as string);
+				}
 			});
 			reader.readAsDataURL(file);
 
@@ -65,7 +66,7 @@
 			formData.append('email', email);
 			formData.append('phone', phone);
 			formData.append('password', password);
-			formData.append('picture', input.files[0]);
+			formData.append('picture', input.files![0]);
 
 			const response = await axios.post(`/users`, formData);
 
@@ -80,8 +81,14 @@
 					timer: 1500
 				});
 
-				document.querySelector('#exampleModalXl').classList.remove('show');
-				document.querySelector('body').classList.remove('modal-open');
+				const modalElement = document.querySelector('#exampleModalXl');
+				const bodyElement = document.querySelector('body');
+
+				if (modalElement && bodyElement) {
+					modalElement.classList.remove('show');
+					bodyElement.classList.remove('modal-open');
+				}
+
 				const mdbackdrop = document.querySelector('.modal-backdrop');
 				if (mdbackdrop) {
 					mdbackdrop.classList.remove('modal-backdrop', 'show');
@@ -161,17 +168,17 @@
 							{/if}
 
 							<div class="row g-lg-3 g-2">
-								<div class="col-12">
-									<div class="form-floating">
+								<div class="col-md-12">
+									<div>
+										<label for="name" class="form-label">Nama</label>
 										<input
 											bind:value={name}
 											class="form-control"
 											name="name"
-											placeholder="Masukan nama"
+											placeholder="Masukan Nama"
 											required
 											type="text"
 										/>
-										<label>Nama</label>
 										{#if name_error !== ''}
 											{#each name_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -179,18 +186,18 @@
 										{/if}
 									</div>
 								</div>
-
-								<div class="col-12">
-									<div class="form-floating">
+								<div class="col-md-6">
+									<div>
+										<label for="username" class="form-label">Username</label>
 										<input
 											bind:value={username}
+											id="username"
 											class="form-control"
 											name="username"
-											placeholder="Masukan username"
+											placeholder="Masukan Username"
 											required
 											type="text"
 										/>
-										<label>Username</label>
 										{#if username_error !== ''}
 											{#each username_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -199,35 +206,18 @@
 									</div>
 								</div>
 
-								<div class="col-12">
-									<div class="form-floating">
-										<input
-											bind:value={email}
-											class="form-control"
-											name="email"
-											placeholder="Masukan email"
-											required
-											type="email"
-										/>
-										<label>Email</label>
-										{#if email_error !== ''}
-											{#each email_error as error}
-												<div class="invalid-feedback d-block">{error}</div>
-											{/each}
-										{/if}
-									</div>
-								</div>
-								<div class="col-12">
-									<div class="form-floating">
+								<div class="col-md-6">
+									<div>
+										<label for="phone" class="form-label">No HP</label>
 										<input
 											bind:value={phone}
+											id="phone"
 											class="form-control"
 											name="phone"
-											placeholder="Masukan nomor handphone"
+											placeholder="Masukan No HP / Whatsapp"
 											required
 											type="number"
 										/>
-										<label>No HP</label>
 										{#if phone_error !== ''}
 											{#each phone_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -235,48 +225,73 @@
 										{/if}
 									</div>
 								</div>
-
-								<div class="col-12">
-									<div class="form-floating input-with-icon">
+								<div class="col-md-6">
+									<div>
+										<label for="email" class="form-label">Email</label>
+										<input
+											bind:value={email}
+											id="phone"
+											class="form-control"
+											name="phone"
+											placeholder="Masukan Email"
+											required
+											type="email"
+										/>
+										{#if email_error !== ''}
+											{#each email_error as error}
+												<div class="invalid-feedback d-block">{error}</div>
+											{/each}
+										{/if}
+									</div>
+								</div>
+								<div class="col-md-6 input-with-icon">
+									<div>
+										<label for="password" class="form-label">Kata Sandi</label>
 										{#if !showPassword}
 											<input
+												id="password"
 												bind:value={password}
 												type="password"
-												class="form-control form-control-lg"
-												placeholder="Masukan Password"
+												class="form-control"
+												placeholder="Masukan Kata Sandi"
 												name="password"
 											/>
 										{:else}
 											<input
+												id="password"
 												type="text"
-												class="form-control form-control-lg"
-												placeholder="Masukan Password"
+												class="form-control"
+												placeholder="Masukan Kata Sandi"
 												name="password"
 												bind:value={password}
 											/>
 										{/if}
-										<label>Password</label>
 										{#if password_error !== ''}
 											{#each password_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
 											{/each}
 										{/if}
-										<!-- Icon to toggle password vi	sibility -->
-										<span
+										<button
+											aria-label="Toggle password visibility"
 											class="icon"
-											on:click={togglePasswordVisibility}
-											style="padding-right: 10px"
+											on:click={() => togglePasswordVisibility()}
+											style="padding-right: 10px; border: none; background-color: transparent;"
+											type="button"
 										>
 											{#if showPassword}
 												<i class="bi bi-eye-slash-fill"></i>
 											{:else}
 												<i class="bi bi-eye-fill"></i>
 											{/if}
-										</span>
+										</button>
+
 									</div>
 								</div>
 
+
 								<div class="col-12">
+									<label for="file" class="form-label">Foto</label>
+
 									<input
 										type="file"
 										accept="image/*"
@@ -285,6 +300,7 @@
 										bind:this={input}
 										on:change={onChange}
 										required
+										id="file"
 									/>
 									{#if image_error !== ''}
 										{#each image_error as error}
@@ -339,7 +355,7 @@
 
     .input-with-icon .icon {
         position: absolute;
-        top: 50%;
+        top: 72%;
         right: 0.5rem; /* Adjust the distance of the icon from the right */
         transform: translateY(-50%);
         cursor: pointer;

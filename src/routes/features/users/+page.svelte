@@ -7,7 +7,7 @@
 	import Swal from 'sweetalert2';
 	import { jwtDecode } from 'jwt-decode';
 	import { UserDataModel, type UserModel } from '$lib/models/users/user_model';
-	import { JWTModel } from '$lib/models/general/jwt_model';
+	import { type ExtendedJwt, JWTModel } from '$lib/models/general/jwt_model';
 
 	setContext('fetchData', { fetchData });
 
@@ -17,7 +17,6 @@
 	let pageSize = '10'; // Define page size
 	let pageSizes = ['10', '25', '50', '100'];
 	let search = '';
-	let token;
 	let searchTimeout = 0;
 
 	// Define a sample user data;;
@@ -114,14 +113,6 @@
 		userData.picture = newData.detail;
 	};
 
-	function formatDate(date: string): string {
-		const options: Intl.DateTimeFormatOptions = {
-			day: 'numeric',
-			month: 'long',
-			year: 'numeric'
-		};
-		return new Intl.DateTimeFormat('id-ID', options).format(new Date(date));
-	}
 
 	function formatHumanDate(timestamp: number): string {
 		const date = new Date(timestamp * 1000); // Convert Unix timestamp to milliseconds
@@ -138,7 +129,7 @@
 		showAddPopup = true;
 	};
 
-	const onPopupAddClose = (data: any) => {
+	const onPopupAddClose = () => {
 		showAddPopup = false;
 		fetchData();
 
@@ -152,7 +143,7 @@
 		showEditPopup = true;
 	};
 
-	const onPopupEditClose = (data: any) => {
+	const onPopupEditClose = () => {
 		showEditPopup = false;
 		fetchData();
 
@@ -167,7 +158,7 @@
 			return false;
 		}
 		// Decode JWT to get expiry time
-		const decoded = jwtDecode(access_token);
+		const decoded = jwtDecode(access_token) as ExtendedJwt;
 
 		const jwtData = new JWTModel({
 			exp: decoded.exp,
@@ -200,7 +191,7 @@
 			<div class="card">
 				<div class="card-header">
 					<h4 class="card-title">List Pengguna</h4>
-					<a class="btn btn-primary" href="#" on:click={onShowAddPopup} role="button">
+					<a class="btn btn-primary" href="{'#'}" on:click={onShowAddPopup} role="button">
 						<i class="fa fa-plus-circle me-1"></i>Tambah Pengguna
 					</a>
 				</div>
@@ -257,11 +248,7 @@
 									</tr>
 									</thead>
 									<tbody>
-									{#await fetchData()}
-										<tr>
-											<td colspan="6" class="text-center">Loading...</td>
-										</tr>
-									{:then result}
+									{#if users}
 										{#if users.length <= 0}
 											<tr>
 												<td colspan="6" class="text-center">Tidak ada data</td>
@@ -296,14 +283,14 @@
 
 													<td>{formatHumanDate(user.created_at)}</td>
 													<td style="position: sticky; right: 0">
-														<a
-															href="#"
+														<button
+															type="button"
 															on:click={() => onShowEditPopup(user)}
 															class="btn btn-info btn-sm"
 															style="color: white;"
 														>
 															<i class="bi bi-pencil-square"></i>
-														</a>
+														</button>
 
 														{#if userLogin.id !== user.id}
 															<button
@@ -319,7 +306,12 @@
 												</tr>
 											{/each}
 										{/if}
-									{/await}
+
+									{:else }
+										<tr>
+											<td colspan="6" class="text-center">Loading...</td>
+										</tr>
+									{/if}
 									</tbody>
 								</table>
 							</div>
@@ -354,22 +346,23 @@
 												: 'none'}"
 											id="DataTables_Table_0_previous"
 										>
-											<a
+											<button
 												aria-controls="DataTables_Table_0"
 												aria-disabled="true"
 												class="page-link"
 												data-dt-idx="previous"
 												on:click={handlePrev}
 												role="link"
-												tabindex="0"><span aria-hidden="true">«</span></a
+												tabindex="0"
+												type="button"><span aria-hidden="true">«</span></button
 											>
 										</li>
 										{#each Array.from({ length: userInfo.total_pages }, (_, i) => i + 1) as page}
 											<li
 												class="paginate_button page-item {pageNumber === page ? 'active' : 'none'}"
 											>
-												<a
-													href="#"
+												<button
+													type="button"
 													aria-controls="DataTables_Table_0"
 													role="link"
 													aria-current="page"
@@ -379,7 +372,7 @@
 													on:click={() => {
 														pageNumber = page;
 														fetchData();
-													}}>{page}</a
+													}}>{page}</button
 												>
 											</li>
 										{/each}
@@ -389,14 +382,15 @@
 												: 'none'} "
 											id="DataTables_Table_0_next"
 										>
-											<a
+											<button
 												aria-controls="DataTables_Table_0"
 												aria-disabled="true"
 												class="page-link"
 												data-dt-idx="next"
 												on:click={handleNext}
 												role="link"
-												tabindex="0"><span aria-hidden="true">»</span></a
+												tabindex="0"
+												type="button"><span aria-hidden="true">»</span></button
 											>
 										</li>
 									</ul>
@@ -411,27 +405,11 @@
 
 	<EditModal
 		on:updateParentData={updateuserDataImages}
-		onClosed={(data) => onPopupEditClose(data)}
+		onClosed={() => onPopupEditClose()}
 		open={showEditPopup}
 		{userData}
 	/>
 
-	<AddModal onClosed={(data) => onPopupAddClose(data)} open={showAddPopup} />
+	<AddModal onClosed={() => onPopupAddClose()} open={showAddPopup} />
 </div>
 <!-- end: page body area -->
-
-<!--&lt;!&ndash; Render the modal but keep it hidden &ndash;&gt;-->
-<!--<div-->
-<!--	aria-hidden="true"-->
-<!--	aria-labelledby="exampleModalXlLabel"-->
-<!--	bind:this={customModal}-->
-<!--	class="modal fade"-->
-<!--	id="exampleModalXl"-->
-<!--	tabindex="-1"-->
-<!--&gt;-->
-<!--	{#if isEditModal}-->
-<!--		<EditModal {userData} on:updateParentData={updateuserDataImages} />-->
-<!--	{:else}-->
-<!--		<AddModal />-->
-<!--	{/if}-->
-<!--</div>-->
