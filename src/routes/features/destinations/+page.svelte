@@ -125,7 +125,7 @@
 		showAddPopup = true;
 	};
 
-	const onPopupAddClose = (data: any) => {
+	const onPopupAddClose = () => {
 		showAddPopup = false;
 		fetchData();
 
@@ -140,7 +140,7 @@
 		showEditPopup = true;
 	};
 
-	const onPopupEditClose = (data: any) => {
+	const onPopupEditClose = () => {
 		showEditPopup = false;
 		fetchData();
 
@@ -226,11 +226,7 @@
 									</tr>
 									</thead>
 									<tbody>
-									{#await fetchData()}
-										<tr>
-											<td colspan="6" class="text-center">Loading...</td>
-										</tr>
-									{:then _}
+									{#if destinations}
 										{#if destinations.length <= 0}
 											<tr>
 												<td colspan="6" class="text-center">Tidak ada data</td>
@@ -280,7 +276,11 @@
 												</tr>
 											{/each}
 										{/if}
-									{/await}
+									{:else}
+										<tr>
+											<td colspan="6" class="text-center">Loading...</td>
+										</tr>
+									{/if}
 									</tbody>
 								</table>
 							</div>
@@ -375,10 +375,10 @@
 	<EditModal
 		{destinationData}
 		on:updateParentData={updatedestinationDataImages}
-		onClosed={(data) => onPopupEditClose(data)}
+		onClosed={() => onPopupEditClose()}
 		open={showEditPopup}
 	/>
 
-	<AddModal onClosed={(data) => onPopupAddClose(data)} open={showAddPopup} />
+	<AddModal onClosed={() => onPopupAddClose()} open={showAddPopup} />
 </div>
 <!-- end: page body area -->

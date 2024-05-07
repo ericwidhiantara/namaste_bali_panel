@@ -126,7 +126,7 @@
 		showAddPopup = true;
 	};
 
-	const onPopupAddClose = (data: any) => {
+	const onPopupAddClose = () => {
 		showAddPopup = false;
 		fetchData();
 
@@ -141,7 +141,7 @@
 		showPaymentPopup = true;
 	};
 
-	const onPopupPaymentClose = (data: any) => {
+	const onPopupPaymentClose = () => {
 
 		showPaymentPopup = false;
 		fetchData();
@@ -157,7 +157,7 @@
 		showEditPopup = true;
 	};
 
-	const onPopupEditClose = (data: any) => {
+	const onPopupEditClose = () => {
 		showEditPopup = false;
 		fetchData();
 
@@ -242,11 +242,7 @@
 									</tr>
 									</thead>
 									<tbody>
-									{#await fetchData()}
-										<tr>
-											<td colspan="6" class="text-center">Loading...</td>
-										</tr>
-									{:then _}
+									{#if orders}
 										{#if orders.length <= 0}
 											<tr>
 												<td colspan="6" class="text-center">Tidak ada data</td>
@@ -325,7 +321,12 @@
 												</tr>
 											{/each}
 										{/if}
-									{/await}
+
+									{:else }
+										<tr>
+											<td colspan="6" class="text-center">Loading...</td>
+										</tr>
+									{/if}
 									</tbody>
 								</table>
 							</div>
@@ -418,15 +419,15 @@
 
 	<EditModal
 		on:updateParentData={updateorderDataImages}
-		onClosed={(data) => onPopupEditClose(data)}
+		onClosed={() => onPopupEditClose()}
 		open={showEditPopup}
 		{orderData}
 	/>
 
-	<AddModal onClosed={(data) => onPopupAddClose(data)} open={showAddPopup} />
+	<AddModal onClosed={() => onPopupAddClose()} open={showAddPopup} />
 
 	<UpdatePaymentModal on:updateParentData={fetchData}
-											onClosed={(data) => onPopupPaymentClose(data)}
+											onClosed={() => onPopupPaymentClose()}
 											open={showPaymentPopup}
 											{orderData} />
 </div>

@@ -122,10 +122,10 @@
 	<div class="px-xl-5 px-4 auth-header" data-bs-theme="none">
 		<a
 			class="brand-icon text-decoration-none d-flex align-items-center"
-			href="index.html"
-			title="BVITE Admin Template"
+			href="/"
+			title="{clientTitle}"
 		>
-			<img alt="logo" class="" height="60" src="/assets/images/favicon.png" style="width:100%;" />
+			<img alt="logo" src="/assets/images/favicon.png" style="width:100px;" />
 		</a>
 	</div>
 

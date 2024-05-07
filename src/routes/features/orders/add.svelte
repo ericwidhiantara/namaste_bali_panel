@@ -4,7 +4,7 @@
 	import Swal from 'sweetalert2';
 	import { toasts } from 'svelte-toasts';
 	import { jwtDecode } from 'jwt-decode';
-	import { JWTModel } from '$lib/models/general/jwt_model';
+	import { type ExtendedJwt, JWTModel } from '$lib/models/general/jwt_model';
 	import { onMount } from 'svelte';
 	import type { UserDataModel } from '$lib/models/users/user_model';
 
@@ -149,7 +149,7 @@
 			return false;
 		}
 		// Decode JWT to get expiry time
-		const decoded = jwtDecode(access_token);
+		let decoded = jwtDecode(access_token) as ExtendedJwt;
 
 		const jwtData = new JWTModel({
 			exp: decoded.exp,

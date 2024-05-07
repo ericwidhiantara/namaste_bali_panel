@@ -7,7 +7,7 @@
 	import { OrderDataModel } from '$lib/models/orders/order_model';
 	import type { UserDataModel } from '$lib/models/users/user_model';
 	import { jwtDecode } from 'jwt-decode';
-	import { JWTModel } from '$lib/models/general/jwt_model';
+	import { type ExtendedJwt, JWTModel } from '$lib/models/general/jwt_model';
 
 	export let open = false;
 	export let showBackdrop = true;
@@ -109,7 +109,7 @@
 			return false;
 		}
 		// Decode JWT to get expiry time
-		const decoded = jwtDecode(access_token);
+		const decoded = jwtDecode(access_token) as ExtendedJwt;
 
 		const jwtData = new JWTModel({
 			exp: decoded.exp,
