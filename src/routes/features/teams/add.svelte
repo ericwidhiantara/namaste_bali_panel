@@ -6,15 +6,14 @@
 
 	export let open = false;
 	export let showBackdrop = true;
-	export let onClosed;
+	export let onClosed: (data: any) => void;
 
-	const modalClose = (data) => {
+	const modalClose = (data: any) => {
 		open = false;
 		if (onClosed) {
 			onClosed(data);
 		}
 	};
-
 	let error_msg = '';
 	let name = '';
 	let email = '';
@@ -37,19 +36,22 @@
 	let role_error = '';
 	let address_error = '';
 	let image_error = '';
-	let input;
-	let image;
+
+	let input: HTMLInputElement;
+	let image: HTMLImageElement;
 	let showImage = false;
 
 	function onChange() {
-		const file = input.files[0];
+		const file = input.files![0];
 
 		if (file) {
 			showImage = true;
 
 			const reader = new FileReader();
 			reader.addEventListener('load', function() {
-				image.setAttribute('src', reader.result);
+				if (image) {
+					image.setAttribute('src', reader.result as string);
+				}
 			});
 			reader.readAsDataURL(file);
 
@@ -71,7 +73,7 @@
 			formData.append('tiktok', tiktok);
 			formData.append('role', role);
 			formData.append('address', address);
-			formData.append('image', input.files[0]);
+			formData.append('image', input.files![0]);
 
 			const response = await axios.post(`/teams`, formData);
 
@@ -86,8 +88,14 @@
 					timer: 1500
 				});
 
-				document.querySelector('#exampleModalXl').classList.remove('show');
-				document.querySelector('body').classList.remove('modal-open');
+				const modalElement = document.querySelector('#exampleModalXl');
+				const bodyElement = document.querySelector('body');
+
+				if (modalElement && bodyElement) {
+					modalElement.classList.remove('show');
+					bodyElement.classList.remove('modal-open');
+				}
+
 				const mdbackdrop = document.querySelector('.modal-backdrop');
 				if (mdbackdrop) {
 					mdbackdrop.classList.remove('modal-backdrop', 'show');
@@ -119,7 +127,7 @@
 				image.src = '';
 				showImage = false;
 			}
-		} catch (error) {
+		} catch (error: any) {
 			isLoading = false;
 			// Get error response
 			name_error = error.response.data.data.name;
@@ -184,17 +192,18 @@
 							</div>
 
 							<div class="row g-lg-3 g-2">
-								<div class="col-12">
-									<div class="form-floating">
+								<div class="col-md-12">
+									<div>
+										<label for="name" class="form-label">Nama</label>
 										<input
-											bind:value={name}
-											class="form-control"
-											name="name"
-											placeholder="Masukan nama"
 											required
 											type="text"
+											name="name"
+											class="form-control"
+											id="name"
+											bind:value={name}
+											placeholder="Masukan Nama Tim"
 										/>
-										<label>Nama</label>
 										{#if name_error !== ''}
 											{#each name_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -202,17 +211,38 @@
 										{/if}
 									</div>
 								</div>
-								<div class="col-12">
-									<div class="form-floating">
+
+								<div class="col-md-12">
+									<div>
+										<label for="role" class="form-label">Jabatan / Role</label>
 										<input
-											bind:value={email}
+											required
+											type="text"
+											name="role"
 											class="form-control"
-											name="email"
-											placeholder="Masukan email"
+											id="role"
+											bind:value={role}
+											placeholder="Masukan Jabatan Tim"
+										/>
+										{#if role_error !== ''}
+											{#each role_error as error}
+												<div class="invalid-feedback d-block">{error}</div>
+											{/each}
+										{/if}
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div>
+										<label for="email" class="form-label">Email</label>
+										<input
 											required
 											type="email"
+											name="email"
+											class="form-control"
+											id="email"
+											bind:value={email}
+											placeholder="Masukan Email Tim"
 										/>
-										<label>Email</label>
 										{#if email_error !== ''}
 											{#each email_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -220,17 +250,19 @@
 										{/if}
 									</div>
 								</div>
-								<div class="col-12">
-									<div class="form-floating">
+
+								<div class="col-md-6">
+									<div>
+										<label for="whatsapp" class="form-label">No Whatsapp</label>
 										<input
-											bind:value={whatsapp}
-											class="form-control"
-											name="whatsapp"
-											placeholder="Masukan nomor whatsapp"
 											required
 											type="number"
+											name="whatsapp"
+											class="form-control"
+											id="whatsapp"
+											bind:value={whatsapp}
+											placeholder="Masukan No Whatsapp Tim"
 										/>
-										<label>No Whatsapp</label>
 										{#if whatsapp_error !== ''}
 											{#each whatsapp_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -238,16 +270,19 @@
 										{/if}
 									</div>
 								</div>
-								<div class="col-12">
-									<div class="form-floating">
+
+								<div class="col-md-6">
+									<div>
+										<label for="facebook" class="form-label">Facebook</label>
 										<input
-											bind:value={facebook}
-											class="form-control"
-											name="facebook"
-											placeholder="Masukan link facebook : contoh https://facebook.com/username"
 											type="text"
+											name="facebook"
+											class="form-control"
+											id="facebook"
+											bind:value={facebook}
+											placeholder="Masukan link facebook : contoh https://facebook.com/username"
+
 										/>
-										<label>Facebook</label>
 										{#if facebook_error !== ''}
 											{#each facebook_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -255,16 +290,18 @@
 										{/if}
 									</div>
 								</div>
-								<div class="col-12">
-									<div class="form-floating">
+								<div class="col-md-6">
+									<div>
+										<label for="instagram" class="form-label">Instagram</label>
 										<input
-											bind:value={instagram}
-											class="form-control"
-											name="instagram"
-											placeholder="Masukan link instagram : contoh https://instagram.com/username"
 											type="text"
+											name="instagram"
+											class="form-control"
+											id="instagram"
+											bind:value={instagram}
+											placeholder="Masukan link instagram : contoh https://instagram.com/username"
+
 										/>
-										<label>Instagram</label>
 										{#if instagram_error !== ''}
 											{#each instagram_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -272,16 +309,18 @@
 										{/if}
 									</div>
 								</div>
-								<div class="col-12">
-									<div class="form-floating">
+								<div class="col-md-6">
+									<div>
+										<label for="twitter" class="form-label">Twitter</label>
 										<input
-											bind:value={twitter}
-											class="form-control"
-											name="twitter"
-											placeholder="Masukan link twitter : contoh https://twitter.com/username"
 											type="text"
+											name="twitter"
+											class="form-control"
+											id="twitter"
+											bind:value={twitter}
+											placeholder="Masukan link twitter : contoh https://twitter.com/username"
+
 										/>
-										<label>Twitter</label>
 										{#if twitter_error !== ''}
 											{#each twitter_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -289,17 +328,18 @@
 										{/if}
 									</div>
 								</div>
-
-								<div class="col-12">
-									<div class="form-floating">
+								<div class="col-md-6">
+									<div>
+										<label for="tiktok" class="form-label">Tiktok</label>
 										<input
-											bind:value={tiktok}
-											class="form-control"
-											name="tiktok"
-											placeholder="Masukan link tiktok : contoh https://tiktok.com/username"
 											type="text"
+											name="tiktok"
+											class="form-control"
+											id="tiktok"
+											bind:value={tiktok}
+											placeholder="Masukan link tiktok : contoh https://tiktok.com/@username"
+
 										/>
-										<label>Tiktok</label>
 										{#if tiktok_error !== ''}
 											{#each tiktok_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -309,41 +349,23 @@
 								</div>
 
 								<div class="col-12">
-									<div class="form-floating">
-										<input
-											bind:value={role}
-											class="form-control"
-											name="role"
-											placeholder="Masukan jabatan pengguna "
-											type="text"
-										/>
-										<label>Jabatan</label>
-										{#if role_error !== ''}
-											{#each role_error as error}
-												<div class="invalid-feedback d-block">{error}</div>
-											{/each}
-										{/if}
-									</div>
-								</div>
+									<label for="address">Alamat</label>
 
-								<div class="col-12">
-									<div class="form-floating">
-										<textarea
-											bind:value={address}
-											class="form-control"
-											name="address"
-											placeholder="Masukan alamat"
-											required
-											style="height: 100px"
-										/>
+									<textarea
+										id="address"
+										bind:value={address}
+										class="form-control"
+										name="address"
+										placeholder="Masukan Alamat"
+										required
+										style="height: 100px"
+									/>
 
-										<label>Alamat</label>
-										{#if address_error !== ''}
-											{#each address_error as error}
-												<div class="invalid-feedback d-block">{error}</div>
-											{/each}
-										{/if}
-									</div>
+									{#if address_error !== ''}
+										{#each address_error as error}
+											<div class="invalid-feedback d-block">{error}</div>
+										{/each}
+									{/if}
 								</div>
 								<div class="col-12">
 									<input

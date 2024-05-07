@@ -3,25 +3,21 @@
 	import axios from '$lib/axios_client';
 	import Swal from 'sweetalert2';
 	import { toasts } from 'svelte-toasts';
-	import { createEventDispatcher, getContext } from 'svelte';
+	import { getContext } from 'svelte';
+	import type { TeamDataModel } from '$lib/models/teams/team_model';
 
 	export let open = false;
 	export let showBackdrop = true;
-	export let onClosed;
+	export let onClosed: (data: any) => void;
 
-	const modalClose = (data) => {
+	const modalClose = (data: any) => {
 		open = false;
 		if (onClosed) {
 			onClosed(data);
 		}
 	};
 
-	export let teamData;
-
-	let files = {
-		accepted: [],
-		rejected: []
-	};
+	export let teamData: TeamDataModel;
 
 	let error_msg = '';
 	let isLoading = false;
@@ -35,25 +31,26 @@
 	let role_error = '';
 	let address_error = '';
 	let image_error = '';
-	let input;
-	let image;
+	let input: HTMLInputElement;
+	let image: HTMLImageElement;
 	let showImage = false;
 
-	const { fetchData } = getContext('fetchData');
+	const { fetchData } = getContext('fetchData') as { fetchData: () => void };
+
 
 	function onChange() {
-		const file = input.files[0];
+		const file = input.files![0];
 
 		if (file) {
 			showImage = true;
 
 			const reader = new FileReader();
 			reader.addEventListener('load', function() {
-				image.setAttribute('src', reader.result);
+				if (typeof reader.result === 'string') {
+					image.setAttribute('src', reader.result);
+				}
 			});
 			reader.readAsDataURL(file);
-
-			return;
 		}
 		showImage = false;
 	}
@@ -74,8 +71,8 @@
 			formData.append('role', teamData.role);
 			formData.append('address', teamData.address);
 
-			if (input.files[0]) {
-				formData.append('image', input.files[0]);
+			if (input.files && input.files.length > 0) {
+				formData.append('image', input.files![0]);
 			}
 
 			const response = await axios.patch(`/teams`, formData);
@@ -91,21 +88,19 @@
 					timer: 1500
 				});
 
-				document.querySelector('#exampleModalXl').classList.remove('show');
-				document.querySelector('body').classList.remove('modal-open');
+				const modalElement = document.querySelector('#exampleModalXl');
+				const bodyElement = document.querySelector('body');
+
+				if (modalElement && bodyElement) {
+					modalElement.classList.remove('show');
+					bodyElement.classList.remove('modal-open');
+				}
+
 				const mdbackdrop = document.querySelector('.modal-backdrop');
 				if (mdbackdrop) {
 					mdbackdrop.classList.remove('modal-backdrop', 'show');
 				}
-				name = '';
-				email = '';
-				whatsapp = '';
-				facebook = '';
-				instagram = '';
-				twitter = '';
-				tiktok = '';
-				role = '';
-				address = '';
+
 				name_error = '';
 				email_error = '';
 				whatsapp_error = '';
@@ -120,12 +115,12 @@
 				input.value = '';
 				image.src = '';
 				showImage = false;
+				fetchData();
 
 				modalClose('close');
 
-				fetchData();
 			}
-		} catch (error) {
+		} catch (error: any) {
 			isLoading = false;
 			// Get error response
 			name_error = error.response.data.data.name;
@@ -154,7 +149,6 @@
 		}
 	}
 
-	const dispatch = createEventDispatcher();
 </script>
 
 {#if open}
@@ -194,7 +188,7 @@
 							<div class="row text-center text-lg-start">
 								<div class="col-lg-3 col-md-4 col-6">
 									<div class="image-container">
-										<a class="d-block mb-4 h-100" href="#">
+										<a class="d-block mb-4 h-100" href="{'#'}">
 											<img
 												alt={teamData.name}
 												class="img-fluid img-thumbnail"
@@ -206,17 +200,18 @@
 							</div>
 
 							<div class="row g-lg-3 g-2">
-								<div class="col-12">
-									<div class="form-floating">
+								<div class="col-md-12">
+									<div>
+										<label for="name" class="form-label">Nama</label>
 										<input
-											bind:value={teamData.name}
-											class="form-control"
-											name="name"
-											placeholder="Masukan nama"
 											required
 											type="text"
+											name="name"
+											class="form-control"
+											id="name"
+											bind:value={teamData.name}
+											placeholder="Masukan Nama Tim"
 										/>
-										<label>Nama</label>
 										{#if name_error !== ''}
 											{#each name_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -224,17 +219,38 @@
 										{/if}
 									</div>
 								</div>
-								<div class="col-12">
-									<div class="form-floating">
+
+								<div class="col-md-12">
+									<div>
+										<label for="role" class="form-label">Jabatan / Role</label>
 										<input
-											bind:value={teamData.email}
+											required
+											type="text"
+											name="role"
 											class="form-control"
-											name="email"
-											placeholder="Masukan email"
+											id="role"
+											bind:value={teamData.role}
+											placeholder="Masukan Jabatan Tim"
+										/>
+										{#if role_error !== ''}
+											{#each role_error as error}
+												<div class="invalid-feedback d-block">{error}</div>
+											{/each}
+										{/if}
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div>
+										<label for="email" class="form-label">Email</label>
+										<input
 											required
 											type="email"
+											name="email"
+											class="form-control"
+											id="email"
+											bind:value={teamData.email}
+											placeholder="Masukan Email Tim"
 										/>
-										<label>Email</label>
 										{#if email_error !== ''}
 											{#each email_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -242,17 +258,19 @@
 										{/if}
 									</div>
 								</div>
-								<div class="col-12">
-									<div class="form-floating">
+
+								<div class="col-md-6">
+									<div>
+										<label for="whatsapp" class="form-label">No Whatsapp</label>
 										<input
-											bind:value={teamData.whatsapp}
-											class="form-control"
-											name="whatsapp"
-											placeholder="Masukan nomor whatsapp"
 											required
 											type="number"
+											name="whatsapp"
+											class="form-control"
+											id="whatsapp"
+											bind:value={teamData.whatsapp}
+											placeholder="Masukan No Whatsapp Tim"
 										/>
-										<label>No Whatsapp</label>
 										{#if whatsapp_error !== ''}
 											{#each whatsapp_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -260,16 +278,19 @@
 										{/if}
 									</div>
 								</div>
-								<div class="col-12">
-									<div class="form-floating">
+
+								<div class="col-md-6">
+									<div>
+										<label for="facebook" class="form-label">Facebook</label>
 										<input
-											bind:value={teamData.facebook}
-											class="form-control"
-											name="facebook"
-											placeholder="Masukan link facebook : contoh https://facebook.com/username"
 											type="text"
+											name="facebook"
+											class="form-control"
+											id="facebook"
+											bind:value={teamData.facebook}
+											placeholder="Masukan link facebook : contoh https://facebook.com/username"
+
 										/>
-										<label>Facebook</label>
 										{#if facebook_error !== ''}
 											{#each facebook_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -277,16 +298,18 @@
 										{/if}
 									</div>
 								</div>
-								<div class="col-12">
-									<div class="form-floating">
+								<div class="col-md-6">
+									<div>
+										<label for="instagram" class="form-label">Instagram</label>
 										<input
-											bind:value={teamData.instagram}
-											class="form-control"
-											name="instagram"
-											placeholder="Masukan link instagram : contoh https://instagram.com/username"
 											type="text"
+											name="instagram"
+											class="form-control"
+											id="instagram"
+											bind:value={teamData.instagram}
+											placeholder="Masukan link instagram : contoh https://instagram.com/username"
+
 										/>
-										<label>Instagram</label>
 										{#if instagram_error !== ''}
 											{#each instagram_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -294,16 +317,18 @@
 										{/if}
 									</div>
 								</div>
-								<div class="col-12">
-									<div class="form-floating">
+								<div class="col-md-6">
+									<div>
+										<label for="twitter" class="form-label">Twitter</label>
 										<input
-											bind:value={teamData.twitter}
-											class="form-control"
-											name="twitter"
-											placeholder="Masukan link twitter : contoh https://twitter.com/username"
 											type="text"
+											name="twitter"
+											class="form-control"
+											id="twitter"
+											bind:value={teamData.twitter}
+											placeholder="Masukan link twitter : contoh https://twitter.com/username"
+
 										/>
-										<label>Twitter</label>
 										{#if twitter_error !== ''}
 											{#each twitter_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -311,17 +336,18 @@
 										{/if}
 									</div>
 								</div>
-
-								<div class="col-12">
-									<div class="form-floating">
+								<div class="col-md-6">
+									<div>
+										<label for="tiktok" class="form-label">Tiktok</label>
 										<input
-											bind:value={teamData.tiktok}
-											class="form-control"
-											name="tiktok"
-											placeholder="Masukan link tiktok : contoh https://tiktok.com/username"
 											type="text"
+											name="tiktok"
+											class="form-control"
+											id="tiktok"
+											bind:value={teamData.tiktok}
+											placeholder="Masukan link tiktok : contoh https://tiktok.com/@username"
+
 										/>
-										<label>Tiktok</label>
 										{#if tiktok_error !== ''}
 											{#each tiktok_error as error}
 												<div class="invalid-feedback d-block">{error}</div>
@@ -331,41 +357,22 @@
 								</div>
 
 								<div class="col-12">
-									<div class="form-floating">
-										<input
-											bind:value={teamData.role}
-											class="form-control"
-											name="role"
-											placeholder="Masukan jabatan pengguna "
-											type="text"
-										/>
-										<label>Jabatan</label>
-										{#if role_error !== ''}
-											{#each role_error as error}
-												<div class="invalid-feedback d-block">{error}</div>
-											{/each}
-										{/if}
-									</div>
-								</div>
+									<label for="address">Alamat</label>
+									<textarea
+										id="address"
+										bind:value={teamData.address}
+										class="form-control"
+										name="address"
+										placeholder="Masukan Alamat"
+										required
+										style="height: 100px"
+									/>
 
-								<div class="col-12">
-									<div class="form-floating">
-										<textarea
-											bind:value={teamData.address}
-											class="form-control"
-											name="address"
-											placeholder="Masukan alamat"
-											required
-											style="height: 100px"
-										/>
-
-										<label>Alamat</label>
-										{#if address_error !== ''}
-											{#each address_error as error}
-												<div class="invalid-feedback d-block">{error}</div>
-											{/each}
-										{/if}
-									</div>
+									{#if address_error !== ''}
+										{#each address_error as error}
+											<div class="invalid-feedback d-block">{error}</div>
+										{/each}
+									{/if}
 								</div>
 								<div class="col-12">
 									<input
@@ -421,11 +428,5 @@
 <style>
     .image-container {
         position: relative;
-    }
-
-    .delete-btn {
-        position: absolute;
-        top: 5px;
-        right: 5px;
     }
 </style>

@@ -5,82 +5,21 @@
 	import EditModal from './edit.svelte';
 	import { FlatToast, ToastContainer, toasts } from 'svelte-toasts';
 	import Swal from 'sweetalert2';
+	import { type TeamDataModel, TeamModel } from '$lib/models/teams/team_model';
 
 	setContext('fetchData', { fetchData });
 
-	class TeamModel {
-		id: string;
-		name: string;
-		email: string;
-		whatsapp: string;
-		facebook: string;
-		instagram: string;
-		twitter: string;
-		tiktok: string;
-		role: string;
-		address: string;
-		image: string;
-		created_at: number;
-		updated_at: number;
 
-		constructor(data) {
-			this.id = data.id;
-			this.name = data.name;
-			this.email = data.email;
-			this.whatsapp = data.whatsapp;
-			this.facebook = data.facebook;
-			this.instagram = data.instagram;
-			this.twitter = data.twitter;
-			this.tiktok = data.tiktok;
-			this.role = data.role;
-			this.address = data.address;
-			this.image = data.image;
-			this.created_at = data.created_at;
-			this.updated_at = data.updated_at;
-		}
-	}
+	let teams = [] as TeamDataModel[];
+	let teamInfo = {} as TeamModel;
+	let teamData = {} as TeamDataModel;
 
-	class TeamDataModel {
-		page_number: number;
-		page_size: number;
-		total: number;
-		total_pages: number;
-		teams: TeamModel[];
-
-		constructor(data) {
-			this.page_number = data.page_number;
-			this.page_size = data.page_size;
-			this.total = data.total;
-			this.total_pages = data.total_pages;
-			this.teams = data.teams;
-		}
-	}
-
-	let teams = [] as TeamModel[];
-	let teamInfo = {} as TeamDataModel;
 	let pageNumber = 1; // Define page number
 	let pageSize = '10'; // Define page size
 	let pageSizes = ['10', '25', '50', '100'];
 	let search = '';
-	let token;
-	let searchTimeout;
+	let searchTimeout = 0;
 
-	// Define a sample team data;;
-	let teamData = new TeamModel({
-		id: '',
-		name: '',
-		email: '',
-		whatsapp: '',
-		facebook: '',
-		instagram: '',
-		twitter: '',
-		tiktok: '',
-		role: '',
-		address: '',
-		image: '',
-		created_at: 0,
-		updated_at: 0
-	});
 
 	async function fetchData() {
 		try {
@@ -97,7 +36,7 @@
 		}
 	}
 
-	const deleteteam = async (id) => {
+	const deleteTeam = async (id: string) => {
 		try {
 			const { isConfirmed } = await Swal.fire({
 				title: 'Are you sure?',
@@ -123,7 +62,7 @@
 					await fetchData();
 				}
 			}
-		} catch (error) {
+		} catch (error: any) {
 			toasts.error({
 				title: 'Oops!',
 				description:
@@ -136,7 +75,7 @@
 		}
 	};
 
-	function handleChange(event) {
+	function handleChange(event: any) {
 		pageNumber = 1; // Reset page number to 1
 		pageSize = event.target.value;
 		fetchData(); // Fetch data with the updated page size
@@ -156,7 +95,7 @@
 		}
 	}
 
-	function handleSearch(event) {
+	function handleSearch(event: any) {
 		// Clear previous timeout to debounce the input
 		clearTimeout(searchTimeout);
 
@@ -168,19 +107,6 @@
 		}, 500); // Delay in milliseconds (adjust as needed)
 	}
 
-	// function to update the teamdata images when user delete a single image
-	const updateteamDataImages = (newData) => {
-		teamData.images = newData.detail;
-	};
-
-	function formatDate(date: string): string {
-		const options: Intl.DateTimeFormatOptions = {
-			day: 'numeric',
-			month: 'long',
-			year: 'numeric'
-		};
-		return new Intl.DateTimeFormat('id-ID', options).format(new Date(date));
-	}
 
 	function formatHumanDate(timestamp: number): string {
 		const date = new Date(timestamp * 1000); // Convert Unix timestamp to milliseconds
@@ -197,7 +123,7 @@
 		showAddPopup = true;
 	};
 
-	const onPopupAddClose = (data) => {
+	const onPopupAddClose = () => {
 		showAddPopup = false;
 		fetchData();
 
@@ -205,13 +131,13 @@
 
 	let showEditPopup = false;
 
-	const onShowEditPopup = (item?) => {
+	const onShowEditPopup = (item: TeamDataModel) => {
 		teamData = item;
 
 		showEditPopup = true;
 	};
 
-	const onPopupEditClose = (data) => {
+	const onPopupEditClose = () => {
 		showEditPopup = false;
 		fetchData();
 
@@ -238,7 +164,7 @@
 			<div class="card">
 				<div class="card-header">
 					<h4 class="card-title">List Tim</h4>
-					<a class="btn btn-primary" href="#" on:click={onShowAddPopup} role="button">
+					<a class="btn btn-primary" href="{'#'}" on:click={onShowAddPopup} role="button">
 						<i class="fa fa-plus-circle me-1"></i>Tambah Tim
 					</a>
 				</div>
@@ -297,11 +223,7 @@
 									</tr>
 									</thead>
 									<tbody>
-									{#await fetchData()}
-										<tr>
-											<td colspan="6" class="text-center">Loading...</td>
-										</tr>
-									{:then result}
+									{#if teams}
 										{#if teams.length <= 0}
 											<tr>
 												<td colspan="6" class="text-center">Tidak ada data</td>
@@ -310,7 +232,7 @@
 											{#each teams as team, index}
 												<tr>
 													<!-- Calculate the correct row number based on the current page number and page size -->
-													<th scope="row">{(pageNumber - 1) * pageSize + index + 1}</th>
+													<th scope="row">{(pageNumber - 1) * parseInt(pageSize) + index + 1}</th>
 													<td>
 														{#if team.image !== null || team.image !== ''}
 															<img
@@ -358,19 +280,19 @@
 
 													<td>{formatHumanDate(team.created_at)}</td>
 													<td style="position: sticky; right: 0">
-														<a
-															href="#"
+														<button
+															type="button"
 															on:click={() => onShowEditPopup(team)}
 															class="btn btn-info btn-sm"
 															style="color: white;"
 														>
 															<i class="bi bi-pencil-square"></i>
-														</a>
+														</button>
 														<button
 															type="button"
 															class="btn btn-danger btn-sm"
 															style="color: white;"
-															on:click={() => deleteteam(team.id)}
+															on:click={() => deleteTeam(team.id)}
 														>
 															<i class="bi bi-trash"></i>
 														</button>
@@ -378,7 +300,11 @@
 												</tr>
 											{/each}
 										{/if}
-									{/await}
+									{:else}
+										<tr>
+											<td colspan="6" class="text-center">Loading...</td>
+										</tr>
+									{/if}
 									</tbody>
 								</table>
 							</div>
@@ -392,8 +318,8 @@
 									role="status"
 								>
 									{#if teamInfo.total > 0}
-										Menampilkan {(pageNumber - 1) * pageSize + 1} sampai {Math.min(
-										pageNumber * pageSize,
+										Menampilkan {(pageNumber - 1) * parseInt(pageSize) + 1} sampai {Math.min(
+										pageNumber * parseInt(pageSize),
 										teamInfo.total
 									)} dari {teamInfo.total} data
 									{:else}
@@ -413,22 +339,23 @@
 												: 'none'}"
 											id="DataTables_Table_0_previous"
 										>
-											<a
+											<button
 												aria-controls="DataTables_Table_0"
 												aria-disabled="true"
 												class="page-link"
 												data-dt-idx="previous"
 												on:click={handlePrev}
 												role="link"
-												tabindex="0"><span aria-hidden="true">«</span></a
+												tabindex="0"
+												type="button"><span aria-hidden="true">«</span></button
 											>
 										</li>
 										{#each Array.from({ length: teamInfo.total_pages }, (_, i) => i + 1) as page}
 											<li
 												class="paginate_button page-item {pageNumber === page ? 'active' : 'none'}"
 											>
-												<a
-													href="#"
+												<button
+													type="button"
 													aria-controls="DataTables_Table_0"
 													role="link"
 													aria-current="page"
@@ -438,7 +365,7 @@
 													on:click={() => {
 														pageNumber = page;
 														fetchData();
-													}}>{page}</a
+													}}>{page}</button
 												>
 											</li>
 										{/each}
@@ -448,14 +375,15 @@
 												: 'none'} "
 											id="DataTables_Table_0_next"
 										>
-											<a
+											<button
 												aria-controls="DataTables_Table_0"
 												aria-disabled="true"
 												class="page-link"
 												data-dt-idx="next"
 												on:click={handleNext}
 												role="link"
-												tabindex="0"><span aria-hidden="true">»</span></a
+												tabindex="0"
+												type="button"><span aria-hidden="true">»</span></button
 											>
 										</li>
 									</ul>
@@ -469,28 +397,12 @@
 	</div>
 
 	<EditModal
-		on:updateParentData={updateteamDataImages}
-		onClosed={(data) => onPopupEditClose(data)}
+		on:updateParentData={fetchData}
+		onClosed={() => onPopupEditClose()}
 		open={showEditPopup}
 		{teamData}
 	/>
 
-	<AddModal onClosed={(data) => onPopupAddClose(data)} open={showAddPopup} />
+	<AddModal onClosed={() => onPopupAddClose()} open={showAddPopup} />
 </div>
 <!-- end: page body area -->
-
-<!--&lt;!&ndash; Render the modal but keep it hidden &ndash;&gt;-->
-<!--<div-->
-<!--	aria-hidden="true"-->
-<!--	aria-labelledby="exampleModalXlLabel"-->
-<!--	bind:this={customModal}-->
-<!--	class="modal fade"-->
-<!--	id="exampleModalXl"-->
-<!--	tabindex="-1"-->
-<!--&gt;-->
-<!--	{#if isEditModal}-->
-<!--		<EditModal {teamData} on:updateParentData={updateteamDataImages} />-->
-<!--	{:else}-->
-<!--		<AddModal />-->
-<!--	{/if}-->
-<!--</div>-->

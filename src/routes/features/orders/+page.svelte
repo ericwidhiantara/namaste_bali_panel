@@ -105,11 +105,6 @@
 		}, 500); // Delay in milliseconds (adjust as needed)
 	}
 
-	// function to update the orderdata payment_proofs when user delete a single payment_proof
-	const updateorderDataImages = (newData: any) => {
-
-		orderData = newData.detail;
-	};
 
 	function formatHumanDate(timestamp: number): string {
 		const date = new Date(timestamp * 1000); // Convert Unix timestamp to milliseconds
@@ -418,7 +413,7 @@
 	</div>
 
 	<EditModal
-		on:updateParentData={updateorderDataImages}
+		on:updateParentData={fetchData}
 		onClosed={() => onPopupEditClose()}
 		open={showEditPopup}
 		{orderData}
