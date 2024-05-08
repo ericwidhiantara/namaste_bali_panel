@@ -37,7 +37,6 @@
 
 	const { fetchData } = getContext('fetchData') as { fetchData: () => void };
 
-
 	function onChange() {
 		const file = input.files![0];
 
@@ -45,14 +44,13 @@
 			showImage = true;
 
 			const reader = new FileReader();
-			reader.addEventListener('load', function() {
+			reader.addEventListener('load', function () {
 				if (typeof reader.result === 'string') {
 					image.setAttribute('src', reader.result);
 				}
 			});
 			reader.readAsDataURL(file);
 			return;
-
 		}
 		showImage = false;
 	}
@@ -92,7 +90,6 @@
 				});
 
 				modalClose('close');
-
 			}
 		} catch (error: any) {
 			isLoading = false;
@@ -122,7 +119,6 @@
 			});
 		}
 	}
-
 </script>
 
 {#if open}
@@ -162,7 +158,7 @@
 							<div class="row text-center text-lg-start">
 								<div class="col-lg-3 col-md-4 col-6">
 									<div class="image-container">
-										<a class="d-block mb-4 h-100" href="{'#'}">
+										<a class="d-block mb-4 h-100" href={'#'}>
 											<img
 												alt={teamData.name}
 												class="img-fluid img-thumbnail"
@@ -263,7 +259,6 @@
 											id="facebook"
 											bind:value={teamData.facebook}
 											placeholder="Masukan link facebook : contoh https://facebook.com/username"
-
 										/>
 										{#if facebook_error !== ''}
 											{#each facebook_error as error}
@@ -282,7 +277,6 @@
 											id="instagram"
 											bind:value={teamData.instagram}
 											placeholder="Masukan link instagram : contoh https://instagram.com/username"
-
 										/>
 										{#if instagram_error !== ''}
 											{#each instagram_error as error}
@@ -301,7 +295,6 @@
 											id="twitter"
 											bind:value={teamData.twitter}
 											placeholder="Masukan link twitter : contoh https://twitter.com/username"
-
 										/>
 										{#if twitter_error !== ''}
 											{#each twitter_error as error}
@@ -320,7 +313,6 @@
 											id="tiktok"
 											bind:value={teamData.tiktok}
 											placeholder="Masukan link tiktok : contoh https://tiktok.com/@username"
-
 										/>
 										{#if tiktok_error !== ''}
 											{#each tiktok_error as error}
@@ -400,7 +392,7 @@
 {/if}
 
 <style>
-    .image-container {
-        position: relative;
-    }
+	.image-container {
+		position: relative;
+	}
 </style>

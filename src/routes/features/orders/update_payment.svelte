@@ -22,7 +22,6 @@
 
 	export let orderData: OrderDataModel;
 
-
 	let error_msg = '';
 	let payment_status = '';
 	let isLoading = false;
@@ -39,7 +38,7 @@
 			showImage = true;
 
 			const reader = new FileReader();
-			reader.addEventListener('load', function() {
+			reader.addEventListener('load', function () {
 				if (image) {
 					image.setAttribute('src', reader.result as string);
 				}
@@ -76,7 +75,6 @@
 				});
 
 				modalClose('close');
-
 			}
 		} catch (error: any) {
 			isLoading = false;
@@ -99,7 +97,6 @@
 			});
 		}
 	}
-
 
 	let userLogin: UserDataModel;
 
@@ -141,7 +138,9 @@
 			<form on:submit|preventDefault={updatePaymentStatus}>
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-customer_name h4" id="exampleModalXlLabel">Update Status Pembayaran</h5>
+						<h5 class="modal-customer_name h4" id="exampleModalXlLabel">
+							Update Status Pembayaran
+						</h5>
 						<button
 							type="button"
 							class="btn-close"
@@ -156,7 +155,6 @@
 								<div class="alert alert-danger" role="alert">{error_msg}</div>
 							{/if}
 							<div class="row g-lg-3 g-2">
-
 								<div class="col-md-12">
 									<label for="payment_status" class="form-label">Status Pembayaran</label>
 									<select
@@ -179,12 +177,10 @@
 								</div>
 
 								<div class="col-12">
-									<label for="payment_proof" class="form-label"
-									>Bukti Pembayaran</label
-									>
+									<label for="payment_proof" class="form-label">Bukti Pembayaran</label>
 
 									<input
-										required="{payment_status === 'paid'}"
+										required={payment_status === 'paid'}
 										id="payment_proof"
 										type="file"
 										accept="image/*"

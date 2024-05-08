@@ -123,7 +123,7 @@
 		<a
 			class="brand-icon text-decoration-none d-flex align-items-center"
 			href="/"
-			title="{clientTitle}"
+			title={clientTitle}
 		>
 			<img alt="logo" src="/assets/images/favicon.png" style="width:100px;" />
 		</a>
@@ -227,19 +227,19 @@
 </main>
 
 <style>
-    .input-with-icon {
-        position: relative;
-    }
+	.input-with-icon {
+		position: relative;
+	}
 
-    .input-with-icon input {
-        padding-right: 2.5rem; /* Adjust padding to accommodate the icon */
-    }
+	.input-with-icon input {
+		padding-right: 2.5rem; /* Adjust padding to accommodate the icon */
+	}
 
-    .input-with-icon .icon {
-        position: absolute;
-        top: 50%;
-        right: 0.5rem; /* Adjust the distance of the icon from the right */
-        transform: translateY(-50%);
-        cursor: pointer;
-    }
+	.input-with-icon .icon {
+		position: absolute;
+		top: 50%;
+		right: 0.5rem; /* Adjust the distance of the icon from the right */
+		transform: translateY(-50%);
+		cursor: pointer;
+	}
 </style>

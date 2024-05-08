@@ -47,7 +47,7 @@
 			showImage = true;
 
 			const reader = new FileReader();
-			reader.addEventListener('load', function() {
+			reader.addEventListener('load', function () {
 				if (image) {
 					image.setAttribute('src', reader.result as string);
 				}
@@ -332,7 +332,7 @@
 
 								<div class="col-12">
 									<label for="payment_proof" class="form-label"
-									>Bukti Pembayaran (biarkan kosong jika belum dibayar)</label
+										>Bukti Pembayaran (biarkan kosong jika belum dibayar)</label
 									>
 
 									<input

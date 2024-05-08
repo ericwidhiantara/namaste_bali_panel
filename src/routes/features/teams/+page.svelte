@@ -9,7 +9,6 @@
 
 	setContext('fetchData', { fetchData });
 
-
 	let teams = [] as TeamDataModel[];
 	let teamInfo = {} as TeamModel;
 	let teamData = {} as TeamDataModel;
@@ -19,7 +18,6 @@
 	let pageSizes = ['10', '25', '50', '100'];
 	let search = '';
 	let searchTimeout = 0;
-
 
 	async function fetchData() {
 		try {
@@ -107,7 +105,6 @@
 		}, 500); // Delay in milliseconds (adjust as needed)
 	}
 
-
 	function formatHumanDate(timestamp: number): string {
 		const date = new Date(timestamp * 1000); // Convert Unix timestamp to milliseconds
 		return date.toLocaleDateString('id-ID', {
@@ -126,7 +123,6 @@
 	const onPopupAddClose = () => {
 		showAddPopup = false;
 		fetchData();
-
 	};
 
 	let showEditPopup = false;
@@ -140,7 +136,6 @@
 	const onPopupEditClose = () => {
 		showEditPopup = false;
 		fetchData();
-
 	};
 
 	// Call fetchData function on component mount
@@ -164,7 +159,7 @@
 			<div class="card">
 				<div class="card-header">
 					<h4 class="card-title">List Tim</h4>
-					<a class="btn btn-primary" href="{'#'}" on:click={onShowAddPopup} role="button">
+					<a class="btn btn-primary" href={'#'} on:click={onShowAddPopup} role="button">
 						<i class="fa fa-plus-circle me-1"></i>Tambah Tim
 					</a>
 				</div>
@@ -192,13 +187,13 @@
 							<div class="col-sm-12 col-md-6">
 								<div class="dataTables_filter" id="DataTables_Table_0_filter">
 									<label
-									>Pencarian:<input
-										aria-controls="DataTables_Table_0"
-										class="form-control form-control-sm"
-										on:input={handleSearch}
-										placeholder=""
-										type="search"
-									/></label
+										>Pencarian:<input
+											aria-controls="DataTables_Table_0"
+											class="form-control form-control-sm"
+											on:input={handleSearch}
+											placeholder=""
+											type="search"
+										/></label
 									>
 								</div>
 							</div>
@@ -212,99 +207,99 @@
 									style="width: 100%;"
 								>
 									<thead>
-									<tr>
-										<th scope="col">#</th>
-										<th scope="col">Foto</th>
-										<th scope="col">Nama</th>
-										<th scope="col">Role</th>
-										<th scope="col">Alamat</th>
-										<th scope="col">Dibuat Pada</th>
-										<th scope="col">Aksi</th>
-									</tr>
+										<tr>
+											<th scope="col">#</th>
+											<th scope="col">Foto</th>
+											<th scope="col">Nama</th>
+											<th scope="col">Role</th>
+											<th scope="col">Alamat</th>
+											<th scope="col">Dibuat Pada</th>
+											<th scope="col">Aksi</th>
+										</tr>
 									</thead>
 									<tbody>
-									{#if teams}
-										{#if teams.length <= 0}
-											<tr>
-												<td colspan="6" class="text-center">Tidak ada data</td>
-											</tr>
-										{:else}
-											{#each teams as team, index}
+										{#if teams}
+											{#if teams.length <= 0}
 												<tr>
-													<!-- Calculate the correct row number based on the current page number and page size -->
-													<th scope="row">{(pageNumber - 1) * parseInt(pageSize) + index + 1}</th>
-													<td>
-														{#if team.image !== null || team.image !== ''}
-															<img
-																src={team.image}
-																alt={team.name}
-																style="width: 100px; height: 100px; object-fit: cover;"
-															/>
-														{:else}
-															<img
-																src="https://via.placeholder.com/100"
-																alt={team.name}
-																style="width: 100px; height: 100px; object-fit: cover;"
-															/>
-														{/if}
-													</td>
-													<td
-													>{team.name}
-														<br />
-														Whatsapp : {team.whatsapp}
-														<br />
-														{#if team.facebook}
-															<a href={team.facebook} target="#">
-																<span class="badge bg-primary">Facebook</span>
-															</a>
-														{/if}
-
-														{#if team.instagram}
-															<a href={team.instagram} target="#">
-																<span class="badge bg-danger">Instagram</span>
-															</a>
-														{/if}
-														{#if team.twitter}
-															<a href={team.twitter} target="#">
-																<span class="badge bg-info">Twitter</span>
-															</a>
-														{/if}
-														{#if team.tiktok}
-															<a href={team.tiktok} target="#">
-																<span class="badge bg-success">Tiktok</span>
-															</a>
-														{/if}
-													</td>
-													<td>{team.role}</td>
-													<td>{team.address}</td>
-
-													<td>{formatHumanDate(team.created_at)}</td>
-													<td style="position: sticky; right: 0">
-														<button
-															type="button"
-															on:click={() => onShowEditPopup(team)}
-															class="btn btn-info btn-sm"
-															style="color: white;"
-														>
-															<i class="bi bi-pencil-square"></i>
-														</button>
-														<button
-															type="button"
-															class="btn btn-danger btn-sm"
-															style="color: white;"
-															on:click={() => deleteTeam(team.id)}
-														>
-															<i class="bi bi-trash"></i>
-														</button>
-													</td>
+													<td colspan="6" class="text-center">Tidak ada data</td>
 												</tr>
-											{/each}
+											{:else}
+												{#each teams as team, index}
+													<tr>
+														<!-- Calculate the correct row number based on the current page number and page size -->
+														<th scope="row">{(pageNumber - 1) * parseInt(pageSize) + index + 1}</th>
+														<td>
+															{#if team.image !== null || team.image !== ''}
+																<img
+																	src={team.image}
+																	alt={team.name}
+																	style="width: 100px; height: 100px; object-fit: cover;"
+																/>
+															{:else}
+																<img
+																	src="https://via.placeholder.com/100"
+																	alt={team.name}
+																	style="width: 100px; height: 100px; object-fit: cover;"
+																/>
+															{/if}
+														</td>
+														<td
+															>{team.name}
+															<br />
+															Whatsapp : {team.whatsapp}
+															<br />
+															{#if team.facebook}
+																<a href={team.facebook} target="#">
+																	<span class="badge bg-primary">Facebook</span>
+																</a>
+															{/if}
+
+															{#if team.instagram}
+																<a href={team.instagram} target="#">
+																	<span class="badge bg-danger">Instagram</span>
+																</a>
+															{/if}
+															{#if team.twitter}
+																<a href={team.twitter} target="#">
+																	<span class="badge bg-info">Twitter</span>
+																</a>
+															{/if}
+															{#if team.tiktok}
+																<a href={team.tiktok} target="#">
+																	<span class="badge bg-success">Tiktok</span>
+																</a>
+															{/if}
+														</td>
+														<td>{team.role}</td>
+														<td>{team.address}</td>
+
+														<td>{formatHumanDate(team.created_at)}</td>
+														<td style="position: sticky; right: 0">
+															<button
+																type="button"
+																on:click={() => onShowEditPopup(team)}
+																class="btn btn-info btn-sm"
+																style="color: white;"
+															>
+																<i class="bi bi-pencil-square"></i>
+															</button>
+															<button
+																type="button"
+																class="btn btn-danger btn-sm"
+																style="color: white;"
+																on:click={() => deleteTeam(team.id)}
+															>
+																<i class="bi bi-trash"></i>
+															</button>
+														</td>
+													</tr>
+												{/each}
+											{/if}
+										{:else}
+											<tr>
+												<td colspan="6" class="text-center">Loading...</td>
+											</tr>
 										{/if}
-									{:else}
-										<tr>
-											<td colspan="6" class="text-center">Loading...</td>
-										</tr>
-									{/if}
 									</tbody>
 								</table>
 							</div>
@@ -319,9 +314,9 @@
 								>
 									{#if teamInfo.total > 0}
 										Menampilkan {(pageNumber - 1) * parseInt(pageSize) + 1} sampai {Math.min(
-										pageNumber * parseInt(pageSize),
-										teamInfo.total
-									)} dari {teamInfo.total} data
+											pageNumber * parseInt(pageSize),
+											teamInfo.total
+										)} dari {teamInfo.total} data
 									{:else}
 										Tidak ada data yang ditemukan
 									{/if}

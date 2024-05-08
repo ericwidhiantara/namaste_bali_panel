@@ -58,7 +58,6 @@
 				});
 
 				modalClose('close');
-
 			}
 		} catch (error: any) {
 			isLoading = false;
@@ -253,7 +252,6 @@
 									{/if}
 								</div>
 							</div>
-
 						</div>
 					</div>
 

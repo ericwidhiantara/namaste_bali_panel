@@ -5,7 +5,10 @@
 	import EditModal from './edit.svelte';
 	import { FlatToast, ToastContainer, toasts } from 'svelte-toasts';
 	import Swal from 'sweetalert2';
-	import { DestinationDataModel, DestinationModel } from '$lib/models/destinations/destination_model';
+	import {
+		DestinationDataModel,
+		DestinationModel
+	} from '$lib/models/destinations/destination_model';
 
 	setContext('fetchData', { fetchData });
 
@@ -106,7 +109,6 @@
 
 	// function to update the destinationdata images when user delete a single image
 	const updatedestinationDataImages = (newData: any) => {
-
 		destinationData = newData.detail;
 	};
 
@@ -128,8 +130,6 @@
 	const onPopupAddClose = () => {
 		showAddPopup = false;
 		fetchData();
-
-
 	};
 
 	let showEditPopup = false;
@@ -143,8 +143,6 @@
 	const onPopupEditClose = () => {
 		showEditPopup = false;
 		fetchData();
-
-
 	};
 
 	// Call fetchData function on component mount
@@ -196,13 +194,13 @@
 							<div class="col-sm-12 col-md-6">
 								<div class="dataTables_filter" id="DataTables_Table_0_filter">
 									<label
-									>Pencarian:<input
-										aria-controls="DataTables_Table_0"
-										class="form-control form-control-sm"
-										on:input={handleSearch}
-										placeholder=""
-										type="search"
-									/></label
+										>Pencarian:<input
+											aria-controls="DataTables_Table_0"
+											class="form-control form-control-sm"
+											on:input={handleSearch}
+											placeholder=""
+											type="search"
+										/></label
 									>
 								</div>
 							</div>
@@ -216,71 +214,71 @@
 									style="width: 100%;"
 								>
 									<thead>
-									<tr>
-										<th scope="col">#</th>
-										<th scope="col">Foto</th>
-										<th scope="col">Nama Tempat Wisata</th>
-										<th scope="col">Deskripsi</th>
-										<th scope="col">Dibuat Pada</th>
-										<th scope="col">Aksi</th>
-									</tr>
+										<tr>
+											<th scope="col">#</th>
+											<th scope="col">Foto</th>
+											<th scope="col">Nama Tempat Wisata</th>
+											<th scope="col">Deskripsi</th>
+											<th scope="col">Dibuat Pada</th>
+											<th scope="col">Aksi</th>
+										</tr>
 									</thead>
 									<tbody>
-									{#if destinations}
-										{#if destinations.length <= 0}
-											<tr>
-												<td colspan="6" class="text-center">Tidak ada data</td>
-											</tr>
-										{:else}
-											{#each destinations as destination, index}
+										{#if destinations}
+											{#if destinations.length <= 0}
 												<tr>
-													<!-- Calculate the correct row number based on the current page number and page size -->
-													<th scope="row">{(pageNumber - 1) * parseInt(pageSize) + index + 1}</th>
-													<td>
-														{#if destination.image !== null || destination.image !== ''}
-															<img
-																src={destination.image}
-																alt={destination.title}
-																style="width: 100px; height: 100px; object-fit: cover;"
-															/>
-														{:else}
-															<img
-																src="https://via.placeholder.com/100"
-																alt={destination.title}
-																style="width: 100px; height: 100px; object-fit: cover;"
-															/>
-														{/if}
-													</td>
-													<td>{destination.title}</td>
-													<td>{destination.description}</td>
-
-													<td>{formatHumanDate(destination.created_at)}</td>
-													<td style="position: sticky; right: 0">
-														<a
-															href={'#'}
-															on:click={() => onShowEditPopup(destination)}
-															class="btn btn-info btn-sm"
-															style="color: white;"
-														>
-															<i class="bi bi-pencil-square"></i>
-														</a>
-														<button
-															type="button"
-															class="btn btn-danger btn-sm"
-															style="color: white;"
-															on:click={() => deletedestination(destination.id)}
-														>
-															<i class="bi bi-trash"></i>
-														</button>
-													</td>
+													<td colspan="6" class="text-center">Tidak ada data</td>
 												</tr>
-											{/each}
+											{:else}
+												{#each destinations as destination, index}
+													<tr>
+														<!-- Calculate the correct row number based on the current page number and page size -->
+														<th scope="row">{(pageNumber - 1) * parseInt(pageSize) + index + 1}</th>
+														<td>
+															{#if destination.image !== null || destination.image !== ''}
+																<img
+																	src={destination.image}
+																	alt={destination.title}
+																	style="width: 100px; height: 100px; object-fit: cover;"
+																/>
+															{:else}
+																<img
+																	src="https://via.placeholder.com/100"
+																	alt={destination.title}
+																	style="width: 100px; height: 100px; object-fit: cover;"
+																/>
+															{/if}
+														</td>
+														<td>{destination.title}</td>
+														<td>{destination.description}</td>
+
+														<td>{formatHumanDate(destination.created_at)}</td>
+														<td style="position: sticky; right: 0">
+															<a
+																href={'#'}
+																on:click={() => onShowEditPopup(destination)}
+																class="btn btn-info btn-sm"
+																style="color: white;"
+															>
+																<i class="bi bi-pencil-square"></i>
+															</a>
+															<button
+																type="button"
+																class="btn btn-danger btn-sm"
+																style="color: white;"
+																on:click={() => deletedestination(destination.id)}
+															>
+																<i class="bi bi-trash"></i>
+															</button>
+														</td>
+													</tr>
+												{/each}
+											{/if}
+										{:else}
+											<tr>
+												<td colspan="6" class="text-center">Loading...</td>
+											</tr>
 										{/if}
-									{:else}
-										<tr>
-											<td colspan="6" class="text-center">Loading...</td>
-										</tr>
-									{/if}
 									</tbody>
 								</table>
 							</div>
@@ -295,9 +293,9 @@
 								>
 									{#if destinationInfo.total > 0}
 										Menampilkan {(pageNumber - 1) * parseInt(pageSize) + 1} sampai {Math.min(
-										pageNumber * parseInt(pageSize),
-										destinationInfo.total
-									)} dari {destinationInfo.total} data
+											pageNumber * parseInt(pageSize),
+											destinationInfo.total
+										)} dari {destinationInfo.total} data
 									{:else}
 										Tidak ada data yang ditemukan
 									{/if}

@@ -30,9 +30,7 @@
 	let image: HTMLImageElement;
 	let showImage = false;
 
-
 	const { fetchData } = getContext('fetchData') as { fetchData: () => void };
-
 
 	function onChange() {
 		const file = input.files![0];
@@ -41,7 +39,7 @@
 			showImage = true;
 
 			const reader = new FileReader();
-			reader.addEventListener('load', function() {
+			reader.addEventListener('load', function () {
 				if (typeof reader.result === 'string') {
 					image.setAttribute('src', reader.result);
 				}
@@ -106,7 +104,6 @@
 			});
 		}
 	}
-
 </script>
 
 {#if open}
@@ -142,7 +139,7 @@
 							<div class="row text-center text-lg-start">
 								<div class="col-lg-3 col-md-4 col-6">
 									<div class="image-container">
-										<a class="d-block mb-4 h-100" href="{'#'}">
+										<a class="d-block mb-4 h-100" href={'#'}>
 											<img
 												alt={userData.name}
 												class="img-fluid img-thumbnail"
@@ -231,7 +228,6 @@
 									</div>
 								</div>
 
-
 								<div class="col-12">
 									<label for="file" class="form-label">Foto</label>
 
@@ -287,7 +283,7 @@
 {/if}
 
 <style>
-    .image-container {
-        position: relative;
-    }
+	.image-container {
+		position: relative;
+	}
 </style>

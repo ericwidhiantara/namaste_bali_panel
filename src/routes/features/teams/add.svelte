@@ -48,7 +48,7 @@
 			showImage = true;
 
 			const reader = new FileReader();
-			reader.addEventListener('load', function() {
+			reader.addEventListener('load', function () {
 				if (image) {
 					image.setAttribute('src', reader.result as string);
 				}
@@ -281,7 +281,6 @@
 											id="facebook"
 											bind:value={facebook}
 											placeholder="Masukan link facebook : contoh https://facebook.com/username"
-
 										/>
 										{#if facebook_error !== ''}
 											{#each facebook_error as error}
@@ -300,7 +299,6 @@
 											id="instagram"
 											bind:value={instagram}
 											placeholder="Masukan link instagram : contoh https://instagram.com/username"
-
 										/>
 										{#if instagram_error !== ''}
 											{#each instagram_error as error}
@@ -319,7 +317,6 @@
 											id="twitter"
 											bind:value={twitter}
 											placeholder="Masukan link twitter : contoh https://twitter.com/username"
-
 										/>
 										{#if twitter_error !== ''}
 											{#each twitter_error as error}
@@ -338,7 +335,6 @@
 											id="tiktok"
 											bind:value={tiktok}
 											placeholder="Masukan link tiktok : contoh https://tiktok.com/@username"
-
 										/>
 										{#if tiktok_error !== ''}
 											{#each tiktok_error as error}

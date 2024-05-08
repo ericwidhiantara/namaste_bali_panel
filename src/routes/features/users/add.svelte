@@ -45,7 +45,7 @@
 			showImage = true;
 
 			const reader = new FileReader();
-			reader.addEventListener('load', function() {
+			reader.addEventListener('load', function () {
 				if (image) {
 					image.setAttribute('src', reader.result as string);
 				}
@@ -284,10 +284,8 @@
 												<i class="bi bi-eye-fill"></i>
 											{/if}
 										</button>
-
 									</div>
 								</div>
-
 
 								<div class="col-12">
 									<label for="file" class="form-label">Foto</label>
@@ -345,19 +343,19 @@
 {/if}
 
 <style>
-    .input-with-icon {
-        position: relative;
-    }
+	.input-with-icon {
+		position: relative;
+	}
 
-    .input-with-icon input {
-        padding-right: 2.5rem; /* Adjust padding to accommodate the icon */
-    }
+	.input-with-icon input {
+		padding-right: 2.5rem; /* Adjust padding to accommodate the icon */
+	}
 
-    .input-with-icon .icon {
-        position: absolute;
-        top: 72%;
-        right: 0.5rem; /* Adjust the distance of the icon from the right */
-        transform: translateY(-50%);
-        cursor: pointer;
-    }
+	.input-with-icon .icon {
+		position: absolute;
+		top: 72%;
+		right: 0.5rem; /* Adjust the distance of the icon from the right */
+		transform: translateY(-50%);
+		cursor: pointer;
+	}
 </style>

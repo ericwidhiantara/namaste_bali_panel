@@ -33,7 +33,7 @@
 			showImage = true;
 
 			const reader = new FileReader();
-			reader.addEventListener('load', function() {
+			reader.addEventListener('load', function () {
 				if (image) {
 					image.setAttribute('src', reader.result as string);
 				}

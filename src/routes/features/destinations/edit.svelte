@@ -34,7 +34,7 @@
 			showImage = true;
 
 			const reader = new FileReader();
-			reader.addEventListener('load', function() {
+			reader.addEventListener('load', function () {
 				if (typeof reader.result === 'string') {
 					image.setAttribute('src', reader.result);
 				}
@@ -73,7 +73,6 @@
 				});
 
 				modalClose('close');
-
 			}
 		} catch (error: any) {
 			isLoading = false;
@@ -235,7 +234,7 @@
 {/if}
 
 <style>
-    .image-container {
-        position: relative;
-    }
+	.image-container {
+		position: relative;
+	}
 </style>

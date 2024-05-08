@@ -105,7 +105,6 @@
 		}, 500); // Delay in milliseconds (adjust as needed)
 	}
 
-
 	function formatHumanDate(timestamp: number): string {
 		const date = new Date(timestamp * 1000); // Convert Unix timestamp to milliseconds
 		return date.toLocaleDateString('id-ID', {
@@ -124,9 +123,7 @@
 	const onPopupAddClose = () => {
 		showAddPopup = false;
 		fetchData();
-
 	};
-
 
 	let showPaymentPopup = false;
 
@@ -137,12 +134,9 @@
 	};
 
 	const onPopupPaymentClose = () => {
-
 		showPaymentPopup = false;
 		fetchData();
-
 	};
-
 
 	let showEditPopup = false;
 
@@ -155,7 +149,6 @@
 	const onPopupEditClose = () => {
 		showEditPopup = false;
 		fetchData();
-
 	};
 
 	// Call fetchData function on component mount
@@ -207,13 +200,13 @@
 							<div class="col-sm-12 col-md-6">
 								<div class="dataTables_filter" id="DataTables_Table_0_filter">
 									<label
-									>Pencarian:<input
-										aria-controls="DataTables_Table_0"
-										class="form-control form-control-sm"
-										on:input={handleSearch}
-										placeholder=""
-										type="search"
-									/></label
+										>Pencarian:<input
+											aria-controls="DataTables_Table_0"
+											class="form-control form-control-sm"
+											on:input={handleSearch}
+											placeholder=""
+											type="search"
+										/></label
 									>
 								</div>
 							</div>
@@ -227,101 +220,100 @@
 									style="width: 100%;"
 								>
 									<thead>
-									<tr>
-										<th scope="col">#</th>
-										<th scope="col" style="max-width: 100%">Customer</th>
-										<th scope="col">Status Pembayaran</th>
-										<th scope="col">Bukti Pembayaran</th>
-										<th scope="col">Dibuat Pada</th>
-										<th scope="col">Aksi</th>
-									</tr>
+										<tr>
+											<th scope="col">#</th>
+											<th scope="col" style="max-width: 100%">Customer</th>
+											<th scope="col">Status Pembayaran</th>
+											<th scope="col">Bukti Pembayaran</th>
+											<th scope="col">Dibuat Pada</th>
+											<th scope="col">Aksi</th>
+										</tr>
 									</thead>
 									<tbody>
-									{#if orders}
-										{#if orders.length <= 0}
-											<tr>
-												<td colspan="6" class="text-center">Tidak ada data</td>
-											</tr>
-										{:else}
-											{#each orders as order, index}
+										{#if orders}
+											{#if orders.length <= 0}
 												<tr>
-													<!-- Calculate the correct row number based on the current page number and page size -->
-													<th scope="row">{(pageNumber - 1) * parseInt(pageSize) + index + 1}</th>
-													<td
-													>{order.customer_name}
-														<br />
-														<span class="badge bg-primary">Email : {order.customer_email}</span>
-														<br />
-														<span class="badge bg-success">Negara : {order.customer_country}</span
-														>
-														<br />
-														<span class="badge bg-warning">No HP : {order.customer_phone}</span>
-														<br />
-														<p
-															style="max-width: 200px; overflow: auto; max-height: 10em; white-space: pre-line;"
-														>
-															Alamat : {order.customer_address}
-														</p>
-													</td>
-
-													<td>
-														{#if order.payment_status === 'paid'}
-															<span class="badge bg-success">Sudah Dibayar</span>
-														{:else if order.payment_status === 'unpaid'}
-															<span class="badge bg-warning">Belum Dibayar</span>
-														{:else}
-															<span class="badge bg-danger">Dibatalkan</span>
-														{/if}
-													</td>
-
-													<td>
-														{#if order.payment_status !== 'unpaid' && order.payment_status !== 'canceled'}
-															<img
-																src={order.payment_proof}
-																alt="Bukti Pembayaran"
-																style="width: 100px; height: 100px; object-fit: cover;"
-															/>
-														{:else}
-															-
-														{/if}
-													</td>
-
-													<td>{formatHumanDate(order.created_at)}</td>
-													<td style="position: sticky; right: 0">
-														<a
-															href={'#'}
-															on:click={() => onShowPaymentPopup(order)}
-															class="btn btn-info btn-sm"
-															style="color: white;"
-														>
-															<i class="bi bi-pencil"></i>
-														</a>
-														<a
-															href={'#'}
-															on:click={() => onShowEditPopup(order)}
-															class="btn btn-info btn-sm"
-															style="color: white;"
-														>
-															<i class="bi bi-pencil-square"></i>
-														</a>
-														<button
-															type="button"
-															class="btn btn-danger btn-sm"
-															style="color: white;"
-															on:click={() => deleteorder(order.id)}
-														>
-															<i class="bi bi-trash"></i>
-														</button>
-													</td>
+													<td colspan="6" class="text-center">Tidak ada data</td>
 												</tr>
-											{/each}
-										{/if}
+											{:else}
+												{#each orders as order, index}
+													<tr>
+														<!-- Calculate the correct row number based on the current page number and page size -->
+														<th scope="row">{(pageNumber - 1) * parseInt(pageSize) + index + 1}</th>
+														<td
+															>{order.customer_name}
+															<br />
+															<span class="badge bg-primary">Email : {order.customer_email}</span>
+															<br />
+															<span class="badge bg-success">Negara : {order.customer_country}</span
+															>
+															<br />
+															<span class="badge bg-warning">No HP : {order.customer_phone}</span>
+															<br />
+															<p
+																style="max-width: 200px; overflow: auto; max-height: 10em; white-space: pre-line;"
+															>
+																Alamat : {order.customer_address}
+															</p>
+														</td>
 
-									{:else }
-										<tr>
-											<td colspan="6" class="text-center">Loading...</td>
-										</tr>
-									{/if}
+														<td>
+															{#if order.payment_status === 'paid'}
+																<span class="badge bg-success">Sudah Dibayar</span>
+															{:else if order.payment_status === 'unpaid'}
+																<span class="badge bg-warning">Belum Dibayar</span>
+															{:else}
+																<span class="badge bg-danger">Dibatalkan</span>
+															{/if}
+														</td>
+
+														<td>
+															{#if order.payment_status !== 'unpaid' && order.payment_status !== 'canceled'}
+																<img
+																	src={order.payment_proof}
+																	alt="Bukti Pembayaran"
+																	style="width: 100px; height: 100px; object-fit: cover;"
+																/>
+															{:else}
+																-
+															{/if}
+														</td>
+
+														<td>{formatHumanDate(order.created_at)}</td>
+														<td style="position: sticky; right: 0">
+															<a
+																href={'#'}
+																on:click={() => onShowPaymentPopup(order)}
+																class="btn btn-info btn-sm"
+																style="color: white;"
+															>
+																<i class="bi bi-pencil"></i>
+															</a>
+															<a
+																href={'#'}
+																on:click={() => onShowEditPopup(order)}
+																class="btn btn-info btn-sm"
+																style="color: white;"
+															>
+																<i class="bi bi-pencil-square"></i>
+															</a>
+															<button
+																type="button"
+																class="btn btn-danger btn-sm"
+																style="color: white;"
+																on:click={() => deleteorder(order.id)}
+															>
+																<i class="bi bi-trash"></i>
+															</button>
+														</td>
+													</tr>
+												{/each}
+											{/if}
+										{:else}
+											<tr>
+												<td colspan="6" class="text-center">Loading...</td>
+											</tr>
+										{/if}
 									</tbody>
 								</table>
 							</div>
@@ -336,9 +328,9 @@
 								>
 									{#if orderInfo.total > 0}
 										Menampilkan {(pageNumber - 1) * parseInt(pageSize) + 1} sampai {Math.min(
-										pageNumber * parseInt(pageSize),
-										orderInfo.total
-									)} dari {orderInfo.total} data
+											pageNumber * parseInt(pageSize),
+											orderInfo.total
+										)} dari {orderInfo.total} data
 									{:else}
 										Tidak ada data yang ditemukan
 									{/if}
@@ -421,9 +413,11 @@
 
 	<AddModal onClosed={() => onPopupAddClose()} open={showAddPopup} />
 
-	<UpdatePaymentModal on:updateParentData={fetchData}
-											onClosed={() => onPopupPaymentClose()}
-											open={showPaymentPopup}
-											{orderData} />
+	<UpdatePaymentModal
+		on:updateParentData={fetchData}
+		onClosed={() => onPopupPaymentClose()}
+		open={showPaymentPopup}
+		{orderData}
+	/>
 </div>
 <!-- end: page body area -->

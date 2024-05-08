@@ -4,7 +4,6 @@
 	import axios from '$lib/axios_client';
 	import { DashboardModel } from '$lib/models/general/dashboard_model';
 
-
 	function checkTokenExpiry() {
 		const access_token = localStorage.getItem('access_token');
 		if (!access_token) {
@@ -30,13 +29,10 @@
 
 	async function fetchData() {
 		try {
-			const response = await axios.get(
-				`/dashboard`
-			);
+			const response = await axios.get(`/dashboard`);
 
 			if (response.status === 200) {
 				data = response.data.data;
-
 			} else {
 				console.error('Error fetching data:', response);
 			}
@@ -69,12 +65,12 @@
 					<h2 class="fw-bold mb-xl-5 mb-4">Dashboard</h2>
 					<div class="d-flex align-items-start">
 						<div class="bd-callout bd-callout-info">
-							Dashboard ini menampilkan total data yang ada pada website ini. Anda dapat melihat data-data yang ada
-							pada website dengan menekan menu fitur lalu pilih menu yang ingin dilihat datanya.
+							Dashboard ini menampilkan total data yang ada pada website ini. Anda dapat melihat
+							data-data yang ada pada website dengan menekan menu fitur lalu pilih menu yang ingin
+							dilihat datanya.
 						</div>
 					</div>
 				</div>
-
 			</div>
 		</div>
 	</div>
@@ -87,60 +83,56 @@
 					<div class="card p-3 px-4">
 						<div>Total Pesanan</div>
 						<div class="py-4 m-0 text-center h2">
-					<span
-						class="purecounter"
-						data-purecounter-currency="$"
-						data-purecounter-end="6245"
-						data-purecounter-separator=","
-						data-purecounter-start="0">{data.total_orders}</span
-					>
+							<span
+								class="purecounter"
+								data-purecounter-currency="$"
+								data-purecounter-end="6245"
+								data-purecounter-separator=","
+								data-purecounter-start="0">{data.total_orders}</span
+							>
 						</div>
-
 					</div>
 				</div>
 				<div class="col-lg-3 col-md-6 col-sm-6">
 					<div class="card p-3 px-4">
 						<div>Total Pesanan Belum Dibayar</div>
 						<div class="py-4 m-0 text-center h2">
-					<span
-						class="purecounter"
-						data-purecounter-currency="$"
-						data-purecounter-end="2145"
-						data-purecounter-separator=","
-						data-purecounter-start="0">{data.total_unpaid}</span
-					>
+							<span
+								class="purecounter"
+								data-purecounter-currency="$"
+								data-purecounter-end="2145"
+								data-purecounter-separator=","
+								data-purecounter-start="0">{data.total_unpaid}</span
+							>
 						</div>
-
 					</div>
 				</div>
 				<div class="col-lg-3 col-md-6 col-sm-6">
 					<div class="card p-3 px-4">
 						<div>Total Pesanan Sudah Dibayar</div>
 						<div class="py-4 m-0 text-center h2">
-					<span
-						class="purecounter"
-						data-purecounter-currency="$"
-						data-purecounter-end="2145"
-						data-purecounter-separator=","
-						data-purecounter-start="0">{data.total_paid}</span
-					>
+							<span
+								class="purecounter"
+								data-purecounter-currency="$"
+								data-purecounter-end="2145"
+								data-purecounter-separator=","
+								data-purecounter-start="0">{data.total_paid}</span
+							>
 						</div>
-
 					</div>
 				</div>
 				<div class="col-lg-3 col-md-6 col-sm-6">
 					<div class="card p-3 px-4">
 						<div>Total Pesanan Dibatalkan</div>
 						<div class="py-4 m-0 text-center h2">
-					<span
-						class="purecounter"
-						data-purecounter-currency="$"
-						data-purecounter-end="2145"
-						data-purecounter-separator=","
-						data-purecounter-start="0">{data.total_canceled}</span
-					>
+							<span
+								class="purecounter"
+								data-purecounter-currency="$"
+								data-purecounter-end="2145"
+								data-purecounter-separator=","
+								data-purecounter-start="0">{data.total_canceled}</span
+							>
 						</div>
-
 					</div>
 				</div>
 			</div>
@@ -152,45 +144,42 @@
 					<div class="card p-3 px-4">
 						<div>Total Tim</div>
 						<div class="py-4 m-0 text-center h2">
-					<span
-						class="purecounter"
-						data-purecounter-currency="$"
-						data-purecounter-end="6245"
-						data-purecounter-separator=","
-						data-purecounter-start="0">{data.total_teams}</span
-					>
+							<span
+								class="purecounter"
+								data-purecounter-currency="$"
+								data-purecounter-end="6245"
+								data-purecounter-separator=","
+								data-purecounter-start="0">{data.total_teams}</span
+							>
 						</div>
-
 					</div>
 				</div>
 				<div class="col-lg-3 col-md-6 col-sm-6">
 					<div class="card p-3 px-4">
 						<div>Total Pengguna</div>
 						<div class="py-4 m-0 text-center h2">
-					<span
-						class="purecounter"
-						data-purecounter-currency="$"
-						data-purecounter-end="2145"
-						data-purecounter-separator=","
-						data-purecounter-start="0">{data.total_users}</span
-					>
+							<span
+								class="purecounter"
+								data-purecounter-currency="$"
+								data-purecounter-end="2145"
+								data-purecounter-separator=","
+								data-purecounter-start="0">{data.total_users}</span
+							>
 						</div>
-
 					</div>
 				</div>
 				<div class="col-lg-3 col-md-6 col-sm-6">
 					<div class="card p-3 px-4">
 						<div>Total Destinasi Wisataa</div>
 						<div class="py-4 m-0 text-center h2">
-					<span
-						class="purecounter"
-						data-purecounter-currency="$"
-						data-purecounter-end="2145"
-						data-purecounter-separator=","
-						data-purecounter-start="0">{data.total_destinations}</span
-					>
+							<span
+								class="purecounter"
+								data-purecounter-currency="$"
+								data-purecounter-end="2145"
+								data-purecounter-separator=","
+								data-purecounter-start="0">{data.total_destinations}</span
+							>
 						</div>
-
 					</div>
 				</div>
 			</div>
