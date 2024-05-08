@@ -21,7 +21,7 @@ const getAccessToken = (): string | null => {
 const setAuthHeader = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
 	const token: string | null = getAccessToken();
 	if (token) {
-		config.headers = { ...config.headers, Authorization: `Bearer ${token}` };
+		config.headers['Authorization'] = `Bearer ${token}`;
 	}
 	return config;
 };
