@@ -14,7 +14,15 @@ const axiosInstance: AxiosInstance = axios.create({
 
 // Function to retrieve the access token from localStorage
 const getAccessToken = (): string | null => {
-	return localStorage.getItem('access_token');
+	// Check if localStorage is defined (i.e., if the code is running in a browser environment)
+	if (typeof localStorage !== 'undefined') {
+		// Access localStorage only in the browser environment
+		return localStorage.getItem('access_token');
+	} else {
+		// Handle the case where localStorage is not available (e.g., return null or provide a fallback)
+		console.warn('localStorage is not available in this environment.');
+		return null;
+	}
 };
 
 // Function to set Authorization header with bearer token
@@ -42,22 +50,23 @@ axiosInstance.interceptors.request.use(
 		return Promise.reject(error);
 	}
 );
-
-// Response interceptor to handle unauthorized responses (HTTP 401 or 403)
-axiosInstance.interceptors.response.use(
-	(response) => response,
-	(error) => {
-		if (window.location.pathname === '/auth/login') return Promise.reject(error);
-		// Handle error responses
-		if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-			// Show notification about session expiration
-			showSessionExpiredNotification();
-			// Immediately force logout
-			// logout();
+if (typeof window !== 'undefined') {
+	// Response interceptor to handle unauthorized responses (HTTP 401 or 403)
+	axiosInstance.interceptors.response.use(
+		(response) => response,
+		(error) => {
+			if (window.location.pathname === '/auth/login') return Promise.reject(error);
+			// Handle error responses
+			if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+				// Show notification about session expiration
+				showSessionExpiredNotification();
+				// Immediately force logout
+				// logout();
+			}
+			return Promise.reject(error);
 		}
-		return Promise.reject(error);
-	}
-);
+	);
+}
 
 // Function to show session expired notification
 const showSessionExpiredNotification = () => {
